@@ -1,0 +1,205 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cloth Physics Simulation</title>
+    <style>
+        body { 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            background: #333; 
+        }
+        canvas { 
+            border: 1px solid white; 
+            background: #000000; 
+        }
+        #controls { 
+            position: absolute; 
+            top: 10px; 
+            left: 10px; 
+            color: white; 
+            font-family: Arial; 
+        }
+        button, input { 
+            padding: 5px; 
+            margin: 5px; 
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <button onclick="resetSimulation()">Reset (R)</button>
+        <button onclick="togglePin()">Toggle Pin Corners (P)</button>
+        <label>Wind: <input type="range" id="wind" min="-0.05" max="0.05" step="0.01" value="0"></label>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script>
+        // Matter.js setup
+        const { Engine, Render, World, Bodies, Body, Constraint, Mouse, MouseConstraint, Events } = Matter;
+        const engine = Engine.create();
+        engine.gravity.y = 1;
+
+        // Canvas setup
+        const canvas = document.createElement('canvas');
+        canvas.width = 800;
+        canvas.height = 600;
+        document.body.appendChild(canvas);
+
+        // Renderer
+        const render = Render.create({
+            canvas: canvas,
+            engine: engine,
+            options: {
+                width: 800,
+                height: 600,
+                wireframes: false,
+                background: '#000000',
+                showAngleIndicator: false
+            }
+        });
+
+        // Ground
+        const ground = Bodies.rectangle(400, 590, 800, 20, { 
+            isStatic: true, 
+            render: { fillStyle: '#808080' } 
+        });
+
+        // Cloth creation function
+        function createCloth(x, y, width, height, cols, rows) {
+            const particles = [];
+            const constraints = [];
+            const particleRadius = 5;
+            const spacingX = width / (cols - 1);
+            const spacingY = height / (rows - 1);
+
+            // Create particle grid
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const px = x + j * spacingX;
+                    const py = y + i * spacingY;
+                    const particle = Bodies.circle(px, py, particleRadius, {
+                        restitution: 0.1,
+                        friction: 0.05,
+                        render: { fillStyle: '#87ceeb' }
+                    });
+                    particles.push(particle);
+                }
+            }
+
+            // Connect particles with constraints
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const index = i * cols + j;
+                    // Horizontal
+                    if (j < cols - 1) {
+                        constraints.push(Constraint.create({
+                            bodyA: particles[index],
+                            bodyB: particles[index + 1],
+                            length: spacingX,
+                            stiffness: 0.9,
+                            render: { strokeStyle: '#ffffff' }
+                        }));
+                    }
+                    // Vertical
+                    if (i < rows - 1) {
+                        constraints.push(Constraint.create({
+                            bodyA: particles[index],
+                            bodyB: particles[index + cols],
+                            length: spacingY,
+                            stiffness: 0.9,
+                            render: { strokeStyle: '#ffffff' }
+                        }));
+                    }
+                }
+            }
+
+            return { particles, constraints };
+        }
+
+        // Initial cloth
+        let cloth = createCloth(200, 50, 400, 200, 15, 10);
+        let pinned = false;
+        World.add(engine.world, [ground, ...cloth.particles, ...cloth.constraints]);
+
+        // Mouse interaction
+        const mouse = Mouse.create(render.canvas);
+        const mouseConstraint = MouseConstraint.create(engine, {
+            mouse: mouse,
+            constraint: {
+                stiffness: 0.2,
+                render: { visible: false }
+            }
+        });
+        World.add(engine.world, mouseConstraint);
+        render.mouse = mouse;
+
+        // Wind force
+        let windForce = 0;
+        document.getElementById('wind').addEventListener('input', (e) => {
+            windForce = parseFloat(e.target.value);
+        });
+
+        Events.on(engine, 'beforeUpdate', () => {
+            cloth.particles.forEach(particle => {
+                Body.applyForce(particle, particle.position, { x: windForce, y: 0 });
+            });
+        });
+
+        // Tear mechanics
+        Events.on(engine, 'afterUpdate', () => {
+            cloth.constraints.forEach((constraint, index) => {
+                const length = Matter.Vector.magnitude(
+                    Matter.Vector.sub(constraint.bodyA.position, constraint.bodyB.position)
+                );
+                if (length > constraint.length * 1.5) { // Tear if stretched 50% beyond original length
+                    World.remove(engine.world, constraint);
+                    cloth.constraints.splice(index, 1);
+                }
+            });
+        });
+
+        // Pin corners
+        function togglePin() {
+            pinned = !pinned;
+            const topLeft = cloth.particles[0];
+            const topRight = cloth.particles[cloth.particles.length - cloth.rows];
+            if (pinned) {
+                Body.setStatic(topLeft, true);
+                Body.setStatic(topRight, true);
+            } else {
+                Body.setStatic(topLeft, false);
+                Body.setStatic(topRight, false);
+            }
+        }
+
+        // Reset simulation
+        function resetSimulation() {
+            World.clear(engine.world);
+            World.add(engine.world, [ground, mouseConstraint]);
+            cloth = createCloth(200, 50, 400, 200, 15, 10);
+            World.add(engine.world, [...cloth.particles, ...cloth.constraints]);
+            if (pinned) togglePin(); // Reset pinning if active
+            windForce = parseFloat(document.getElementById('wind').value);
+        }
+
+        // Key press handlers
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'r' || e.key === 'R') resetSimulation();
+            if (e.key === 'p' || e.key === 'P') togglePin();
+        });
+
+        // Run simulation
+        try {
+            Engine.run(engine);
+            Render.run(render);
+            console.log('Simulation started');
+        } catch (error) {
+            console.error('Simulation failed to start:', error);
+            alert('Error starting simulation. Check console for details.');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ragdoll Physics Simulation</title>
+    <style>
+        body { 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            background: #333; 
+        }
+        canvas { 
+            border: 1px solid white; 
+            background: #000000; 
+        }
+        #controls { 
+            position: absolute; 
+            top: 10px; 
+            left: 10px; 
+            color: white; 
+            font-family: Arial; 
+        }
+        button { 
+            padding: 5px 10px; 
+            margin: 5px; 
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <button onclick="resetSimulation()">Reset (R)</button>
+        <button onclick="toggleSlowMotion()">Slow Motion (S)</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script>
+        // Matter.js setup
+        const { Engine, Render, World, Bodies, Body, Constraint, Mouse, MouseConstraint, Events } = Matter;
+        const engine = Engine.create();
+        engine.gravity.y = 1;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 800;
+        canvas.height = 600;
+        document.body.appendChild(canvas);
+
+        const render = Render.create({
+            canvas: canvas,
+            engine: engine,
+            options: {
+                width: 800,
+                height: 600,
+                wireframes: false,
+                background: '#000000'
+            }
+        });
+
+        // Ground
+        const ground = Bodies.rectangle(400, 590, 800, 20, { 
+            isStatic: true,
+            render: { fillStyle: '#808080' }
+        });
+
+        // Ragdoll creation function
+        function createRagdoll(x, y) {
+            const bodyParts = [];
+            const constraints = [];
+
+            // Head
+            const head = Bodies.circle(x, y, 20, { 
+                render: { fillStyle: '#ff9999' }
+            });
+            bodyParts.push(head);
+
+            // Torso
+            const torso = Bodies.rectangle(x, y + 50, 20, 60, { 
+                render: { fillStyle: '#9999ff' }
+            });
+            bodyParts.push(torso);
+
+            // Upper arms
+            const leftUpperArm = Bodies.rectangle(x - 25, y + 30, 10, 40, { 
+                render: { fillStyle: '#99ff99' }
+            });
+            const rightUpperArm = Bodies.rectangle(x + 25, y + 30, 10, 40, { 
+                render: { fillStyle: '#99ff99' }
+            });
+            bodyParts.push(leftUpperArm, rightUpperArm);
+
+            // Lower arms
+            const leftLowerArm = Bodies.rectangle(x - 25, y + 70, 10, 40, { 
+                render: { fillStyle: '#99ff99' }
+            });
+            const rightLowerArm = Bodies.rectangle(x + 25, y + 70, 10, 40, { 
+                render: { fillStyle: '#99ff99' }
+            });
+            bodyParts.push(leftLowerArm, rightLowerArm);
+
+            // Upper legs
+            const leftUpperLeg = Bodies.rectangle(x - 10, y + 90, 10, 50, { 
+                render: { fillStyle: '#ffff99' }
+            });
+            const rightUpperLeg = Bodies.rectangle(x + 10, y + 90, 10, 50, { 
+                render: { fillStyle: '#ffff99' }
+            });
+            bodyParts.push(leftUpperLeg, rightUpperLeg);
+
+            // Lower legs
+            const leftLowerLeg = Bodies.rectangle(x - 10, y + 140, 10, 50, { 
+                render: { fillStyle: '#ffff99' }
+            });
+            const rightLowerLeg = Bodies.rectangle(x + 10, y + 140, 10, 50, { 
+                render: { fillStyle: '#ffff99' }
+            });
+            bodyParts.push(leftLowerLeg, rightLowerLeg);
+
+            // Constraints (joints)
+            constraints.push(Constraint.create({
+                bodyA: head,
+                bodyB: torso,
+                pointA: { x: 0, y: 20 },
+                pointB: { x: 0, y: -30 },
+                stiffness: 0.9,
+                render: { strokeStyle: '#ffffff' }
+            }));
+            constraints.push(Constraint.create({
+                bodyA: torso,
+                bodyB: leftUpperArm,
+                pointA: { x: -10, y: -20 },
+                pointB: { x: 0, y: -20 },
+                stiffness: 0.9
+            }));
+            constraints.push(Constraint.create({
+                bodyA: torso,
+                bodyB: rightUpperArm,
+                pointA: { x: 10, y: -20 },
+                pointB: { x: 0, y: -20 },
+                stiffness: 0.9
+            }));
+            constraints.push(Constraint.create({
+                bodyA: leftUpperArm,
+                bodyB: leftLowerArm,
+                pointA: { x: 0, y: 20 },
+                pointB: { x: 0, y: -20 },
+                stiffness: 0.9
+            }));
+            constraints.push(Constraint.create({
+                bodyA: rightUpperArm,
+                bodyB: rightLowerArm,
+                pointA: { x: 0, y: 20 },
+                pointB: { x: 0, y: -20 },
+                stiffness: 0.9
+            }));
+            constraints.push(Constraint.create({
+                bodyA: torso,
+                bodyB: leftUpperLeg,
+                pointA: { x: -5, y: 30 },
+                pointB: { x: 0, y: -25 },
+                stiffness: 0.9
+            }));
+            constraints.push(Constraint.create({
+                bodyA: torso,
+                bodyB: rightUpperLeg,
+                pointA: { x: 5, y: 30 },
+                pointB: { x: 0, y: -25 },
+                stiffness: 0.9
+            }));
+            constraints.push(Constraint.create({
+                bodyA: leftUpperLeg,
+                bodyB: leftLowerLeg,
+                pointA: { x: 0, y: 25 },
+                pointB: { x: 0, y: -25 },
+                stiffness: 0.9
+            }));
+            constraints.push(Constraint.create({
+                bodyA: rightUpperLeg,
+                bodyB: rightLowerLeg,
+                pointA: { x: 0, y: 25 },
+                pointB: { x: 0, y: -25 },
+                stiffness: 0.9
+            }));
+
+            return { bodies: bodyParts, constraints: constraints };
+        }
+
+        // Initial ragdoll
+        let ragdoll = createRagdoll(400, 200);
+        World.add(engine.world, [ground, ...ragdoll.bodies, ...ragdoll.constraints]);
+
+        // Mouse interaction
+        const mouse = Mouse.create(render.canvas);
+        const mouseConstraint = MouseConstraint.create(engine, {
+            mouse: mouse,
+            constraint: {
+                stiffness: 0.2,
+                render: { visible: false }
+            }
+        });
+        World.add(engine.world, mouseConstraint);
+        render.mouse = mouse;
+
+        // Slow motion (slower: 0.1x speed)
+        let slowMotion = false;
+        function toggleSlowMotion() {
+            slowMotion = !slowMotion;
+            engine.timing.timeScale = slowMotion ? 0.1 : 1; // Changed from 0.3 to 0.1
+        }
+
+        // Reset simulation
+        function resetSimulation() {
+            World.clear(engine.world);
+            World.add(engine.world, [ground, mouseConstraint]);
+            ragdoll = createRagdoll(400, 200);
+            World.add(engine.world, [...ragdoll.bodies, ...ragdoll.constraints]);
+            engine.timing.timeScale = slowMotion ? 0.1 : 1;
+        }
+
+        // Key press handlers
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'r' || e.key === 'R') resetSimulation();
+            if (e.key === 's' || e.key === 'S') toggleSlowMotion();
+        });
+
+        // Mouse push force
+        Events.on(mouseConstraint, 'mousedown', (event) => {
+            const mousePosition = event.mouse.position;
+            ragdoll.bodies.forEach(body => {
+                const distance = Matter.Vector.magnitude(
+                    Matter.Vector.sub(body.position, mousePosition)
+                );
+                if (distance < 50) {
+                    const force = Matter.Vector.mult(
+                        Matter.Vector.normalise(Matter.Vector.sub(body.position, mousePosition)),
+                        0.05
+                    );
+                    Body.applyForce(body, body.position, force);
+                }
+            });
+        });
+
+        // Run simulation
+        try {
+            Engine.run(engine);
+            Render.run(render);
+            console.log('Simulation started');
+        } catch (error) {
+            console.error('Simulation failed to start:', error);
+            alert('Error starting simulation.');
+        }
+    </script>
+</body>
+</html>

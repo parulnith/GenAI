@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Falling Sand Physics Simulation</title>
+    <style>
+        body { 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            background: #333; 
+        }
+        canvas { 
+            border: 1px solid white; 
+            background: #000000; 
+        }
+        #controls { 
+            position: absolute; 
+            top: 10px; 
+            left: 10px; 
+            color: white; 
+            font-family: Arial; 
+        }
+        button, input, select { 
+            padding: 5px; 
+            margin: 5px; 
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <button onclick="resetSimulation()">Reset (R)</button>
+        <select id="material">
+            <option value="sand">Sand</option>
+            <option value="water">Water</option>
+            <option value="stone">Stone</option>
+            <option value="eraser">Eraser</option>
+        </select>
+        <label>Wind: <input type="range" id="wind" min="-0.01" max="0.01" step="0.001" value="0"></label>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script>
+        // Matter.js setup
+        const { Engine, Render, World, Bodies, Body, Mouse, MouseConstraint, Events } = Matter;
+        const engine = Engine.create();
+        engine.gravity.y = 1;
+
+        // Canvas setup
+        const canvas = document.createElement('canvas');
+        canvas.width = 800;
+        canvas.height = 600;
+        document.body.appendChild(canvas);
+
+        // Renderer
+        const render = Render.create({
+            canvas: canvas,
+            engine: engine,
+            options: {
+                width: 800,
+                height: 600,
+                wireframes: false,
+                background: '#000000',
+                showAngleIndicator: false
+            }
+        });
+
+        // Boundaries
+        const ground = Bodies.rectangle(400, 590, 800, 20, { isStatic: true, render: { fillStyle: '#808080' } });
+        const leftWall = Bodies.rectangle(0, 300, 20, 600, { isStatic: true, render: { fillStyle: '#808080' } });
+        const rightWall = Bodies.rectangle(800, 300, 20, 600, { isStatic: true, render: { fillStyle: '#808080' } });
+        World.add(engine.world, [ground, leftWall, rightWall]);
+
+        // Material properties
+        const materials = {
+            sand: { radius: 3, restitution: 0.1, friction: 0.5, color: '#f4a261' },
+            water: { radius: 2, restitution: 0.3, friction: 0.05, color: '#4a90e2' },
+            stone: { radius: 5, restitution: 0.2, friction: 0.8, color: '#666666' }
+        };
+
+        // Mouse interaction
+        const mouse = Mouse.create(render.canvas);
+        const mouseConstraint = MouseConstraint.create(engine, {
+            mouse: mouse,
+            constraint: { stiffness: 0.2, render: { visible: false } }
+        });
+        World.add(engine.world, mouseConstraint);
+        render.mouse = mouse;
+
+        // Particle spawning
+        let isSpawning = false;
+        Events.on(mouseConstraint, 'mousedown', () => { isSpawning = true; });
+        Events.on(mouseConstraint, 'mouseup', () => { isSpawning = false; });
+        Events.on(engine, 'beforeUpdate', () => {
+            if (isSpawning) {
+                const mousePosition = mouse.position;
+                const materialType = document.getElementById('material').value;
+                
+                if (materialType === 'eraser') {
+                    engine.world.bodies.forEach(body => {
+                        if (!body.isStatic && Matter.Vector.magnitude(
+                            Matter.Vector.sub(body.position, mousePosition)
+                        ) < 20) {
+                            World.remove(engine.world, body);
+                        }
+                    });
+                } else {
+                    const material = materials[materialType];
+                    for (let i = 0; i < 5; i++) { // Spawn 5 particles per frame
+                        const x = mousePosition.x + (Math.random() - 0.5) * 10;
+                        const y = mousePosition.y + (Math.random() - 0.5) * 10;
+                        const particle = Bodies.circle(x, y, material.radius, {
+                            restitution: material.restitution,
+                            friction: material.friction,
+                            render: { fillStyle: material.color }
+                        });
+                        World.add(engine.world, particle);
+                    }
+                }
+            }
+        });
+
+        // Wind force
+        let windForce = 0;
+        document.getElementById('wind').addEventListener('input', (e) => {
+            windForce = parseFloat(e.target.value);
+        });
+
+        Events.on(engine, 'beforeUpdate', () => {
+            engine.world.bodies.forEach(body => {
+                if (!body.isStatic) {
+                    Body.applyForce(body, body.position, { x: windForce, y: 0 });
+                }
+            });
+        });
+
+        // Reset simulation
+        function resetSimulation() {
+            World.clear(engine.world);
+            World.add(engine.world, [ground, leftWall, rightWall, mouseConstraint]);
+            windForce = parseFloat(document.getElementById('wind').value);
+        }
+
+        // Key press handler
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'r' || e.key === 'R') resetSimulation();
+        });
+
+        // Particle collision for piling
+        Events.on(engine, 'collisionStart', (event) => {
+            event.pairs.forEach(pair => {
+                const bodyA = pair.bodyA;
+                const bodyB = pair.bodyB;
+                if (!bodyA.isStatic && !bodyB.isStatic) {
+                    // Reduce velocity slightly to help form piles
+                    Body.setVelocity(bodyA, { x: bodyA.velocity.x * 0.9, y: bodyA.velocity.y * 0.9 });
+                    Body.setVelocity(bodyB, { x: bodyB.velocity.x * 0.9, y: bodyB.velocity.y * 0.9 });
+                }
+            });
+        });
+
+        // Run simulation
+        try {
+            Engine.run(engine);
+            Render.run(render);
+            console.log('Simulation started');
+        } catch (error) {
+            console.error('Simulation failed to start:', error);
+            alert('Error starting simulation. Check console for details.');
+        }
+    </script>
+</body>
+</html>

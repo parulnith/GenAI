@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Water Molecule Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+        canvas {
+            border: 1px solid black;
+        }
+        .controls {
+            margin-top: 20px;
+        }
+        label {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <div class="controls">
+        <label for="tempSlider">Temperature (0-100°C): </label>
+        <input type="range" id="tempSlider" min="0" max="100" value="25">
+        <span id="tempValue">25°C</span>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const tempSlider = document.getElementById('tempSlider');
+        const tempValue = document.getElementById('tempValue');
+
+        // Water molecule class
+        class WaterMolecule {
+            constructor(x, y) {
+                this.o = { x, y }; // Oxygen position
+                this.h1 = { x: x + 10, y: y + 10 }; // Hydrogen 1
+                this.h2 = { x: x - 10, y: y + 10 }; // Hydrogen 2
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 2,
+                    y: (Math.random() - 0.5) * 2
+                };
+                this.bonds = []; // Hydrogen bonds to other molecules
+            }
+
+            update(temperature) {
+                // Temperature affects movement speed
+                const speedFactor = temperature / 50;
+                this.o.x += this.velocity.x * speedFactor;
+                this.o.y += this.velocity.y * speedFactor;
+
+                // Update hydrogen positions relative to oxygen
+                const angle = Math.atan2(this.velocity.y, this.velocity.x);
+                this.h1.x = this.o.x + 10 * Math.cos(angle + Math.PI / 4);
+                this.h1.y = this.o.y + 10 * Math.sin(angle + Math.PI / 4);
+                this.h2.x = this.o.x + 10 * Math.cos(angle - Math.PI / 4);
+                this.h2.y = this.o.y + 10 * Math.sin(angle - Math.PI / 4);
+
+                // Bounce off walls
+                if (this.o.x < 0 || this.o.x > canvas.width) this.velocity.x *= -1;
+                if (this.o.y < 0 || this.o.y > canvas.height) this.velocity.y *= -1;
+            }
+
+            draw() {
+                // Draw oxygen (white)
+                ctx.beginPath();
+                ctx.arc(this.o.x, this.o.y, 8, 0, Math.PI * 2);
+                ctx.fillStyle = 'white';
+                ctx.fill();
+                ctx.strokeStyle = 'black';
+                ctx.stroke();
+
+                // Draw hydrogens (red)
+                ctx.beginPath();
+                ctx.arc(this.h1.x, this.h1.y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = 'red';
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.arc(this.h2.x, this.h2.y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = 'red';
+                ctx.fill();
+                ctx.stroke();
+
+                // Draw covalent bonds
+                ctx.beginPath();
+                ctx.moveTo(this.o.x, this.o.y);
+                ctx.lineTo(this.h1.x, this.h1.y);
+                ctx.moveTo(this.o.x, this.o.y);
+                ctx.lineTo(this.h2.x, this.h2.y);
+                ctx.strokeStyle = 'black';
+                ctx.stroke();
+            }
+        }
+
+        // Simulation parameters
+        const molecules = [];
+        const numMolecules = 20;
+        const bondDistance = 30; // Max distance for hydrogen bonding
+
+        // Initialize molecules
+        for (let i = 0; i < numMolecules; i++) {
+            const x = Math.random() * (canvas.width - 20) + 10;
+            const y = Math.random() * (canvas.height - 20) + 10;
+            molecules.push(new WaterMolecule(x, y));
+        }
+
+        // Update temperature display
+        tempSlider.addEventListener('input', () => {
+            tempValue.textContent = `${tempSlider.value}°C`;
+        });
+
+        // Hydrogen bond management
+        function updateBonds(temperature) {
+            const bondStrength = 1 - temperature / 100; // Higher temp = weaker bonds
+            molecules.forEach(mol => mol.bonds = []);
+
+            for (let i = 0; i < molecules.length; i++) {
+                for (let j = i + 1; j < molecules.length; j++) {
+                    const mol1 = molecules[i];
+                    const mol2 = molecules[j];
+
+                    // Check distances between H and O atoms
+                    const pairs = [
+                        [mol1.h1, mol2.o],
+                        [mol1.h2, mol2.o],
+                        [mol2.h1, mol1.o],
+                        [mol2.h2, mol1.o]
+                    ];
+
+                    pairs.forEach(([h, o]) => {
+                        const dx = h.x - o.x;
+                        const dy = h.y - o.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < bondDistance && Math.random() < bondStrength) {
+                            mol1.bonds.push({ from: h, to: o });
+                            mol2.bonds.push({ from: h, to: o });
+                        }
+                    });
+                }
+            }
+        }
+
+        // Draw hydrogen bonds
+        function drawBonds() {
+            ctx.strokeStyle = 'rgba(0, 0, 255, 0.5)'; // Blue dashed lines
+            ctx.setLineDash([5, 5]);
+            molecules.forEach(mol => {
+                mol.bonds.forEach(bond => {
+                    ctx.beginPath();
+                    ctx.moveTo(bond.from.x, bond.from.y);
+                    ctx.lineTo(bond.to.x, bond.to.y);
+                    ctx.stroke();
+                });
+            });
+            ctx.setLineDash([]);
+        }
+
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const temperature = parseInt(tempSlider.value);
+
+            // Update molecules
+            molecules.forEach(mol => mol.update(temperature));
+            updateBonds(temperature);
+
+            // Draw everything
+            molecules.forEach(mol => mol.draw());
+            drawBonds();
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
