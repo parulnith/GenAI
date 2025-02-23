@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domino Chain Reaction Simulation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            text-align: center;
+            background: #222;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            background: black;
+            display: block;
+            margin: auto;
+        }
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+        }
+        button, input {
+            padding: 5px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="controls">
+    <button onclick="resetSimulation()">Reset 🔄</button>
+    <label>Domino Spacing: <input type="range" id="spacing" min="30" max="80" step="5" value="50"></label>
+    <button onclick="placeDominoes()">Place Dominoes 🁣</button>
+</div>
+
+<script>
+const { Engine, Render, Runner, World, Bodies, Mouse, MouseConstraint, Events, Body } = Matter;
+
+// Engine setup
+const engine = Engine.create();
+engine.world.gravity.y = 1;
+const world = engine.world;
+
+// Canvas setup
+const canvas = document.createElement('canvas');
+canvas.width = 800;
+canvas.height = 600;
+document.body.appendChild(canvas);
+
+// Renderer setup
+const render = Render.create({
+    canvas: canvas,
+    engine: engine,
+    options: {
+        width: 800,
+        height: 600,
+        wireframes: false,
+        background: '#000000'
+    }
+});
+Render.run(render);
+const runner = Runner.create();
+Runner.run(runner, engine);
+
+// Ground
+const ground = Bodies.rectangle(400, 590, 800, 40, { isStatic: true, render: { fillStyle: 'gray' } });
+World.add(world, ground);
+
+// Array to store dominoes
+let dominoes = [];
+let spacing = 50; // Default spacing
+
+// Function to create and place dominoes
+function placeDominoes() {
+    // Remove existing dominoes
+    dominoes.forEach(domino => World.remove(world, domino));
+    dominoes = [];
+
+    let startX = 100;
+    let startY = 500;
+    let count = Math.floor((canvas.width - 200) / spacing); // Fit within screen width
+
+    for (let i = 0; i < count; i++) {
+        let x = startX + i * spacing;
+        let domino = Bodies.rectangle(x, startY, 10, 50, {
+            render: { fillStyle: 'white' },
+            density: 0.005,
+            restitution: 0.2
+        });
+        dominoes.push(domino);
+        World.add(world, domino);
+    }
+}
+
+// Mouse interaction setup
+const mouse = Mouse.create(render.canvas);
+const mouseConstraint = MouseConstraint.create(engine, {
+    mouse: mouse,
+    constraint: {
+        stiffness: 0.2,
+        render: { visible: false }
+    }
+});
+World.add(world, mouseConstraint);
+render.mouse = mouse;
+
+// Event listener for dragging dominoes
+Events.on(mouseConstraint, 'mousedown', (event) => {
+    let mousePosition = event.mouse.position;
+    dominoes.forEach(domino => {
+        let distance = Matter.Vector.magnitude(Matter.Vector.sub(domino.position, mousePosition));
+        if (distance < 20) {
+            // Apply a small force to the domino to start the chain reaction
+            Body.applyForce(domino, domino.position, { x: 0.05, y: -0.05 });
+        }
+    });
+});
+
+// Reset simulation
+function resetSimulation() {
+    World.clear(world);
+    Engine.clear(engine);
+    
+    // Recreate environment
+    World.add(world, ground);
+    placeDominoes();
+    World.add(world, mouseConstraint);
+}
+
+// Adjust spacing dynamically
+document.getElementById('spacing').addEventListener('input', (e) => {
+    spacing = parseInt(e.target.value);
+    placeDominoes();
+});
+
+// Initial domino placement
+placeDominoes();
+</script>
+
+</body>
+</html>
