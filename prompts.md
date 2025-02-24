@@ -10,6 +10,7 @@ Create an interactive simulation that shows water molecules forming and breaking
 ## Ragdoll
 Create a ragdoll physics simulation using Matter.js and HTML5 Canvas in JavaScript. The simulation features a stick-figure-like humanoid composed of rigid bodies connected by joints, standing on a flat surface. When a force is applied, the ragdoll falls, tumbles, and reacts realistically to gravity and obstacles. Implement mouse interactions to push the ragdoll, a reset button, and a slow-motion mode for detailed physics observation
 
+<<<<<<< HEAD
 ## Dominos
 Create a domino chain reaction simulation using Matter.js in JavaScript. The 800x600 canvas allows users to place and arrange dominoes, then knock them over with realistic collisions. Implement mouse interactions to move dominoes, adjustable spacing, and a reset button
 
@@ -17,3 +18,7 @@ Create a domino chain reaction simulation using Matter.js in JavaScript. The 800
 
 ## Fireworks
 Create a fireworks rocket explosion simulation using p5.js and GSAP in JavaScript. The 800x600 canvas allows kids to click to launch rockets that explode into colorful sparks. Implement smooth animations, randomized explosion effects, and color-changing particles
+=======
+## Domino2
+Make a domino chain game in one HTML file using Matter.js with a big black screen and gray floor. Let me click to add white dominoes, drag them around, or remove them with a right-click. They should fall like real dominoes. Add a slider to change how far apart they are, buttons to place a row, start the chain, and reset, plus a counter for fallen ones. Keep it fun and simple!
+>>>>>>> 17c6c85db40c50ad3666a759332150e808fe1559
