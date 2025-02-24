@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domino Chain Game</title>
+    <style>
+        body {
+            margin: 0;
+            text-align: center;
+            background: #222;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            background: black;
+            display: block;
+            margin: auto;
+            border: 1px solid white;
+        }
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        #stats {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        button, input {
+            padding: 5px;
+            margin: 5px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+</head>
+<body>
+    <div id="controls">
+        <button onclick="resetGame()">Reset</button>
+        <button onclick="placeRow()">Place Row</button>
+        <button onclick="startChain()">Start Chain</button>
+        <label>Spacing: <input type="range" id="spacing" min="15" max="60" value="25"></label>
+        <span id="spacing-value">25</span>px
+    </div>
+    <div id="stats">Fallen: <span id="fallenCount">0</span></div>
+
+    <script>
+        const { Engine, Render, Runner, World, Bodies, Mouse, MouseConstraint, Events, Body } = Matter;
+
+        // Set up the game world
+        const engine = Engine.create();
+        engine.gravity.y = 1;
+        const world = engine.world;
+
+        // Create the big screen
+        const canvas = document.createElement('canvas');
+        canvas.width = 800;
+        canvas.height = 600;
+        document.body.appendChild(canvas);
+        const render = Render.create({
+            canvas: canvas,
+            engine: engine,
+            options: { width: 800, height: 600, background: '#000000' }
+        });
+        Render.run(render);
+        Runner.run(Runner.create(), engine);
+
+        // Add the gray floor
+        const ground = Bodies.rectangle(400, 590, 800, 40, { 
+            isStatic: true, 
+            render: { fillStyle: 'gray' },
+            friction: 0.6
+        });
+        World.add(world, ground);
+
+        // Keep track of dominoes and fallen count
+        let dominoes = [];
+        let spacing = 25;
+        let fallenCount = 0;
+
+        // Make a domino
+        function makeDomino(x, y) {
+            const domino = Bodies.rectangle(x, y, 10, 50, {
+                render: { fillStyle: 'white' },
+                friction: 0.6,
+                restitution: 0.05,
+                density: 0.02
+            });
+            dominoes.push(domino);
+            World.add(world, domino);
+            return domino;
+        }
+
+        // Place a row of dominoes
+        function placeRow() {
+            dominoes.forEach(domino => World.remove(world, domino));
+            dominoes = [];
+            fallenCount = 0;
+            updateFallen();
+
+            const startX = 100;
+            const y = 575;
+            const count = Math.floor((canvas.width - 200) / spacing);
+            for (let i = 0; i < count; i++) {
+                makeDomino(startX + i * spacing, y);
+            }
+        }
+
+        // Mouse fun
+        const mouse = Mouse.create(render.canvas);
+        const mouseConstraint = MouseConstraint.create(engine, {
+            mouse: mouse,
+            constraint: { stiffness: 0.2, render: { visible: false } }
+        });
+        World.add(world, mouseConstraint);
+        render.mouse = mouse;
+
+        // Click to add, drag, or remove
+        Events.on(mouseConstraint, 'mousedown', (event) => {
+            const pos = event.mouse.position;
+            if (!mouseConstraint.body && event.mouse.button === 0) {
+                makeDomino(pos.x, pos.y);
+            } else if (mouseConstraint.body && event.mouse.button === 2) {
+                const domino = mouseConstraint.body;
+                dominoes = dominoes.filter(d => d !== domino);
+                World.remove(world, domino);
+            } else if (mouseConstraint.body && event.mouse.button === 0) {
+                Body.applyForce(mouseConstraint.body, pos, { x: 0.15, y: 0 });
+            }
+        });
+        canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        // Start the chain
+        function startChain() {
+            if (dominoes.length > 0) {
+                Body.applyForce(dominoes[0], dominoes[0].position, { x: 0.15, y: 0 });
+            }
+        }
+
+        // Reset the game
+        function resetGame() {
+            World.clear(world);
+            dominoes = [];
+            fallenCount = 0;
+            updateFallen();
+            World.add(world, [ground, mouseConstraint]);
+            placeRow();
+        }
+
+        // Count fallen dominoes
+        Events.on(engine, 'collisionStart', (event) => {
+            event.pairs.forEach(pair => {
+                if ((pair.bodyA === ground && dominoes.includes(pair.bodyB) && Math.abs(pair.bodyB.angle) > Math.PI / 4) ||
+                    (pair.bodyB === ground && dominoes.includes(pair.bodyA) && Math.abs(pair.bodyA.angle) > Math.PI / 4)) {
+                    fallenCount++;
+                    updateFallen();
+                }
+            });
+        });
+
+        function updateFallen() {
+            document.getElementById('fallenCount').textContent = fallenCount;
+        }
+
+        // Spacing slider
+        const spacingSlider = document.getElementById('spacing');
+        spacingSlider.addEventListener('input', (e) => {
+            spacing = parseInt(e.target.value);
+            document.getElementById('spacing-value').textContent = spacing;
+            placeRow();
+        });
+
+        // Start with a row
+        placeRow();
+    </script>
+</body>
+</html>
