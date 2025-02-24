@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fireworks Rocket Explosion</title>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        let rockets = [];
+        let sparks = [];
+        const GRAVITY = 0.2;
+
+        function setup() {
+            createCanvas(800, 600);
+            background(0);
+        }
+
+        function draw() {
+            background(0, 50); // Slight fade for trail effect
+
+            // Update and draw rockets
+            for (let i = rockets.length - 1; i >= 0; i--) {
+                rockets[i].update();
+                rockets[i].show();
+                if (rockets[i].reachedTarget()) {
+                    explode(rockets[i]);
+                    rockets.splice(i, 1);
+                }
+            }
+
+            // Update and draw sparks
+            for (let i = sparks.length - 1; i >= 0; i--) {
+                sparks[i].update();
+                sparks[i].show();
+                if (sparks[i].isDone()) {
+                    sparks.splice(i, 1);
+                }
+            }
+        }
+
+        function mousePressed() {
+            if (mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height) {
+                rockets.push(new Rocket(mouseX, mouseY));
+            }
+        }
+
+        class Rocket {
+            constructor(targetX, targetY) {
+                this.pos = createVector(width / 2, height);
+                this.vel = p5.Vector.sub(createVector(targetX, targetY), this.pos)
+                    .normalize()
+                    .mult(5); // Speed of rocket
+                this.target = createVector(targetX, targetY);
+                this.color = { r: 255, g: 255, b: 255 }; // White rocket
+            }
+
+            update() {
+                this.pos.add(this.vel);
+            }
+
+            show() {
+                push();
+                translate(this.pos.x, this.pos.y);
+                rotate(this.vel.heading());
+                fill(this.color.r, this.color.g, this.color.b);
+                noStroke();
+                rect(-5, -2, 10, 4); // Simple rocket shape
+                pop();
+            }
+
+            reachedTarget() {
+                return this.pos.dist(this.target) < 5;
+            }
+        }
+
+        function explode(rocket) {
+            let sparkCount = random(50, 100);
+            let baseHue = random(360);
+            for (let i = 0; i < sparkCount; i++) {
+                sparks.push(new Spark(rocket.pos.x, rocket.pos.y, baseHue));
+            }
+        }
+
+        class Spark {
+            constructor(x, y, baseHue) {
+                this.pos = createVector(x, y);
+                let angle = random(TWO_PI);
+                let speed = random(2, 5);
+                this.vel = createVector(cos(angle) * speed, sin(angle) * speed);
+                this.size = random(2, 6);
+                this.hue = baseHue + random(-30, 30); // Variation around base hue
+                this.life = 1; // Opacity from 1 to 0
+                this.animate();
+            }
+
+            animate() {
+                gsap.to(this, {
+                    life: 0,
+                    hue: this.hue + random(-60, 60), // Color shift
+                    duration: random(1, 2),
+                    ease: "power2.out",
+                    onUpdate: () => {
+                        // GSAP updates properties smoothly
+                    }
+                });
+            }
+
+            update() {
+                this.vel.y += GRAVITY; // Apply gravity
+                this.pos.add(this.vel);
+                this.vel.mult(0.98); // Slight friction
+            }
+
+            show() {
+                push();
+                colorMode(HSB);
+                fill(this.hue, 100, 100, this.life);
+                noStroke();
+                ellipse(this.pos.x, this.pos.y, this.size);
+                pop();
+            }
+
+            isDone() {
+                return this.life <= 0 || this.pos.y > height;
+            }
+        }
+
+        // Instructions
+        console.log("Click anywhere on the canvas to launch a firework!");
+    </script>
+</body>
+</html>
