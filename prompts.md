@@ -9,3 +9,6 @@ Create an interactive simulation that shows water molecules forming and breaking
 
 ## Ragdoll
 Create a ragdoll physics simulation using Matter.js and HTML5 Canvas in JavaScript. The simulation features a stick-figure-like humanoid composed of rigid bodies connected by joints, standing on a flat surface. When a force is applied, the ragdoll falls, tumbles, and reacts realistically to gravity and obstacles. Implement mouse interactions to push the ragdoll, a reset button, and a slow-motion mode for detailed physics observation
+
+## Domino2
+Make a domino chain game in one HTML file using Matter.js with a big black screen and gray floor. Let me click to add white dominoes, drag them around, or remove them with a right-click. They should fall like real dominoes. Add a slider to change how far apart they are, buttons to place a row, start the chain, and reset, plus a counter for fallen ones. Keep it fun and simple!
