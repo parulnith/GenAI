@@ -18,3 +18,5 @@ Make a domino chain game in one HTML file using Matter.js with a big black scree
 ## Fireworks
 Create a fireworks rocket explosion simulation using p5.js and GSAP in JavaScript. The 800x600 canvas allows kids to click to launch rockets that explode into colorful sparks. Implement smooth animations, randomized explosion effects, and color-changing particles
 
+## Kaleidoscope
+Make a small interactive kaleidoscope for a web browser. Mouse movements create colorful, mirrored patterns. Add controls for speed and color. Keep it smooth and fading on a dark background

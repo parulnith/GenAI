@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Kaleidoscope</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+    }
+    #controls {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+      color: white;
+      font-family: sans-serif;
+    }
+    #controls label {
+      font-size: 14px;
+    }
+    #controls input {
+      margin-left: 5px;
+      margin-right: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <label>Speed:
+      <input type="range" id="speed" min="1" max="20" value="5">
+    </label>
+    <label>Color:
+      <input type="color" id="color" value="#ff0000">
+    </label>
+  </div>
+  <canvas id="canvas"></canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    const speedControl = document.getElementById('speed');
+    const colorControl = document.getElementById('color');
+
+    let speed = parseFloat(speedControl.value);
+    let baseColor = colorControl.value;
+
+    speedControl.addEventListener('input', () => {
+      speed = parseFloat(speedControl.value);
+    });
+    colorControl.addEventListener('input', () => {
+      baseColor = colorControl.value;
+    });
+
+    let lastX = canvas.width / 2;
+    let lastY = canvas.height / 2;
+
+    canvas.addEventListener('mousemove', (e) => {
+      const x = e.clientX;
+      const y = e.clientY;
+      drawKaleidoscope(x, y, lastX, lastY);
+      lastX = x;
+      lastY = y;
+    });
+
+    function drawKaleidoscope(x, y, lx, ly) {
+      const numSegments = 12;
+      const angle = (Math.PI * 2) / numSegments;
+      for (let i = 0; i < numSegments; i++) {
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate(angle * i);
+        ctx.beginPath();
+        ctx.moveTo(lx - canvas.width / 2, ly - canvas.height / 2);
+        ctx.lineTo(x - canvas.width / 2, y - canvas.height / 2);
+        ctx.strokeStyle = baseColor;
+        ctx.lineWidth = speed;
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    function fadeCanvas() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      requestAnimationFrame(fadeCanvas);
+    }
+    fadeCanvas();
+  </script>
+</body>
+</html>
