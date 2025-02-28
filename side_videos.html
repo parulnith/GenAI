@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Side-by-Side Videos with Centered Labels</title>
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .video-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        .video-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        video {
+            width: 45vw;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .divider {
+            width: 2px;
+            height: 100%;
+            background-color: white;
+        }
+
+        .label {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="video-container">
+        <div class="video-wrapper">
+            <video autoplay loop muted>
+                <source src="videos/claude-3.7-sonnet.mov" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="label">Claude-3.7-Sonnet</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="video-wrapper">
+            <video autoplay loop muted>
+                <source src="videos/o3-mini-high.mov" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="label">o3-mini-High</div>
+        </div>
+    </div>
+
+</body>
+</html>
