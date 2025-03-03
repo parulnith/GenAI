@@ -51,6 +51,7 @@ source venv/bin/activate
 
 ### Step 4: Set up API Key
 1. Obtain a Google AI Studio API key from Google AI Studio
-2. Create a .env file in the project root:
-GEMINI_API_KEY=your_api_key_here
+2. Set a environment variable
+```
+export GEMINI_API_KEY=your_api_key_here```
 
