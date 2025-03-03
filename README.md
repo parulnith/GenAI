@@ -1,1 +1,1 @@
-This repository contains some of my experiemnts in the GenAI Space. 
+This repository contains some of my experiments in the GenAI Space. 
