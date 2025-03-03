@@ -1,0 +1,3 @@
+google-genai>=0.1.0
+gradio>=5.20.0
+python-dotenv>=1.0.0
