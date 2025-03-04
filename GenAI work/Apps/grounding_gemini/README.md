@@ -2,19 +2,14 @@
 
 A chatbot application that leverages Google's Gemini model with web search capabilities to provide real-time, factually grounded responses.
 
-![Gemini Grounding](https://img.shields.io/badge/Gemini-Grounded-blue)
-![Python](https://img.shields.io/badge/Python-3.9+-green)
 
 ## 🎬 Demo
 
 <div align="center">
-  <p><i>Demo video coming soon! Stay tuned to see the chatbot in action.</i></p>
-  <!-- Replace with: 
-  <video width="100%" controls>
-    <source src="path/to/demo-video.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-  -->
+  <a href="https://www.youtube.com/watch?v=3xuiWs0tB2U">
+    <img src="https://img.youtube.com/vi/3xuiWs0tB2U/0.jpg" alt="Demo Video" width="600">
+  </a>
+  <p><i>Click the image above to watch the demo on YouTube</i></p>
 </div>
 
 ## 🌟 Features
