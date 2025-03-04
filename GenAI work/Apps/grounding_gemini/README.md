@@ -20,33 +20,10 @@ A chatbot application that leverages Google's Gemini model with web search capab
 - **User-friendly Interface**: Clean UI with responsive design
 
 
-## 🛠️ Setup Instructions
-
-### Step 1: Clone the Repository
-
-```bash
-git clone https://github.com/your-username/grounding_gemini.git
-cd grounding_gemini
-```
-
-
-### Step 2: Create and Activate a Virtual Environment
-For Mac/Linux:
-```bash
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-source venv/bin/activate
-```
-
-### Step 3: Install Dependencies
-```pip install -r requirements.txt```
-
-
-### Step 4: Set up API Key
-1. Obtain a Google AI Studio API key from Google AI Studio
+### Set up API Key
+1. Obtain a GEMINI API key from Google AI Studio
 2. Set a environment variable
 ```
-export GEMINI_API_KEY=your_api_key_here```
+export GEMINI_API_KEY=your_api_key_here
+```
 
