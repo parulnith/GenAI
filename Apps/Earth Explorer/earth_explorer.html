@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earth Explorer Adventure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="env.js"></script>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.128/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.128/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', Arial, sans-serif;
+            overflow: hidden;
+            background-color: #f7fafd;
+        }
+        .overlay-title {
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: fit-content;
+            min-width: 220px;
+            max-width: 700px;
+            text-align: center;
+            font-size: 2.1em;
+            font-family: 'Inter', Arial, sans-serif;
+            font-weight: 900;
+            letter-spacing: 0.03em;
+            color: #fff;
+            background: linear-gradient(90deg, #651fff 0%, #00e6ff 100%);
+            border-radius: 36px;
+            box-shadow: none;
+            padding: 10px 36px;
+            z-index: 20;
+            pointer-events: none;
+        }
+        .overlay-reset {
+            position: absolute;
+            left: 50%;
+            bottom: 16px;
+            transform: translateX(-50%);
+            z-index: 20;
+            pointer-events: auto;
+            box-shadow: 0 2px 8px rgba(26,35,126,0.10);
+        }
+        .modern-btn {
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 1.2em;
+            font-weight: 900;
+            color: #fff;
+            background: linear-gradient(90deg, #651fff 0%, #00e6ff 100%);
+            border: none;
+            border-radius: 36px;
+            padding: 14px 34px;
+            cursor: pointer;
+        }
+        #cesiumContainer {
+            width: 100%;
+            height: 100vh;
+            min-height: 420px;
+            background: #e3eafc;
+            box-shadow: 0 4px 24px rgba(26,35,126,0.07);
+            position: relative;
+            overflow: hidden;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        #place-info {
+            position: absolute;
+            top: 32px;
+            left: 32px;
+            background: #fff;
+            padding: 22px 28px 18px 28px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(26,35,126,0.08);
+            max-width: 360px;
+            min-width: 220px;
+            text-align: left;
+            border: 1.5px solid #c5cae9;
+            z-index: 13;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 1.08em;
+            display: none;
+            color: #263238;
+        }
+        #place-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #283593;
+            margin-bottom: 8px;
+        }
+        #place-fact {
+            margin-bottom: 12px;
+            color: #1565c0;
+        }
+        #place-quiz label {
+            font-weight: 600;
+            color: #3949ab;
+        }
+        #place-quiz select {
+            font-size: 1em;
+            margin: 5px;
+            border-radius: 6px;
+            border: 1.5px solid #c5cae9;
+            background: #f7fafd;
+        }
+        #animal-quiz button {
+            background: #ffd700;
+            border: none;
+            border-radius: 7px;
+            padding: 6px 16px;
+            font-size: 1em;
+            color: #0288d1;
+            font-weight: bold;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+        #animal-treasure {
+            font-size: 2em;
+            margin-top: 16px;
+            display: none;
+        }
+        #ui {
+            position: absolute;
+            right: 24px;
+            bottom: 24px;
+            background: linear-gradient(135deg, #ffe082 0%, #b388ff 100%);
+            padding: 14px 18px 12px 18px;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(80,60,180,0.15);
+            max-width: 260px;
+            min-width: 140px;
+            text-align: left;
+            border: 2px solid #ff7eb3;
+            z-index: 12;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 1.07em;
+            overflow: hidden;
+            color: #3d155f;
+            word-break: break-word;
+            line-height: 1.35;
+        }
+        #ui .sparkle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0; top: 0;
+            pointer-events: none;
+            z-index: 1;
+            background: url('data:image/svg+xml;utf8,<svg width="100" height="60" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="2" fill="%23fff" opacity=".7"/><circle cx="80" cy="40" r="1.5" fill="%23fff" opacity=".5"/><circle cx="50" cy="20" r="1.2" fill="%23fff" opacity=".6"/><circle cx="30" cy="50" r="1.7" fill="%23fff" opacity=".4"/></svg>');
+            animation: sparkle-move 3s linear infinite;
+        }
+        @keyframes sparkle-move {
+            0% { background-position: 0 0; }
+            100% { background-position: 100px 60px; }
+        }
+        #ui .ui-heading {
+            font-size: 1.25em;
+            font-weight: 700;
+            color: #5e35b1;
+            margin-bottom: 8px;
+            letter-spacing: 0.02em;
+        }
+        #score {
+            font-size: 1.35em;
+            font-weight: 900;
+            color: #ff4081;
+            background: #fffde7;
+            border-radius: 14px;
+            padding: 10px 20px 10px 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px #ffecb3aa;
+            display: inline-block;
+            letter-spacing: 0.01em;
+        }
+        #instructions {
+            font-size: 1.18em;
+            color: #ffd600;
+            font-weight: 900;
+            margin-bottom: 10px;
+            letter-spacing: 0.02em;
+        }
+        #ui ul {
+            list-style: none;
+            padding: 0 0 0 2px;
+            margin: 0 0 0 0;
+        }
+        #ui ul li {
+            font-size: 1.13em;
+            margin-bottom: 11px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #651fff;
+            font-weight: 800;
+            text-shadow: 0 2px 10px #fff7, 0 1px 2px #0002;
+        }
+        #ui ul li .icon {
+            font-size: 1.3em;
+            display: inline-block;
+            margin-right: 3px;
+        }
+        #ui ul {
+            margin: 0 0 0 18px;
+            padding: 0;
+        }
+        #ui li {
+            font-size: 1.05em;
+            color: #0288d1;
+            margin-bottom: 7px;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive, Arial, sans-serif;
+        }
+        #ui #instructions {
+            font-size: 1.1em;
+            color: #ff7043;
+            margin-bottom: 10px;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive, Arial, sans-serif;
+            font-weight: bold;
+            background: none;
+            border: none;
+            padding: 0;
+            box-shadow: none;
+            display: block;
+        }
+        #score {
+            font-size: 22px;
+            color: #d81b60;
+            margin-bottom: 10px;
+        }
+        #instructions {
+            font-size: 1.3em;
+            color: #ff7043;
+            margin-bottom: 18px;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive, Arial, sans-serif;
+            font-weight: bold;
+            background: #fffbe7;
+            border-radius: 12px;
+            border: 2px dashed #ffd700;
+            padding: 10px 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            display: inline-block;
+        }
+        #fact {
+            font-size: 13px;
+            color: #388e3c;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            color: #d32f2f;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 5px;
+            max-width: 80%;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="cesiumContainer">
+        <div id="game-title" class="overlay-title">Earth Explorer</div>
+        <button id="resetViewBtn" class="modern-btn overlay-reset">Reset View</button>
+    </div>
+    <div id="loading">Loading Globe Explorer...</div>
+    <div id="error"></div>
+    <div id="place-info">
+        <div id="place-name"></div>
+        <div id="place-fact"></div>
+        <div id="place-quiz">
+            <div id="place-clue"></div>
+            <input id="place-answer-input" type="text" placeholder="Type your answer here..." autocomplete="off" style="margin-top:8px;padding:6px 10px;border-radius:6px;border:1.5px solid #c5cae9;font-size:1em;">
+            <button id="place-answer-submit">Submit</button>
+            <div id="place-feedback" style="margin-top:7px;min-height:22px;font-weight:bold;"></div>
+        </div>
+        <div id="place-treasure"></div>
+    </div>
+    <div id="ui">
+        <div id="score">Places Discovered: 0/9</div>
+        <div id="instructions">🧭 <b>How to Play:</b></div>
+        <ul>
+            <li>🌍 <b>Spin the globe to explore</li>
+            <li>📍 <b>Find the red pins on the map</li>
+            <li>👀 <b>Click a pin to get a clue about a famous place</li>
+            <li>🔎 <b>Zoom in to discover the place and learn a fun fact</li>
+            <li>💎 <b>Collect all places to win!</li>
+        </ul>
+    </div>
+    <script>
+        // Add Reset View button functionality (attached after viewer is created)
+        function setupResetButton(viewer) {
+            document.getElementById('resetViewBtn').onclick = function() {
+                viewer.camera.flyTo({
+                    destination: Cesium.Cartesian3.fromDegrees(0, 0, 20000000),
+                    orientation: {
+                        heading: Cesium.Math.toRadians(0),
+                        pitch: Cesium.Math.toRadians(-90),
+                        roll: 0.0
+                    },
+                    duration: 1.5
+                });
+                // Hide the quiz/info box
+                document.getElementById('place-info').style.display = 'none';
+            };
+        }
+
+        async function initializeCesium() {
+            try {
+                // INSERT YOUR CESIUM ION API KEY HERE
+                Cesium.Ion.defaultAccessToken = CESIUM_ION_TOKEN;
+                // Only keep Bing for satellite view (no OSM)
+                window.currentImagery = 'default';
+                // Only use Cesium Ion Imagery Provider (assetId: 3) as the sole imagery layer
+                const viewer = new Cesium.Viewer('cesiumContainer', {
+                    baseLayerPicker: false,
+                    timeline: false,
+                    animation: false,
+                    geocoder: false,
+                    homeButton: false,
+                    sceneModePicker: true,
+                    navigationHelpButton: true
+                });
+
+                window.viewer = viewer;
+                setupResetButton(viewer);
+
+
+                // Add imagery provider as a layer (do not zoom to it, use default Cesium view)
+                try {
+                  const imageryLayer = viewer.imageryLayers.addImageryProvider(
+                    await Cesium.IonImageryProvider.fromAssetId(3)
+                  );
+                  // Do not zoom to the layer
+                } catch (error) {
+                  console.log(error);
+                }
+
+
+                // Fallback settings to ensure globe visibility
+                viewer.scene.globe.enableLighting = true;
+                viewer.scene.globe.depthTestAgainstTerrain = true;
+
+                // Hide loading text
+                document.getElementById('loading').style.display = 'none';
+
+                // --- INTERACTIVE GAME LOGIC ---
+                const scoreDisplay = document.getElementById('score');
+                let placesFound = 0;
+                const totalPlaces = 9;
+                const places = [
+                    { name: "Sahara Desert", longitude: 13.0, latitude: 23.5, clue: "This is the largest hot desert in the world, stretching across North Africa. Zoom in to see endless sand dunes and almost no vegetation. What is this place?", fact: "The Sahara Desert covers over 9 million square kilometers!" },
+                    { name: "Great Barrier Reef", longitude: 147.7, latitude: -18.3, clue: "This natural wonder is the world’s largest coral reef system, found off the coast of Australia. Zoom in to see turquoise waters and coral islands. What is this place?", fact: "The Great Barrier Reef is home to thousands of species of marine life." },
+                    { name: "Amazon Rainforest", longitude: -60.0, latitude: -3.0, clue: "This is the world’s largest tropical rainforest, covering much of northern South America. Zoom in to see a thick green jungle and winding rivers. What is this place?", fact: "The Amazon Rainforest produces 20% of the world’s oxygen." },
+                    { name: "Mount Everest", longitude: 86.9250, latitude: 27.9881, clue: "This is the highest mountain on Earth, located in the Himalayas. Zoom in to see snow-capped peaks towering above the clouds. What is this place?", fact: "Mount Everest is 8,848 meters (29,029 ft) tall!" },
+                    { name: "Antarctica", longitude: 0.0, latitude: -82.8628, clue: "This is the coldest, driest, and windiest , continent, covered almost entirely by ice. Zoom in to see a vast white landscape. What is this place?", fact: "Antarctica holds 60% of the world’s fresh water in its ice." },
+                    { name: "Grand Canyon", longitude: -112.1401, latitude: 36.0544, clue: "This steep-sided gorge in Arizona, USA, is carved by a river over millions of years. Zoom in to see colorful rock layers and a deep canyon. What is this place?", fact: "The Grand Canyon is 446 km long and up to 1,857 meters deep." },
+                    { name: "Great Wall of China", longitude: 117.236, latitude: 40.6769, clue: "This is a man-made structure stretching thousands of kilometers across northern China. Zoom in to spot a long wall winding over hills. What is this place?", fact: "The Great Wall of China is over 21,000 km (13,000 miles) long!" },
+                    { name: "Niagara Falls", longitude: -79.074, latitude: 43.0799, clue: "These are three massive waterfalls on the border of Canada and the USA. Zoom in to see roaring water and mist. What is this place?", fact: "More than 3,000 tons of water flow over Niagara Falls every second." },
+                    { name: "Uluru (Ayers Rock)", longitude: 131.0369, latitude: -25.3444, clue: "This giant red sandstone rock is found in the heart of Australia’s Outback. Zoom in to see a huge, isolated rock rising from flat land. What is this place?", fact: "Uluru is sacred to the local Anangu people and is 348 meters tall." }
+                ];
+                scoreDisplay.textContent = `Places Discovered: 0/${totalPlaces}`;
+                // Add place markers as billboards
+                const pinDataUrl = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><text x="0" y="52" font-size="56">📍</text></svg>';
+                const entities = places.map(place => {
+                    return viewer.entities.add({
+                        position: Cesium.Cartesian3.fromDegrees(place.longitude, place.latitude, 1000),
+                        billboard: {
+                            image: pinDataUrl,
+                            width: 48,
+                            height: 48,
+                            verticalOrigin: Cesium.VerticalOrigin.BOTTOM
+                        },
+                        name: "Zoom",
+                        properties: {
+                            clue: place.clue,
+                            placename: place.name,
+                            fact: place.fact
+                        }
+                    });
+                });
+                // Pin click handler
+                const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+                handler.setInputAction((click) => {
+                    const pickedObject = viewer.scene.pick(click.position);
+                    if (Cesium.defined(pickedObject) && pickedObject.id) {
+                        const entity = pickedObject.id;
+                        // Show place info box on left
+                        const clue = entity.properties.clue.getValue();
+                        const placename = entity.properties.placename.getValue();
+                        const fact = entity.properties.fact.getValue();
+                        const placeInfoDiv = document.getElementById('place-info');
+                        const placeNameDiv = document.getElementById('place-name');
+                        const placeFactDiv = document.getElementById('place-fact');
+                        const placeQuizDiv = document.getElementById('place-quiz');
+                        const placeTreasureDiv = document.getElementById('place-treasure');
+                        if (placeInfoDiv) placeInfoDiv.style.display = 'block';
+                        if (placeNameDiv) placeNameDiv.textContent = `📍 Mystery Place`;
+                        if (placeFactDiv) placeFactDiv.textContent = '';
+                        if (placeTreasureDiv) placeTreasureDiv.style.display = 'none';
+                        if (placeQuizDiv) {
+                            placeQuizDiv.innerHTML = `
+                                <div id="place-clue"><label>${clue}</label><br><span style='color:#0288d1;font-size:1em;'>Type your answer or zoom in for help!</span></div>
+                                <input id="place-answer-input" type="text" placeholder="Type your answer here..." autocomplete="off" style="margin-top:8px;padding:6px 10px;border-radius:6px;border:1.5px solid #c5cae9;font-size:1em;">
+                                <button id="place-answer-submit">Submit</button>
+                                <div id="place-feedback" style="margin-top:7px;min-height:22px;font-weight:bold;"></div>
+                            `;
+                        }
+                        document.getElementById('place-answer-input').value = '';
+                        document.getElementById('place-answer-input').disabled = false;
+                        document.getElementById('place-answer-submit').disabled = false;
+                        document.getElementById('place-feedback').textContent = '';
+                        if (placeFactDiv) placeFactDiv.textContent = '';
+                        if (placeTreasureDiv) placeTreasureDiv.style.display = 'none';
+                        let tries = 0;
+                        let answered = false;
+                        let points = 0;
+                        let zoomRevealed = false;
+                        let allowZoomAttempt = false;
+                        // Enhanced answer checking logic
+                        function revealPlace(correct, revealByZoom = false) {
+                            answered = true;
+                            document.getElementById('place-answer-input').disabled = true;
+                            document.getElementById('place-answer-submit').disabled = true;
+                            if (placeNameDiv) placeNameDiv.textContent = `📍 ${placename}`;
+                            if (placeFactDiv) placeFactDiv.textContent = fact;
+                            if (placeTreasureDiv) {
+                                placeTreasureDiv.textContent = correct ? '💎 You found a hidden treasure!' : '';
+                                placeTreasureDiv.style.display = 'block';
+                            }
+                            if (correct) {
+                                placesFound++;
+                                if (scoreDisplay) scoreDisplay.textContent = `Places Discovered: ${placesFound}/${totalPlaces}`;
+                                setTimeout(() => {
+                                    viewer.entities.remove(entity);
+                                    if (placeInfoDiv) placeInfoDiv.style.display = 'none';
+                                    if (placesFound === totalPlaces) {
+                                        setTimeout(() => {
+                                            if (placeInfoDiv) placeInfoDiv.style.display = 'block';
+                                            if (placeNameDiv) placeNameDiv.textContent = '🌍 Globe Explorer!';
+                                            if (placeFactDiv) placeFactDiv.textContent = "You found all the hidden places!";
+                                            document.getElementById('place-clue').innerHTML = '';
+                                            if (placeTreasureDiv) {
+                                                placeTreasureDiv.textContent = '🏆';
+                                                placeTreasureDiv.style.display = 'block';
+                                            }
+                                        }, 800);
+                                    }
+                                }, 1800);
+                            } else if (revealByZoom) {
+                                document.getElementById('place-feedback').textContent = `The answer is: ${placename}. ${fact}`;
+                            } else {
+                                document.getElementById('place-feedback').textContent = `The answer is: ${placename}. ${fact}`;
+                            }
+                        }
+                        function checkAnswer() {
+                            if (answered) return;
+                            const userAns = document.getElementById('place-answer-input').value.trim().toLowerCase();
+                            const correctAns = placename.trim().toLowerCase();
+                            if (!zoomRevealed) tries++;
+                            if (userAns === correctAns) {
+                                if (!zoomRevealed) {
+                                    points = tries === 1 ? 40 : tries === 2 ? 30 : tries === 3 ? 20 : 0;
+                                } else {
+                                    points = 10;
+                                }
+                                document.getElementById('place-feedback').textContent = `🎉 Correct! You earned ${points} points!`;
+                                if (placeNameDiv) placeNameDiv.textContent = `📍 ${placename}`;
+                                revealPlace(true);
+                            } else {
+                                if (!zoomRevealed && tries < 3) {
+                                    document.getElementById('place-feedback').textContent = `❌ Try again!`;
+                                    document.getElementById('place-answer-input').value = '';
+                                } else if (!zoomRevealed && tries === 3) {
+                                    // Show Zoom for Hint button
+                                    allowZoomAttempt = true;
+                                    document.getElementById('place-feedback').innerHTML = `❌ Out of tries! <button id='zoom-hint-btn' style='margin-left:8px;padding:5px 12px;border-radius:8px;background:#00e6ff;color:#fff;font-weight:bold;border:none;cursor:pointer;'>Zoom in for a hint!</button>`;
+                                    document.getElementById('place-answer-input').disabled = true;
+                                    document.getElementById('place-answer-submit').disabled = true;
+                                    document.getElementById('zoom-hint-btn').onclick = function() {
+                                        document.getElementById('place-feedback').textContent = '🔎 Zoom in to the location to reveal the answer!';
+                                        document.getElementById('place-answer-input').value = '';
+                                        // Wait for zoom event
+                                    };
+                                } else if (zoomRevealed) {
+                                    // Final attempt after zoom
+                                    document.getElementById('place-answer-input').disabled = false;
+                                    document.getElementById('place-answer-submit').disabled = false;
+                                    allowZoomAttempt = false;
+                                    if (tries > 3) {
+                                        // This is the final attempt after zoom
+                                        if (userAns === correctAns) {
+                                            points = 10;
+                                            document.getElementById('place-feedback').textContent = `🎉 Correct! You earned ${points} points!`;
+                                            if (placeNameDiv) placeNameDiv.textContent = `📍 ${placename}`;
+                                            revealPlace(true);
+                                        } else {
+                                            document.getElementById('place-feedback').textContent = `The answer is: ${placename}. ${fact}`;
+                                            if (placeFactDiv) placeFactDiv.textContent = `${placename}: ${fact}`;
+                                            document.getElementById('place-answer-input').disabled = true;
+                                            document.getElementById('place-answer-submit').disabled = true;
+                                            points = 0;
+                                            // Keep info box visible until Reset View is pressed
+                                            // Do NOT call revealPlace(false) here to avoid overwriting the answer
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        document.getElementById('place-answer-submit').onclick = checkAnswer;
+                        document.getElementById('place-answer-input').onkeydown = function(e){ if(e.key==='Enter') checkAnswer(); };
+                        // Zoom-to-reveal for help (if not answered)
+                        function checkZoom() {
+                            try {
+                                const cameraHeight = viewer.camera.positionCartographic.height;
+                                if (!answered && allowZoomAttempt && !zoomRevealed && cameraHeight < 2000000) {
+                                    zoomRevealed = true;
+                                    document.getElementById('place-feedback').textContent = `🔍 You unlocked a final try! Type your answer and press Submit.`;
+                                    document.getElementById('place-answer-input').value = '';
+                                    document.getElementById('place-answer-input').disabled = false;
+                                    document.getElementById('place-answer-submit').disabled = false;
+                                    document.getElementById('place-answer-submit').style.pointerEvents = 'auto';
+                                    document.getElementById('place-answer-submit').style.opacity = '1';
+                                    document.getElementById('place-answer-input').focus();
+                                }
+                            } catch (err) { console.error(err); }
+                        }
+                        viewer.camera.moveEnd.addEventListener(checkZoom);
+                    }
+                }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+                // --- END INTERACTIVE GAME LOGIC ---
+            } catch (e) {
+                console.error('Error initializing Cesium:', e);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').innerText = 'An error occurred while loading Cesium.';
+                document.getElementById('error').style.display = 'block';
+            }
+        }
+
+        window.onload = initializeCesium;
+    </script>
+</body>
+</html>
