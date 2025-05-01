@@ -325,7 +325,7 @@
         async function initializeCesium() {
             try {
                 // INSERT YOUR CESIUM ION API KEY HERE
-                Cesium.Ion.defaultAccessToken = CESIUM_ION_TOKEN;
+                Cesium.Ion.defaultAccessToken = 'CESIUM_ION_TOKEN';
                 // Only keep Bing for satellite view (no OSM)
                 window.currentImagery = 'default';
                 // Only use Cesium Ion Imagery Provider (assetId: 3) as the sole imagery layer

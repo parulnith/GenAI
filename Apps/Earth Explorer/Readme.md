@@ -35,40 +35,24 @@
   Track how many places you’ve discovered and your total score.
 - **Treasure Rewards**  
   Find hidden treasures for correct answers and completing the game.
-- **Celebratory Animations**  
-  Enjoy fun feedback and animations when you answer correctly or finish the game.
 
-### 4. Kid-Friendly Design
 
-- **Colorful UI**  
-  Bright, playful colors and big, clear fonts for easy reading.
-- **Simple Controls**  
-  Easy-to-use buttons and input fields.
-- **Instant Feedback**  
-  Immediate responses to your answers and actions.
-
-### 5. Reset & Replay
+### 4. Reset 
 
 - **Reset View**  
   Instantly return to the starting globe view at any time.
-- **Replayable**  
-  Try again to beat your score or discover all places!
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Clone this repository
+1. Clone this repository
+2. Open the game
 
-```bash
-git clone https://github.com/your-username/your-repo-name.git
-```
-### 2. Open the game
-
-Open `cesium_new.html` in your browser.  
+Open `earth_explorer.html` in your browser.  
 No build step required — everything loads via CDN.
 
-### 3. Set your Cesium Ion Access Token
+3. Set your Cesium Ion Access Token below
 
 To get your Cesium token:
 
@@ -76,10 +60,10 @@ To get your Cesium token:
 - Go to your profile → **Access Tokens** → **Create Token**.
 - Name your token (e.g., `EarthExplorerToken`) and keep the default settings.
 - Click **Create Token** and copy the token string.
-- In your `cesium_new.html` file, find this line:
+- In your `earth_explorer.html` file, find this line:
 
 ```javascript
-Cesium.Ion.defaultAccessToken = 'placeholder';
+Cesium.Ion.defaultAccessToken = YOUR_CESIUM_ION_TOKEN;
 ```
 
 ## 🛠️ Built With
@@ -90,3 +74,4 @@ HTML, CSS, JavaScript — for UI and game logic
 ## 📚 Educational Value
 Earth Explorer helps elementary and middle school students learn world geography in a hands-on way.
 Teachers can use it in class, or students can explore at home while having fun.
+You can add more clues or adjust them based on your preferences.
