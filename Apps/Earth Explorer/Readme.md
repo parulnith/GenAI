@@ -14,10 +14,6 @@ Want to see Earth Explorer in action?
 
 ![Demo](Earth_Explorer.gif)
 
-
----
-
-
 ---
 
 ## 🌍 Features
