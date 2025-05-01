@@ -58,7 +58,7 @@ Want to see Earth Explorer in action?
 1. Clone this repository
 
 
-2. Set your Cesium Ion Access Token below. To get your Cesium token:
+2. Set your Cesium Ion Access Token below(Free for research and education). To get your Cesium token:
 
 - Visit [https://ion.cesium.com/](https://ion.cesium.com/) and **sign up** or **log in**.
 - Go to your profile → **Access Tokens** → **Create Token**.
