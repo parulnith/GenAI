@@ -60,7 +60,7 @@ Want to see Earth Explorer in action?
 
 2. Set your Cesium Ion Access Token below. To get your Cesium token:
 
-- Visit [https://cesium.com](https://cesium.com) and **sign up** or **log in**.
+- Visit [https://ion.cesium.com/](https://ion.cesium.com/) and **sign up** or **log in**.
 - Go to your profile → **Access Tokens** → **Create Token**.
 - Name your token (e.g., `EarthExplorerToken`) and keep the default settings.
 - Click **Create Token** and copy the token string.
