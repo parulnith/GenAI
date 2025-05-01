@@ -7,6 +7,19 @@
 
 ---
 
+## 🎮 Demo
+
+Want to see Earth Explorer in action?  
+[Check out the demo clip I shared on Twitter](https://x.com/pandeyparul/status/1917578603845542365) or watch the gif below:
+
+![Demo](Earth_Explorer.gif)
+
+
+---
+
+
+---
+
 ## 🌍 Features
 
 ### 1. Explore a 3D Globe
