@@ -47,14 +47,9 @@
 ## 🚀 Getting Started
 
 1. Clone this repository
-2. Open the game
 
-Open `earth_explorer.html` in your browser.  
-No build step required — everything loads via CDN.
 
-3. Set your Cesium Ion Access Token below
-
-To get your Cesium token:
+2. Set your Cesium Ion Access Token below. To get your Cesium token:
 
 - Visit [https://cesium.com](https://cesium.com) and **sign up** or **log in**.
 - Go to your profile → **Access Tokens** → **Create Token**.
@@ -63,13 +58,13 @@ To get your Cesium token:
 - In your `earth_explorer.html` file, find this line:
 
 ```javascript
-Cesium.Ion.defaultAccessToken = YOUR_CESIUM_ION_TOKEN;
+Cesium.Ion.defaultAccessToken = 'YOUR_CESIUM_ION_TOKEN';
 ```
+2. Open the game
 
-## 🛠️ Built With
-CesiumJS — for 3D globe rendering
+Open `earth_explorer.html` in your browser.  
+No build step required — everything loads via CDN.
 
-HTML, CSS, JavaScript — for UI and game logic
 
 ## 📚 Educational Value
 Earth Explorer helps elementary and middle school students learn world geography in a hands-on way.
