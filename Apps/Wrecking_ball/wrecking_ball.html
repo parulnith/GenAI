@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>MediaPipe Wrecking Ball & Block Stacker</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #canvasContainer {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.6);
+            overflow: hidden;
+            background-color: #333;
+        }
+        #videoInput {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            transform: scaleX(-1);
+        }
+        #handGestureOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvasContainer">
+        <video id="videoInput" autoplay playsinline></video>
+        <canvas id="handGestureOverlay"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script>
+        const videoElement = document.getElementById('videoInput');
+        const canvasContainer = document.getElementById('canvasContainer');
+        const handGestureOverlayCanvas = document.getElementById('handGestureOverlay');
+        const handGestureOverlayCtx = handGestureOverlayCanvas.getContext('2d');
+
+        const RENDER_WIDTH = 800;
+        const RENDER_HEIGHT = 600;
+        handGestureOverlayCanvas.width = RENDER_WIDTH;
+        handGestureOverlayCanvas.height = RENDER_HEIGHT;
+
+        const MIRROR_COORDS_FOR_DISPLAY_AND_PHYSICS = true;
+        let handWorldX = 0, handWorldY = 0;
+        let isPinching = false;
+        let grabbedBody = null;
+        let grabConstraint = null;
+        let blockGrabOffset = {x: 0, y: 0};
+
+        const PINCH_THRESHOLD_PX = 45;
+        const GRAB_RADIUS_BALL_PX = 70;
+        const GRAB_RADIUS_BLOCK_PX = 45;
+        const GRAB_STIFFNESS = 0.4;
+        const LANDMARK_RADIUS = 12;
+        const LANDMARK_COLOR = '#00BCD4';
+
+        const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+        hands.setOptions({
+            maxNumHands: 1,
+            modelComplexity: 1,
+            minDetectionConfidence: 0.65,
+            minTrackingConfidence: 0.65
+        });
+
+        const { Engine, Render, Runner, Composites, Composite, Constraint, Bodies, Body, Events, Vector, Bounds } = Matter;
+
+        var Example = Example || {};
+        Example.wreckingBallAndBlocks = function() {
+            var engine = Engine.create(), world = engine.world;
+            var render = Render.create({
+                element: canvasContainer,
+                engine: engine,
+                options: {
+                    width: RENDER_WIDTH,
+                    height: RENDER_HEIGHT,
+                    wireframes: false,
+                    background: 'transparent',
+                    showAngleIndicator: false
+                }
+            });
+            if (render.canvas) {
+                 render.canvas.style.position = 'absolute';
+                 render.canvas.style.top = '0';
+                 render.canvas.style.left = '0';
+                 render.canvas.style.zIndex = '1';
+            }
+            Render.run(render);
+            var runner = Runner.create();
+            Runner.run(runner, engine);
+
+            var rows = 12; // Taller tower
+            var blockHeight = 45;
+            var blockWidth = 45;
+            var stackStartX = RENDER_WIDTH * 0.65;
+            var yy = RENDER_HEIGHT - 15 - blockHeight * rows;
+
+            var stack = Composites.stack(stackStartX, yy, 5, rows, 0, 0, function(x, y) {
+                return Bodies.rectangle(x, y, blockWidth, blockHeight, {
+                    render: {
+                        fillStyle: '#27ae60',
+                        strokeStyle: '#fff',   // White boundary
+                        lineWidth: 2           // Make boundary visible
+                    },
+                    friction: 0.7,
+                    restitution: 0.05
+                });
+            });
+
+            var ball = Bodies.circle(RENDER_WIDTH * 0.25, RENDER_HEIGHT * 0.65, 40, {
+                density: 0.04,
+                frictionAir: 0.005,
+                render: { fillStyle: '#c0392b' }
+            });
+
+            Composite.add(world, [
+                stack,
+                ball,
+                Constraint.create({
+                    pointA: { x: RENDER_WIDTH * 0.35, y: RENDER_HEIGHT * 0.1 },
+                    bodyB: ball,
+                    stiffness: 0.04,
+                    damping: 0.05,
+                    length: RENDER_HEIGHT * 0.55,
+                    render: { strokeStyle: '#7f8c8d', lineWidth: 2 }
+                }),
+                Bodies.rectangle(RENDER_WIDTH/2, -25, RENDER_WIDTH, 50, { isStatic: true, render: { fillStyle: '#333'} }),
+                Bodies.rectangle(RENDER_WIDTH/2, RENDER_HEIGHT + 25, RENDER_WIDTH, 50, { isStatic: true, render: { fillStyle: '#333'} }),
+                Bodies.rectangle(RENDER_WIDTH + 25, RENDER_HEIGHT/2, 50, RENDER_HEIGHT, { isStatic: true, render: { fillStyle: '#333'} }),
+                Bodies.rectangle(-25, RENDER_HEIGHT/2, 50, RENDER_HEIGHT, { isStatic: true, render: { fillStyle: '#333'} })
+            ]);
+
+            Events.on(engine, 'beforeUpdate', function(event) {
+                if (!ball || !stack || !stack.bodies) return;
+
+                if (isPinching) {
+                    if (!grabbedBody) {
+                        const distToBall = Vector.magnitude(Vector.sub(ball.position, {x: handWorldX, y: handWorldY}));
+                        if (distToBall < ball.circleRadius + GRAB_RADIUS_BALL_PX / 2) {
+                            grabbedBody = ball;
+                            blockGrabOffset = {x:0, y:0};
+                        } else {
+                            for (let i = stack.bodies.length - 1; i >= 0; i--) {
+                                const body = stack.bodies[i];
+                                if (Bounds.contains(body.bounds, {x: handWorldX, y: handWorldY})) {
+                                    const bodyCurrentWidth = body.bounds.max.x - body.bounds.min.x;
+                                    const bodyCurrentHeight = body.bounds.max.y - body.bounds.min.y;
+                                     if (Vector.magnitude(Vector.sub(body.position, {x: handWorldX, y: handWorldY})) < Math.max(bodyCurrentWidth, bodyCurrentHeight) / 1.5 + GRAB_RADIUS_BLOCK_PX) {
+                                        grabbedBody = body;
+                                        blockGrabOffset = Vector.sub({x: handWorldX, y: handWorldY}, body.position);
+                                        Body.setAngularVelocity(grabbedBody, 0);
+                                        Body.setVelocity(grabbedBody, {x:0, y:0});
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (grabbedBody) {
+                            grabConstraint = Constraint.create({
+                                pointA: { x: handWorldX, y: handWorldY },
+                                bodyB: grabbedBody,
+                                pointB: grabbedBody === ball ? {x:0, y:0} : blockGrabOffset,
+                                length: grabbedBody === ball ? 0 : Vector.magnitude(blockGrabOffset) * 0.1,
+                                stiffness: GRAB_STIFFNESS,
+                                damping: 0.15,
+                                render: { visible: false }
+                            });
+                            Composite.add(world, grabConstraint);
+                        }
+                    } else {
+                        if (grabConstraint) {
+                            grabConstraint.pointA.x = handWorldX;
+                            grabConstraint.pointA.y = handWorldY;
+                        }
+                    }
+                } else {
+                    if (grabbedBody && grabConstraint) {
+                        Composite.remove(world, grabConstraint);
+                        grabConstraint = null;
+                        grabbedBody = null;
+                    }
+                }
+            });
+
+            Render.lookAt(render, { min: { x: 0, y: 0 }, max: { x: RENDER_WIDTH, y: RENDER_HEIGHT }});
+            return { engine, runner, render, canvas: render.canvas, stop: () => { Render.stop(render); Runner.stop(runner); camera.stop(); } };
+        };
+
+        function onHandResults(results) {
+            handGestureOverlayCtx.clearRect(0, 0, RENDER_WIDTH, RENDER_HEIGHT);
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                const landmarks = results.multiHandLandmarks[0];
+                const thumbTipLandmark = landmarks[4];
+                const indexTipLandmark = landmarks[8];
+
+                if (thumbTipLandmark && indexTipLandmark) {
+                    let thumbDrawX = thumbTipLandmark.x * RENDER_WIDTH;
+                    let indexDrawX = indexTipLandmark.x * RENDER_WIDTH;
+                    let thumbPhysX = thumbTipLandmark.x * RENDER_WIDTH;
+                    let indexPhysX = indexTipLandmark.x * RENDER_WIDTH;
+
+                    if (MIRROR_COORDS_FOR_DISPLAY_AND_PHYSICS) {
+                        thumbDrawX = (1 - thumbTipLandmark.x) * RENDER_WIDTH;
+                        indexDrawX = (1 - indexTipLandmark.x) * RENDER_WIDTH;
+                        thumbPhysX = (1 - thumbTipLandmark.x) * RENDER_WIDTH;
+                        indexPhysX = (1 - indexTipLandmark.x) * RENDER_WIDTH;
+                    }
+                    const thumbDrawY = thumbTipLandmark.y * RENDER_HEIGHT;
+                    const indexDrawY = indexTipLandmark.y * RENDER_HEIGHT;
+                    const thumbPhysY = thumbTipLandmark.y * RENDER_HEIGHT;
+                    const indexPhysY = indexTipLandmark.y * RENDER_HEIGHT;
+
+                    [ {x: thumbDrawX, y: thumbDrawY}, {x: indexDrawX, y: indexDrawY} ].forEach(p => {
+                        handGestureOverlayCtx.beginPath();
+                        handGestureOverlayCtx.arc(p.x, p.y, LANDMARK_RADIUS, 0, 2 * Math.PI);
+                        handGestureOverlayCtx.fillStyle = LANDMARK_COLOR;
+                        handGestureOverlayCtx.fill();
+                        handGestureOverlayCtx.strokeStyle = 'rgba(255,255,255,0.3)';
+                        handGestureOverlayCtx.lineWidth = 1.5;
+                        handGestureOverlayCtx.stroke();
+                    });
+
+                    const distance = Math.hypot(thumbPhysX - indexPhysX, thumbPhysY - indexPhysY);
+                    handWorldX = (thumbPhysX + indexPhysX) / 2;
+                    handWorldY = (thumbPhysY + indexPhysY) / 2;
+                    isPinching = (distance < PINCH_THRESHOLD_PX);
+                } else {
+                    isPinching = false;
+                }
+            } else {
+                isPinching = false;
+            }
+        }
+        hands.onResults(onHandResults);
+
+        const camera = new Camera(videoElement, {
+            onFrame: async () => {
+                if (videoElement.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA && videoElement.videoWidth > 0) {
+                    await hands.send({image: videoElement});
+                }
+            },
+            width: 640,
+            height: 480
+        });
+        camera.start();
+
+        Example.wreckingBallAndBlocks.title = 'MediaPipe Wrecking Ball & Blocks (Adjusted)';
+        const gameInstance = Example.wreckingBallAndBlocks();
+
+        window.addEventListener('beforeunload', () => {
+            if (gameInstance && gameInstance.stop) gameInstance.stop();
+        });
+    </script>
+</body>
+</html>
