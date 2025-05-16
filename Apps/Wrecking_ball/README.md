@@ -33,5 +33,5 @@ You control a wrecking ball and a stack of blocks using just your hand—no mous
 4. Make a pinching motion in front of your camera to start interacting.
 
 **Connect with me:**  
-[Twitter](https://twitter.com/@parulnith)  
+[Twitter](https://twitter.com/@pandeyparul)  
 [LinkedIn](https://linkedin.com/in/https://www.linkedin.com/in/parulpandeyindia/)
