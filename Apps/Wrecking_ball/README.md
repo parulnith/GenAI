@@ -3,6 +3,15 @@
 This is a simple browser game that uses **MediaPipe Hand Tracking** and **Matter.js physics**.  
 You control a wrecking ball and a stack of blocks using just your hand—no mouse or keyboard needed.
 
+
+## Demo
+
+[Watch the demo on Twitter](https://x.com/pandeyparul/status/1923047993844040013)  
+
+
+![Demo GIF](wreking_ball.gif)  
+
+
 ## How it Works
 
 - **Camera tracks your hand** using MediaPipe.
@@ -24,5 +33,5 @@ You control a wrecking ball and a stack of blocks using just your hand—no mous
 4. Make a pinching motion in front of your camera to start interacting.
 
 **Connect with me:**  
-[Twitter](https://twitter.com/YOUR_TWITTER_HANDLE)  
-[LinkedIn](https://linkedin.com/in/YOUR_LINKEDIN_URL)
+[Twitter](https://twitter.com/@parulnith)  
+[LinkedIn](https://linkedin.com/in/https://www.linkedin.com/in/parulpandeyindia/)
