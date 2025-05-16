@@ -9,7 +9,7 @@ You control a wrecking ball and a stack of blocks using just your hand—no mous
 [Watch the demo on Twitter](https://x.com/pandeyparul/status/1923047993844040013)  
 
 
-![Demo GIF](wreking_ball.gif)  
+![Demo GIF](wrecking_ball.gif)  
 
 
 ## How it Works
