@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How is coal made? An animated story</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E4EAE5; --ink:#1E2923; --ink-2:#4B5B51; --bar:#FFFFFF; --line:#C8D5CC; --accent:#2E6A4E; --accent-ink:#FFFFFF; --focus:#D2692E; --seg:#D6E1D9;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#0F1311; --ink:#E5EDE7; --ink-2:#A6B5AB; --bar:#1A211D; --line:#2D3932; --accent:#7BC29A; --accent-ink:#0F1A14; --focus:#F08A4B; --seg:#222B26; }
+}
+:root[data-theme="dark"]{ --bg:#0F1311; --ink:#E5EDE7; --ink-2:#A6B5AB; --bar:#1A211D; --line:#2D3932; --accent:#7BC29A; --accent-ink:#0F1A14; --focus:#F08A4B; --seg:#222B26; }
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; line-height:1.5}
+.wrap{max-width:1280px; margin:0 auto; padding:16px 16px 32px}
+
+.toolbar{display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center; justify-content:center; margin-bottom:14px}
+.group{display:flex; align-items:center; gap:8px; font-size:.92rem; color:var(--ink-2)}
+.segs{display:flex; background:var(--seg); border-radius:999px; padding:3px}
+.segs button{font:600 .9rem "Fredoka","Trebuchet MS",sans-serif; border:0; background:transparent; color:var(--ink); padding:6px 12px; border-radius:999px; cursor:pointer}
+.segs button[aria-pressed="true"]{background:var(--accent); color:var(--accent-ink)}
+select{font:inherit; font-size:.88rem; color:var(--ink); background:var(--bar); border:1px solid var(--line); border-radius:8px; padding:5px 8px; max-width:210px}
+.segs button:focus-visible,select:focus-visible,.btn:focus-visible,input[type=range]:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+
+.player{margin:0 auto; max-width:1280px}
+.player.v{max-width:max(300px, min(460px, calc(78vh * 9 / 16)))}
+.film{position:relative; width:100%; aspect-ratio:16/9; background:#1B211D; border-radius:14px 14px 0 0; overflow:hidden; outline:none}
+.player.v .film{aspect-ratio:9/16}
+.film:fullscreen{border-radius:0; aspect-ratio:auto; background:#000}
+canvas{display:block; width:100%; height:100%}
+.film:focus-visible{box-shadow:0 0 0 3px var(--focus)}
+
+.cap{
+  position:absolute; left:50%; bottom:4.5%; transform:translateX(-50%);
+  width:max-content; max-width:84%; text-align:center; font-weight:700;
+  font-size:var(--capsize,20px); line-height:1.35; color:#FFFFFF;
+  background:rgba(14,17,15,0.76); padding:.35em .8em; border-radius:.45em;
+  opacity:0; transition:opacity .2s ease; pointer-events:none;
+}
+.player.v .cap{bottom:17%; max-width:90%}
+.cap.show{opacity:1}
+.cap.off{display:none}
+.chapter{
+  position:absolute; left:2.2%; top:3.5%; font-family:"Fredoka","Trebuchet MS",sans-serif; font-weight:600;
+  font-size:calc(var(--capsize,20px) * .72); color:#FFFFFF; background:rgba(14,17,15,0.55);
+  padding:.25em .75em; border-radius:999px; opacity:0; transition:opacity .3s; pointer-events:none;
+}
+.player.v .chapter{left:4%; top:3%}
+.chapter.show{opacity:1}
+.start{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:transparent; border:0; cursor:pointer; padding:0}
+.start span{font:600 calc(var(--capsize,20px) * 1.05) "Fredoka","Trebuchet MS",sans-serif; color:#1B211D; background:#FFD166; padding:.6em 1.4em; border-radius:999px; margin-top:24%; box-shadow:0 6px 0 #C79A2E}
+.player.v .start span{margin-top:70%}
+.start:focus-visible span{outline:3px solid #FFFFFF; outline-offset:3px}
+.start[hidden]{display:none}
+
+.controls{display:flex; align-items:center; gap:10px; background:var(--bar); border:1px solid var(--line); border-top:0; border-radius:0 0 14px 14px; padding:8px 12px}
+.btn{font:600 .95rem "Fredoka","Trebuchet MS",sans-serif; border:0; border-radius:999px; padding:8px 12px; cursor:pointer; background:transparent; color:var(--ink); min-width:44px}
+.btn.primary{background:var(--accent); color:var(--accent-ink); min-width:80px}
+.btn[aria-pressed="false"]{color:var(--ink-2); text-decoration:line-through}
+.scrub{position:relative; flex:1; min-width:0; height:32px; display:flex; align-items:center}
+.ticks{position:absolute; left:0; right:0; top:50%; height:0; pointer-events:none}
+.ticks i{position:absolute; top:-9px; width:3px; height:18px; border-radius:2px; background:var(--ink-2); opacity:.55; transform:translateX(-50%)}
+input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:32px; background:transparent; margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:8px; border-radius:999px; background:linear-gradient(90deg,var(--accent) var(--p,0%),var(--line) var(--p,0%))}
+input[type=range]::-moz-range-track{height:8px; border-radius:999px; background:linear-gradient(90deg,var(--accent) var(--p,0%),var(--line) var(--p,0%))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:20px; height:20px; margin-top:-6px; border-radius:50%; background:#FFFFFF; border:3px solid var(--accent); cursor:grab}
+input[type=range]::-moz-range-thumb{width:14px; height:14px; border-radius:50%; background:#FFFFFF; border:3px solid var(--accent); cursor:grab}
+.clock{font-variant-numeric:tabular-nums; color:var(--ink-2); font-size:.9rem; white-space:nowrap}
+.player.v .clock{display:none}
+@media (max-width:560px){ .clock{display:none} }
+.note{color:var(--ink-2); font-size:.92rem; margin:12px auto 0; max-width:70ch; text-align:center}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="toolbar">
+    <div class="group"><span>Length</span><div class="segs" id="cutSegs"><button type="button" data-cut="short" aria-pressed="true">Under 1 min</button><button type="button" data-cut="full" aria-pressed="false">Full 2:20</button></div></div>
+    <div class="group"><span>Frame</span><div class="segs" id="frameSegs"><button type="button" data-frame="v" aria-pressed="true">Vertical 9:16</button><button type="button" data-frame="w" aria-pressed="false">Wide 16:9</button></div></div>
+    <div class="group" id="narrGroup"><span>Narration</span><div class="segs" id="narrSegs"><button type="button" data-n="on" aria-pressed="true">On</button><button type="button" data-n="off" aria-pressed="false">Off</button></div><select id="voice" aria-label="Narrator voice"></select></div>
+  </div>
+
+  <div class="player v" id="player">
+    <div class="film" id="film" tabindex="0" aria-label="Animated film: How is coal made? Space to play or pause, arrow keys to skip.">
+      <canvas id="scene" role="img" aria-label="Animation"></canvas>
+      <div class="chapter" id="chapter"></div>
+      <div class="cap" id="cap" aria-live="polite"></div>
+      <button class="start" id="start" type="button" aria-label="Play the film"><span>Play the story</span></button>
+    </div>
+    <div class="controls">
+      <button class="btn primary" id="play" type="button">Play</button>
+      <div class="scrub"><div class="ticks" id="ticks"></div><input id="time" type="range" min="0" max="1000" value="0" aria-label="Film timeline"></div>
+      <span class="clock" id="clock">0:00</span>
+      <button class="btn" id="cc" type="button" aria-pressed="true" title="Captions">CC</button>
+      <button class="btn" id="fs" type="button" title="Full screen" aria-label="Full screen">&#x26F6;</button>
+    </div>
+  </div>
+  <p class="note" id="note">Narration uses your browser's built-in voices, so it sounds different on each device. The film waits for the narrator to finish each line.</p>
+</main>
+
+<script>
+(() => {
+'use strict';
+// ================= helpers =================
+const $ = s => document.querySelector(s);
+const TAU = Math.PI * 2;
+let V = true, VW = 900, VH = 1600;
+const P = (w, v) => V ? v : w;
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const ease = x => x * x * (3 - 2 * x);
+const lerp = (a, b, x) => a + (b - a) * x;
+const hs = (i, k = 0) => { const x = Math.sin(i * 127.1 + k * 311.7 + 0.5) * 43758.5453; return x - Math.floor(x); };
+const hexRGB = h => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+const mix = (c1, c2, x) => { const a = hexRGB(c1), b = hexRGB(c2); return `rgb(${a.map((v, i) => Math.round(lerp(v, b[i], clamp(x)))).join(',')})`; };
+const stops = (list, x) => { const s = clamp(x) * (list.length - 1), i = Math.min(list.length - 2, Math.floor(s)); return mix(list[i], list[i + 1], s - i); };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const DISPLAY = 'Fredoka, "Trebuchet MS", sans-serif';
+const canvas = $('#scene'), ctx = canvas.getContext('2d');
+let T = 0;   // film time
+let A = 0;   // ambient clock for idle wobble (keeps moving while narration holds the film)
+
+// ================= primitives =================
+function pill(text, x, y, align = 'left', dark = true, size = 26) {
+  size *= P(1, 1.3);
+  ctx.save(); ctx.font = `600 ${size}px ${DISPLAY}`;
+  const tw = ctx.measureText(text).width, ph = size * 1.55, pw = tw + size * 1.1;
+  const x0 = align === 'right' ? x - pw : align === 'center' ? x - pw / 2 : x;
+  ctx.fillStyle = dark ? 'rgba(20,24,21,0.8)' : 'rgba(255,255,255,0.9)';
+  ctx.beginPath(); ctx.roundRect(x0, y - ph / 2, pw, ph, ph / 2); ctx.fill();
+  ctx.fillStyle = dark ? '#FFFFFF' : '#1E2923'; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  ctx.fillText(text, x0 + size * 0.55, y + 1); ctx.restore();
+}
+function fadePill(lt, a, b, text, x, y, align, dark = true, size = 26) { const al = seg(lt, a, a + 0.4) * (1 - seg(lt, b - 0.4, b)); if (al <= 0) return; ctx.save(); ctx.globalAlpha = al; pill(text, x, y, align, dark, size); ctx.restore(); }
+function arrow(x1, y1, x2, y2, w = 5, head = 16, col = '#FFFFFF') {
+  const a = Math.atan2(y2 - y1, x2 - x1);
+  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2 - Math.cos(a) * head * .8, y2 - Math.sin(a) * head * .8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - Math.cos(a - .5) * head, y2 - Math.sin(a - .5) * head); ctx.lineTo(x2 - Math.cos(a + .5) * head, y2 - Math.sin(a + .5) * head); ctx.closePath(); ctx.fill();
+}
+function atom(x, y, r, col) { ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.beginPath(); ctx.arc(x - r * .3, y - r * .3, r * .35, 0, TAU); ctx.fill(); }
+const C_COL = '#2A2623', O_COL = '#E0533D';
+function co2(x, y, s = 1, rot = 0) { ctx.save(); ctx.translate(x, y); ctx.rotate(rot); atom(-22 * s, 0, 11 * s, O_COL); atom(22 * s, 0, 11 * s, O_COL); atom(0, 0, 14 * s, C_COL); ctx.restore(); }
+function o2(x, y, s = 1, rot = 0) { ctx.save(); ctx.translate(x, y); ctx.rotate(rot); atom(-9 * s, 0, 11 * s, O_COL); atom(9 * s, 0, 11 * s, O_COL); ctx.restore(); }
+function microbe(x, y, r, seed, asleep = false, pulse = 0) {
+  ctx.save(); ctx.translate(x, y); const sc = 1 + .25 * pulse; ctx.scale(sc, sc);
+  const wob = asleep || reduce ? 0 : 1;
+  ctx.fillStyle = asleep ? '#8E8A95' : '#9A62D0'; ctx.beginPath();
+  for (let k = 0; k <= 24; k++) { const a = k / 24 * TAU, rr = r * (1 + .12 * Math.sin(a * 3 + A * 3 * wob + seed)); const px = Math.cos(a) * rr * 1.25, py = Math.sin(a) * rr; k ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
+  ctx.closePath(); ctx.fill(); ctx.fillStyle = '#FFFFFF';
+  if (asleep) { ctx.strokeStyle = '#2A2623'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(-r * .5, -r * .1); ctx.lineTo(-r * .15, -r * .1); ctx.moveTo(r * .15, -r * .1); ctx.lineTo(r * .5, -r * .1); ctx.stroke(); }
+  else { ctx.beginPath(); ctx.arc(-r * .32, -r * .15, r * .22, 0, TAU); ctx.arc(r * .32, -r * .15, r * .22, 0, TAU); ctx.fill(); ctx.fillStyle = '#2A2623'; ctx.beginPath(); ctx.arc(-r * .3, -r * .12, r * .1, 0, TAU); ctx.arc(r * .34, -r * .12, r * .1, 0, TAU); ctx.fill(); }
+  ctx.restore();
+  if (asleep) { ctx.save(); ctx.fillStyle = 'rgba(255,255,255,0.85)'; const bob = reduce ? 0 : Math.sin(A * 2 + seed) * 4; ctx.font = `600 ${r * .9}px ${DISPLAY}`; ctx.fillText('z', x + r * 1.1, y - r * 1.1 + bob); ctx.font = `600 ${r * .65}px ${DISPLAY}`; ctx.fillText('z', x + r * 1.6, y - r * 1.8 + bob); ctx.restore(); }
+}
+function sun(x, y, r) { ctx.fillStyle = 'rgba(255,209,102,0.28)'; ctx.beginPath(); ctx.arc(x, y, r * 1.7, 0, TAU); ctx.fill(); ctx.fillStyle = '#FFD166'; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); }
+function darkBg(c = '#1B211D') { ctx.fillStyle = c; ctx.fillRect(-10, -10, VW + 20, VH + 20); }
+function coalLump(x, y, r, glow) {
+  if (glow > 0) { const g = ctx.createRadialGradient(x, y, r * .3, x, y, r * 3); g.addColorStop(0, `rgba(255,190,90,${.55 * glow})`); g.addColorStop(1, 'rgba(255,190,90,0)'); ctx.fillStyle = g; ctx.fillRect(x - r * 3, y - r * 3, r * 6, r * 6); }
+  const pts = []; for (let k = 0; k < 9; k++) { const a = k / 9 * TAU + .2, rr = r * (.78 + hs(k, 70) * .35); pts.push([x + Math.cos(a) * rr * 1.2, y + Math.sin(a) * rr]); }
+  ctx.fillStyle = '#1D1A18'; ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(...p) : ctx.moveTo(...p)); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.lineWidth = 3; for (let k = 0; k < 9; k += 2) { ctx.beginPath(); ctx.moveTo(x - r * .1, y - r * .1); ctx.lineTo(...pts[k]); ctx.stroke(); }
+  ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.fillRect(x - r * .45, y - r * .45, r * .25, 5); ctx.fillRect(x + r * .2, y - r * .1, r * .18, 4);
+}
+
+// ================= layout-dependent data =================
+let FLOOR = 0.72, PT0 = 0.13, PT1 = 0.028, SWAMP_WATER = 0.47, SEA = 0.10, LTH = 1;
+const LAYERS = [
+  { name: 'sand', th: 0.11, c: '#D8B96E', tex: 'dots' }, { name: 'mud', th: 0.09, c: '#8C857A', tex: 'lines' },
+  { name: 'sand', th: 0.12, c: '#CFAE62', tex: 'dots' }, { name: 'mud', th: 0.09, c: '#7E776D', tex: 'lines' },
+];
+let TREES, LEAF, PHOTO, S6, MIC6, O2W, O2IN;
+function leafPoint(u, v) { const x = (u - .5) * LEAF.len, y = v * LEAF.wid / 2 * Math.sin(Math.PI * clamp(u)); const c = Math.cos(LEAF.rot), s = Math.sin(LEAF.rot); return [LEAF.cx + x * c - y * s, LEAF.cy + x * s + y * c]; }
+function buildLayout() {
+  VW = V ? 900 : 1600; VH = V ? 1600 : 900;
+  FLOOR = P(.72, .64); PT0 = P(.13, .09); PT1 = P(.028, .02); SWAMP_WATER = P(.47, .42); LTH = P(1, .8);
+  const xs = V ? [0.1, 0.3, 0.5, 0.7, 0.9] : [0.05, 0.16, 0.27, 0.39, 0.5, 0.61, 0.72, 0.83, 0.94];
+  TREES = xs.map((x, i) => ({ x: x + (hs(i, 1) - .5) * .03, type: i % 2 ? 'fern' : 'scale', h: i % 2 ? .25 + hs(i, 2) * .07 : .4 + hs(i, 3) * .13, dir: hs(i, 4) < .5 ? -1 : 1, delay: hs(i, 5) * .42, phase: hs(i, 6) * 6 }));
+  LEAF = V ? { cx: 450, cy: 760, len: 900, wid: 400, rot: -1.45 } : { cx: 640, cy: 430, len: 900, wid: 380, rot: -0.12 };
+  PHOTO = Array.from({ length: 9 }, (_, i) => ({ s: .6 + i * .95, y0: V ? 260 + hs(i, 80) * 780 : 180 + hs(i, 80) * 460, entry: leafPoint(.35 + hs(i, 81) * .5, (hs(i, 82) - .5) * 1.2), slot: leafPoint(.12 + i * .085, .28) }));
+  S6 = V ? { water: 450, bottom: 1080 } : { water: 250, bottom: 680 };
+  const mx = V ? [.12, .31, .5, .69, .88] : Array.from({ length: 7 }, (_, i) => (210 + i * 175) / 1600);
+  MIC6 = mx.map((f, i) => [f * VW, S6.bottom - 25 - (i % 2) * 14]);
+  O2W = Array.from({ length: 16 }, (_, i) => ({ x: VW * .16 + hs(i, 100) * VW * .6, y: S6.water + 50 + hs(i, 101) * (S6.bottom - S6.water - 150), te: 3 + Math.pow(hs(i, 102), .9) * 11, mic: i % MIC6.length }));
+  O2IN = [5.5, 7.6, 9.6].map((e, i) => ({ e, x: VW * (.26 + i * .225), te: [11.6, 12.8, 13.9][i], mic: (i * 3 + 1) % MIC6.length }));
+}
+
+// ================= the ground world =================
+function worldModel(w) {
+  const fall = seg(w, .14, .30), peatify = seg(w, .30, .40), sea = ease(seg(w, .38, .45));
+  const sq = ease(seg(w, .58, .82)), today = ease(seg(w, .82, .92)), mine = seg(w, .90, 1);
+  const deps = LAYERS.map((_, i) => ease(seg(w, .42 + i * .04, .42 + (i + 1) * .04)));
+  return { w, fall, peatify, sea, sq, today, mine, deps, seamTh: lerp(ease(fall) * PT0, PT1, sq), compress: lerp(1, .86, sq),
+    heat: ease(seg(w, .56, .64)) * (1 - .7 * ease(seg(w, .84, .92))), press: ease(seg(w, .58, .62)) * (1 - ease(seg(w, .80, .84))) };
+}
+function drawScaleTree(h, w, cs = 1) {
+  ctx.fillStyle = '#6A5436'; ctx.fillRect(-w / 2, -h, w, h);
+  ctx.strokeStyle = 'rgba(0,0,0,0.25)'; ctx.lineWidth = 1.5;
+  for (let y = -h * .08; y > -h; y -= w * 1.3) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w * .35, y - w * .45); ctx.lineTo(0, y - w * .9); ctx.lineTo(-w * .35, y - w * .45); ctx.closePath(); ctx.stroke(); }
+  const branch = (x, y, len, ang, d) => {
+    const ex = x + Math.sin(ang) * len, ey = y - Math.cos(ang) * len;
+    ctx.strokeStyle = '#6A5436'; ctx.lineWidth = Math.max(3, w * .28 * (d + 1)); ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(ex, ey); ctx.stroke();
+    if (d > 0) { branch(ex, ey, len * .72, ang - .5, d - 1); branch(ex, ey, len * .72, ang + .5, d - 1); }
+    else { ctx.fillStyle = '#3E7A37'; ctx.beginPath(); ctx.ellipse(ex, ey, len * .75, len * .55, 0, 0, TAU); ctx.fill(); ctx.fillStyle = '#5E9A45'; ctx.beginPath(); ctx.ellipse(ex - len * .15, ey - len * .15, len * .4, len * .28, 0, 0, TAU); ctx.fill(); }
+  };
+  branch(0, -h, h * .13 * cs, -.45, 2); branch(0, -h, h * .13 * cs, .45, 2);
+}
+function drawFern(h, w, cs = 1) {
+  const th = h * .72, L = h * .42 * cs; ctx.fillStyle = '#5A4630'; ctx.fillRect(-w * .4, -th, w * .8, th); ctx.lineCap = 'round';
+  for (let k = 0; k < 9; k++) { const a = -1.35 + k * (2.7 / 8), ex = Math.sin(a) * L, ey = -th - Math.cos(a) * L * .35 + L * .3, cx = Math.sin(a) * L * .55, cy = -th - L * .55;
+    ctx.strokeStyle = '#3E7A37'; ctx.lineWidth = Math.max(3, w * .55); ctx.beginPath(); ctx.moveTo(0, -th); ctx.quadraticCurveTo(cx, cy, ex, ey); ctx.stroke();
+    ctx.strokeStyle = '#6BA64F'; ctx.lineWidth = Math.max(1.5, w * .18); ctx.beginPath(); ctx.moveTo(0, -th); ctx.quadraticCurveTo(cx, cy, ex, ey); ctx.stroke(); }
+}
+const treeH = tr => tr.h * VH * P(1, .72);
+function drawTree(tr) { tr.type === 'scale' ? drawScaleTree(treeH(tr), P(20, 17), P(1, .8)) : drawFern(treeH(tr), P(20, 17), P(1, .8)); }
+function drawWorld(w, lt) {
+  const m = worldModel(w), floorY = FLOOR * VH, seamTh = m.seamTh * VH, seamTop = floorY - seamTh;
+  const g = ctx.createLinearGradient(0, 0, 0, VH * .55); g.addColorStop(0, mix('#BFD8C0', '#8FC6E8', m.today)); g.addColorStop(1, mix('#E4EBD0', '#D8EEF7', m.today));
+  ctx.fillStyle = g; ctx.fillRect(-300, -300, VW + 600, VH + 600);
+  sun(...P([140, 110], [VW - 120, 170]), 55);
+  TREES.forEach(tr => {
+    const f = ease(seg(m.fall, tr.delay, tr.delay + .45)), alpha = 1 - seg(m.fall, tr.delay + .4, tr.delay + .58); if (alpha <= 0) return;
+    const sway = reduce ? 0 : Math.sin(A * 1.1 + tr.phase) * .016 * (1 - f);
+    ctx.save(); ctx.globalAlpha = alpha; ctx.translate(tr.x * VW, seamTop); ctx.rotate(tr.dir * f * 1.42 + sway); drawTree(tr); ctx.restore();
+  });
+  const waterTop = lerp(SWAMP_WATER, SEA, m.sea) * VH, waterAlpha = 1 - m.today;
+  if (waterAlpha > .01) { ctx.save(); ctx.globalAlpha = .62 * waterAlpha; ctx.fillStyle = mix('#5F9C92', '#3F86A8', m.sea); ctx.beginPath(); ctx.moveTo(-300, VH + 300);
+    for (let x = -300; x <= VW + 300; x += 10) ctx.lineTo(x, waterTop + Math.sin(x * .02 + A * (reduce ? 0 : 1.2)) * 3 * (.3 + m.sea));
+    ctx.lineTo(VW + 300, VH + 300); ctx.closePath(); ctx.fill(); ctx.restore(); }
+  ctx.fillStyle = '#5A4F46'; ctx.fillRect(-300, floorY, VW + 600, VH - floorY + 300);
+  ctx.strokeStyle = 'rgba(255,255,255,0.10)'; ctx.lineWidth = 2;
+  for (let i = 0; i < 50; i++) { const y = floorY + 10 + hs(i, 7) * (VH - floorY - 10), x = hs(i, 8) * VW; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 40 + hs(i, 9) * 110, y); ctx.stroke(); }
+  if (seamTh > .5) {
+    ctx.fillStyle = m.sq > 0 ? stops(['#6B4A2B', '#4A3322', '#1D1A18'], m.sq) : mix('#7A7A36', '#6B4A2B', m.peatify); ctx.fillRect(-300, seamTop, VW + 600, seamTh);
+    ctx.save(); ctx.beginPath(); ctx.rect(-300, seamTop, VW + 600, seamTh); ctx.clip();
+    const ef = Math.max(.001, ease(m.fall)); ctx.lineCap = 'round';
+    for (let i = 0; i < 150; i++) { const dy = hs(i, 10); if (dy > ease(m.fall)) continue;
+      const y = floorY - (dy / ef) * seamTh * .95, x = hs(i, 11) * VW, L = (.02 + hs(i, 12) * .045) * 1600, a = (hs(i, 13) - .5) * .9;
+      ctx.globalAlpha = 1 - .7 * m.peatify - .3 * m.sq; ctx.strokeStyle = mix(hs(i, 14) < .5 ? '#4E8A3A' : '#8A6A3A', '#3B2A1A', Math.max(m.peatify, m.sq)); ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(x - Math.cos(a) * L / 2, y - Math.sin(a) * L / 2); ctx.lineTo(x + Math.cos(a) * L / 2, y + Math.sin(a) * L / 2); ctx.stroke(); }
+    ctx.globalAlpha = 1;
+    const bands = Math.floor(m.peatify * 9) * (1 - m.sq); ctx.strokeStyle = 'rgba(30,20,10,0.35)'; ctx.lineWidth = 2;
+    for (let k = 1; k <= bands; k++) { const y = floorY - (k / 10) * seamTh; ctx.beginPath(); for (let x = -300; x <= VW + 300; x += 20) ctx.lineTo(x, y + Math.sin(x * .01 + k) * 3); ctx.stroke(); }
+    if (m.sq > .6) { ctx.globalAlpha = (m.sq - .6) * 1.6; ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 2; for (let i = 0; i < 24; i++) { const x = hs(i, 15) * VW, y = seamTop + hs(i, 16) * seamTh; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 26, y - 1); ctx.stroke(); } }
+    ctx.restore();
+  }
+  let yb = seamTop, laid = 0; const bandsInfo = [];
+  LAYERS.forEach((L, i) => {
+    const th = L.th * LTH * m.deps[i] * m.compress * VH; if (th < .5) return;
+    const yt = yb - th, ov = laid ? 5 : 0;
+    ctx.fillStyle = mix(L.c, '#5E5850', m.sq * .25); ctx.beginPath(); ctx.moveTo(-300, yb + ov); ctx.lineTo(-300, yt);
+    for (let x = -300; x <= VW + 300; x += 16) ctx.lineTo(x, yt + Math.sin(x * .015 + i * 2) * Math.min(3, th * .15));
+    ctx.lineTo(VW + 300, yb + ov); ctx.closePath(); ctx.fill();
+    ctx.save(); ctx.clip(); ctx.fillStyle = 'rgba(0,0,0,0.16)'; ctx.strokeStyle = 'rgba(0,0,0,0.14)'; ctx.lineWidth = 2;
+    for (let k = 0; k < 90; k++) { const x = hs(k, 20 + i) * VW, y = yt + hs(k, 30 + i) * th; if (L.tex === 'dots') { ctx.beginPath(); ctx.arc(x, y, 1.2 + hs(k, 40 + i) * 2, 0, TAU); ctx.fill(); } else { ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 70, y); ctx.stroke(); } }
+    ctx.restore();
+    if (m.deps[i] > 0 && m.deps[i] < 1 && waterAlpha > .1) { ctx.fillStyle = L.c; for (let k = 0; k < 70; k++) { const y = waterTop + ((hs(k, 50) + lt * .18 * (.5 + hs(k, 51))) % 1) * (yt - waterTop); ctx.beginPath(); ctx.arc(hs(k, 52) * VW, y, 3, 0, TAU); ctx.fill(); } }
+    bandsInfo.push({ name: L.name, y: (yt + yb) / 2, th }); yb = yt; laid++;
+  });
+  const surfaceY = yb;
+  if (m.heat > .01) { const hg = ctx.createLinearGradient(0, VH, 0, seamTop - 120); hg.addColorStop(0, `rgba(235,95,35,${.65 * m.heat})`); hg.addColorStop(1, 'rgba(235,95,35,0)'); ctx.fillStyle = hg; ctx.fillRect(-300, seamTop - 120, VW + 600, VH - seamTop + 420); }
+  const bub = seg(w, .58, .62) * (1 - seg(w, .78, .82));
+  if (bub > 0) for (let k = 0; k < (reduce ? 25 : 80); k++) { const pr = (hs(k, 60) + lt * (.12 + .18 * hs(k, 61))) % 1, y = lerp(seamTop + seamTh / 2, surfaceY, pr), a = bub * (1 - pr);
+    ctx.fillStyle = hs(k, 62) < .3 ? `rgba(235,235,235,${a})` : `rgba(80,165,215,${a})`; ctx.beginPath(); ctx.arc(hs(k, 63) * VW, y, 3 + hs(k, 64) * 3, 0, TAU); ctx.fill(); }
+  if (m.press > .02) { ctx.save(); ctx.globalAlpha = m.press; const bob = reduce ? 0 : Math.sin(A * 3) * 6; const n = P(6, 4);
+    for (let k = 0; k < n; k++) { const x = (k + .5) / n * VW; arrow(x, surfaceY - 120 + bob, x, surfaceY - 18 + bob, 8, 26); } ctx.restore(); }
+  if (m.today > .01) { ctx.save(); ctx.globalAlpha = m.today; ctx.fillStyle = '#5E9A45'; ctx.fillRect(-300, surfaceY - 6, VW + 600, 12); ctx.strokeStyle = '#4E8A3A'; ctx.lineWidth = 3;
+    for (let x = 8; x < VW; x += 18) { ctx.beginPath(); ctx.moveTo(x, surfaceY - 4); ctx.lineTo(x - 4, surfaceY - 16); ctx.moveTo(x, surfaceY - 4); ctx.lineTo(x + 4, surfaceY - 18); ctx.stroke(); } ctx.restore(); }
+  if (m.mine > 0) {
+    const sx = VW * P(.66, .5), sw = 44, depth = ease(seg(m.mine, 0, .35)) * (floorY - surfaceY);
+    ctx.fillStyle = '#26211E'; ctx.fillRect(sx - sw / 2, surfaceY, sw, depth);
+    const tl = ease(seg(m.mine, .35, .65)) * VW * .3;
+    if (tl > 0) { ctx.fillStyle = '#3A322C'; ctx.fillRect(sx - tl, seamTop + seamTh * .2, tl, seamTh * .6); ctx.fillStyle = '#FFD166'; for (let x = sx - 70; x > sx - tl; x -= 110) { ctx.beginPath(); ctx.arc(x, seamTop + seamTh * .5, 3, 0, TAU); ctx.fill(); } }
+    const hh = 130, leg = 55; ctx.strokeStyle = '#3B4A52'; ctx.lineWidth = 8; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(sx - leg, surfaceY); ctx.lineTo(sx, surfaceY - hh); ctx.lineTo(sx + leg, surfaceY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(sx - leg * .5, surfaceY - hh * .5); ctx.lineTo(sx + leg * .5, surfaceY - hh * .5); ctx.stroke(); ctx.beginPath(); ctx.arc(sx, surfaceY - hh, 20, 0, TAU); ctx.stroke();
+    if (depth > 20) { const cy = surfaceY + (reduce ? .5 : .5 + .5 * Math.sin(A * 1.2)) * (depth - 22); ctx.strokeStyle = '#9AA4AA'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(sx, surfaceY - hh); ctx.lineTo(sx, cy); ctx.stroke(); ctx.fillStyle = '#C8CDD0'; ctx.fillRect(sx - 15, cy, 30, 18); }
+    const pile = ease(seg(m.mine, .6, 1));
+    if (pile > 0) { const px = VW * P(.82, .8), pw = 130 * pile, ph = 55 * pile; ctx.fillStyle = '#1D1A18'; ctx.beginPath(); ctx.moveTo(px - pw, surfaceY); ctx.quadraticCurveTo(px, surfaceY - ph * 2, px + pw, surfaceY); ctx.closePath(); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,0.35)'; for (let i = 0; i < 8; i++) ctx.fillRect(px - pw * .6 + i * pw * .16, surfaceY - ph * (.4 + (i % 3) * .2), 5, 3); }
+    if (m.mine > .6) pill('mine', sx - leg - 20, surfaceY - 100, 'right', false, 24);
+    if (m.mine > .85) pill('coal', VW * P(.82, .8) - 36, surfaceY - 110, 'left', true, 24);
+  }
+  if (seamTh > 10) pill(w < .30 ? 'dead plants' : m.sq < .35 ? 'peat' : m.sq < .72 ? 'brown coal' : 'coal', P(110, 80), seamTop + seamTh / 2, 'left', true, 24);
+  bandsInfo.forEach(b => { if (b.th > 36) pill(b.name, VW - P(130, 70), b.y, 'right', false, 22); });
+  return m;
+}
+
+// ================= picture scenes =================
+function drawLeaf() {
+  ctx.fillStyle = '#4F9A45'; ctx.beginPath();
+  for (let k = 0; k <= 40; k++) { const p = leafPoint(k / 40, -1); k ? ctx.lineTo(...p) : ctx.moveTo(...p); }
+  for (let k = 40; k >= 0; k--) ctx.lineTo(...leafPoint(k / 40, 1)); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = '#7DBE5E'; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(...leafPoint(-.08, 0)); ctx.lineTo(...leafPoint(.97, 0)); ctx.stroke();
+  ctx.lineWidth = 4; for (let k = 1; k < 8; k++) { const u = k / 8; ctx.beginPath(); ctx.moveTo(...leafPoint(u, 0)); ctx.lineTo(...leafPoint(u + .07, -.8)); ctx.moveTo(...leafPoint(u, 0)); ctx.lineTo(...leafPoint(u + .07, .8)); ctx.stroke(); }
+}
+function scPhoto(lt) {
+  const g = ctx.createLinearGradient(0, 0, 0, VH); g.addColorStop(0, '#CFE5F0'); g.addColorStop(1, '#EAF3E3'); ctx.fillStyle = g; ctx.fillRect(0, 0, VW, VH);
+  const [sx, sy] = P([1420, 120], [VW - 130, 170]); sun(sx, sy, P(80, 70));
+  ctx.save(); ctx.globalAlpha = (.35 + .25 * Math.sin(A * 3)) * seg(lt, .3, 1.2);
+  for (let k = 0; k < 5; k++) { const p = leafPoint(.35 + k * .13, -.3); arrow(sx - 60 - k * 20, sy + 70 + k * 18, p[0] + 40, p[1] - 40, 6, 20, '#F2B33D'); } ctx.restore();
+  drawLeaf();
+  const placed = []; PHOTO.forEach(m => { if (lt >= m.s + 3) placed.push(m.slot); });
+  ctx.strokeStyle = C_COL; ctx.lineWidth = 7; ctx.beginPath(); placed.forEach((p, i) => i ? ctx.lineTo(...p) : ctx.moveTo(...p)); if (placed.length > 1) ctx.stroke();
+  PHOTO.forEach((m, i) => {
+    const ta = m.s + 2.2; if (lt < m.s) return;
+    if (lt < ta) { const p = ease(seg(lt, m.s, ta)); co2(lerp(VW + 100, m.entry[0], p), lerp(m.y0, m.entry[1], p) + Math.sin(lt * 3 + i) * 8, 1.15, lt * 1.5 + i); return; }
+    const q = ease(seg(lt, ta, ta + .8)); atom(lerp(m.entry[0], m.slot[0], q), lerp(m.entry[1], m.slot[1], q), 16, C_COL);
+    const r = seg(lt, ta, ta + 3.2); if (r < 1) { ctx.save(); ctx.globalAlpha = 1 - seg(r, .7, 1); o2(m.entry[0] - r * 160, m.entry[1] - r * 520, 1.15, r * 4); ctx.restore(); }
+  });
+  fadePill(lt, .8, 5.2, 'carbon dioxide from the air', ...P([1100, 700, 'left'], [VW - 30, 1070, 'right']));
+  fadePill(lt, 2.8, 14, 'energy from sunlight', ...P([1140, 280, 'left'], [VW - 30, 300, 'right']));
+  fadePill(lt, 5.2, 14, 'oxygen goes back to the air', ...P([110, 150, 'left'], [30, 230, 'left']));
+  fadePill(lt, 6.5, 14, 'carbon stays in the plant', ...P([190, 690, 'left'], [30, 1070, 'left']), false);
+}
+const MIC5 = [[-230, -40], [-120, -62], [40, -60], [190, -48], [260, 10], [-270, 20], [90, 40]];
+function scRot(lt) {
+  const g = ctx.createLinearGradient(0, 0, 0, VH); g.addColorStop(0, '#D6E9F2'); g.addColorStop(1, '#EEF3E2'); ctx.fillStyle = g; ctx.fillRect(0, 0, VW, VH);
+  const gy = P(600, 980), ls = P(1, .72);
+  ctx.fillStyle = '#7A5A3C'; ctx.fillRect(0, gy, VW, VH - gy);
+  ctx.fillStyle = 'rgba(0,0,0,0.12)'; for (let i = 0; i < 90; i++) { ctx.beginPath(); ctx.arc(hs(i, 90) * VW, gy + 20 + hs(i, 91) * (VH - gy - 20), 2 + hs(i, 92) * 3, 0, TAU); ctx.fill(); }
+  ctx.fillStyle = '#5E9A45'; ctx.fillRect(0, gy - 8, VW, 14);
+  const sz = 1 - .82 * ease(seg(lt, 2.2, 9.6)), lx = VW / 2, ly = gy - 45 * sz * ls;
+  ctx.save(); ctx.translate(lx, ly); ctx.scale(sz * ls, sz * ls);
+  ctx.fillStyle = '#7A5B38'; ctx.beginPath(); ctx.roundRect(-300, -55, 600, 110, 55); ctx.fill();
+  ctx.fillStyle = '#A07C4E'; ctx.beginPath(); ctx.ellipse(300, 0, 30, 55, 0, 0, TAU); ctx.fill(); ctx.strokeStyle = '#7A5B38'; ctx.lineWidth = 4; ctx.beginPath(); ctx.ellipse(300, 0, 18, 34, 0, 0, TAU); ctx.stroke();
+  ctx.fillStyle = '#D9A15B'; ctx.beginPath(); ctx.ellipse(-60, -62, 48, 24, 0, Math.PI, TAU); ctx.fill(); ctx.fillStyle = '#EFE3C8'; ctx.fillRect(-68, -64, 16, 14); ctx.restore();
+  const alive = MIC5.map(([dx, dy]) => [lx + dx * sz * ls, ly + dy * sz * ls]);
+  alive.forEach(([x, y], i) => microbe(x, y, 20, i));
+  for (let k = 0; k < 16; k++) { const Pd = 2.8, q = ((lt + hs(k, 93) * Pd) % Pd) / Pd, bx = VW * .09 + hs(k, 94) * VW * .82, by = P(110, 220) + hs(k, 95) * P(300, 560) + Math.sin(A + k) * 12, tgt = alive[k % alive.length];
+    if (q < .65 || lt < 1.2 || sz < .25) o2(bx, by, 1, k); else { const p = ease((q - .65) / .35); o2(lerp(bx, tgt[0], p), lerp(by, tgt[1], p), 1 - .4 * p, k); } }
+  if (lt > 1.8 && sz > .2) for (let k = 0; k < 10; k++) { const q = ((lt + hs(k, 96) * 2.4) % 2.4) / 2.4, x = lx + (hs(k, 97) - .5) * 520 * sz * ls; ctx.save(); ctx.globalAlpha = 1 - q; co2(x + Math.sin(q * 6 + k) * 20, ly - 40 - q * P(320, 520), .9, q * 3); ctx.restore(); }
+  fadePill(lt, .6, 10.5, 'oxygen', ...P([120, 160, 'left'], [40, 260, 'left']));
+  fadePill(lt, 1, 10.5, 'bacteria and fungi', ...P([1180, 470, 'left'], [VW - 40, gy + 90, 'right']));
+  fadePill(lt, 5, 10.5, 'carbon dioxide', ...P([1180, 230, 'left'], [VW - 40, 430, 'right']));
+}
+function scSwamp(lt) {
+  ctx.fillStyle = '#DCEBE6'; ctx.fillRect(0, 0, VW, S6.water);
+  for (let k = 0; k < 20; k++) o2(VW * .05 + hs(k, 103) * VW * .9, P(60, 170) + hs(k, 104) * P(150, 230) + Math.sin(A * .8 + k) * 10, 1, A * .4 + k);
+  const g = ctx.createLinearGradient(0, S6.water, 0, S6.bottom); g.addColorStop(0, '#5E8F7C'); g.addColorStop(1, '#2F4C40'); ctx.fillStyle = g; ctx.fillRect(0, S6.water, VW, VH - S6.water);
+  ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 3; ctx.beginPath(); for (let x = 0; x <= VW; x += 10) ctx.lineTo(x, S6.water + Math.sin(x * .02 + A * .6) * 1.5); ctx.stroke();
+  const pileH = 100 + 70 * ease(seg(lt, 15, 19)), py = S6.bottom + 110 - pileH;
+  ctx.fillStyle = '#5B5A2E'; ctx.fillRect(0, py, VW, VH - py); ctx.lineCap = 'round'; ctx.lineWidth = 5;
+  for (let i = 0; i < 90; i++) { const x = hs(i, 105) * VW, y = py + 8 + hs(i, 106) * Math.min(pileH, VH - py) * .9, a = (hs(i, 107) - .5) * .9, L = 30 + hs(i, 108) * 60; ctx.strokeStyle = hs(i, 109) < .5 ? '#4E8A3A' : '#8A6A3A'; ctx.beginPath(); ctx.moveTo(x - Math.cos(a) * L / 2, y - Math.sin(a) * L / 2); ctx.lineTo(x + Math.cos(a) * L / 2, y + Math.sin(a) * L / 2); ctx.stroke(); }
+  const shift = py - (S6.bottom + 10), pulses = MIC6.map(() => 0); let count = 0;
+  const drawMol = (x, y, te, mic, k) => { const [mx, my] = MIC6[mic]; if (lt >= te) { pulses[mic] = Math.max(pulses[mic], 1 - seg(lt, te, te + .4)); return; } count++; const p = ease(seg(lt, te - 1.1, te)); o2(lerp(x, mx, p), lerp(y, my + shift, p), 1 - .3 * p, A * .5 + k); };
+  O2W.forEach((o, k) => drawMol(o.x + Math.sin(A * .5 + k) * 14, o.y + Math.cos(A * .4 + k) * 10, o.te, o.mic, k));
+  O2IN.forEach((o, k) => { if (lt < o.e) return; const y = lerp(S6.water - 60, S6.water + 130, ease(seg(lt, o.e, o.e + 2))); if (lt < o.e + .5) { o2(o.x, y, 1, 0); return; } drawMol(o.x + Math.sin(A * .5 + k) * 10, y, o.te, o.mic, k + 20); });
+  const asleep = lt > 14.6; MIC6.forEach(([x, y], i) => microbe(x, y + shift, 24, i, asleep, pulses[i]));
+  const mx = VW - P(110, 70), top = S6.water + 50, bot = S6.bottom - 80, frac = count / 19;
+  ctx.fillStyle = 'rgba(255,255,255,0.25)'; ctx.beginPath(); ctx.roundRect(mx - 22, top, 44, bot - top, 22); ctx.fill();
+  ctx.fillStyle = '#E0533D'; const hgt = (bot - top - 8) * frac; ctx.beginPath(); ctx.roundRect(mx - 18, bot - 4 - hgt, 36, Math.max(.1, hgt), 18); ctx.fill();
+  pill('oxygen in the water', mx + 38, top - 32, 'right', true, 22);
+  if (lt > 5 && lt < 10.5) { ctx.save(); ctx.globalAlpha = seg(lt, 5, 5.5) * (1 - seg(lt, 10, 10.5)); O2IN.forEach(o => arrow(o.x + 60, S6.water - 70, o.x + 60, S6.water + 20, 5, 16)); ctx.restore(); }
+  fadePill(lt, .3, 19.5, 'air: plenty of oxygen', 40, P(130, 330), 'left');
+  fadePill(lt, .8, 19.5, 'still, warm swamp water', 40, S6.water + P(40, 60), 'left');
+  fadePill(lt, 5.3, 10.5, 'oxygen only enters at the surface', VW / 2, S6.water - 105, 'center');
+  fadePill(lt, 10.2, 15, 'microbes use it up', 40, S6.bottom - 120, 'left');
+  fadePill(lt, 15, 19.5, 'no oxygen, so rotting almost stops', VW / 2, S6.water + 200, 'center', false, P(30, 24));
+}
+function scMicro(lt) {
+  darkBg('#2B221B');
+  const c = ease(seg(lt, 4.6, 8.4)), heat = ease(seg(lt, 8.6, 11.5));
+  const L = VW * .2, R = VW * .8, B = P(640, 1000), top0 = P(150, 400), top = lerp(top0, top0 + (B - top0) * .367, c);
+  if (heat > 0) { const g = ctx.createLinearGradient(0, VH, 0, 200); g.addColorStop(0, `rgba(235,95,35,${.7 * heat})`); g.addColorStop(1, 'rgba(235,95,35,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, VW, VH); }
+  ctx.fillStyle = stops(['#6B4A2B', '#4A3322', '#221C18'], c * .45 + heat * .55); ctx.beginPath(); ctx.roundRect(L, top, R - L, B - top, 20); ctx.fill();
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 34; i++) { const y = lerp(top + 20, B - 20, hs(i, 110)), x0 = L + 30 + hs(i, 111) * (R - L) * .2, x1 = R - 30 - hs(i, 112) * (R - L) * .2;
+    ctx.strokeStyle = stops(['#A67C4E', '#7B5A38', '#141110'], c * .3 + heat * .7); ctx.lineWidth = lerp(9, 11, c); ctx.beginPath(); for (let x = x0; x <= x1; x += 30) ctx.lineTo(x, y + Math.sin(x * .02 + i) * lerp(12, 4, c)); ctx.stroke(); }
+  for (let i = 0; i < 46; i++) { const thr = hs(i, 113), out = ease(seg(c, thr * .8, thr * .8 + .25)), bx = L + 40 + hs(i, 114) * (R - L - 80), by = lerp(top + 20, B - 20, hs(i, 115));
+    const ex = bx < VW / 2 ? L - 120 - hs(i, 116) * 150 : R + 120 + hs(i, 116) * 150;
+    ctx.save(); ctx.globalAlpha = 1 - seg(out, .7, 1); ctx.fillStyle = '#58A9D6'; ctx.beginPath(); ctx.arc(lerp(bx, ex, out), by + out * 40, 10, 0, TAU); ctx.fill(); ctx.restore(); }
+  if (heat > 0) for (let k = 0; k < 26; k++) { const q = (lt * (.35 + hs(k, 117) * .3) + hs(k, 118)) % 1, x = L + 40 + hs(k, 119) * (R - L - 80);
+    ctx.save(); ctx.globalAlpha = heat * (1 - q) * .9; ctx.fillStyle = '#EDEDED'; ctx.beginPath(); ctx.arc(x + (x < VW / 2 ? -1 : 1) * q * 260, lerp(B - 40, top - 160, q), 9, 0, TAU); ctx.fill(); ctx.restore(); }
+  if (heat > .6) { ctx.fillStyle = `rgba(255,255,255,${(heat - .6) * 1.5})`; for (let i = 0; i < 20; i++) ctx.fillRect(L + 40 + hs(i, 120) * (R - L - 80), lerp(top + 20, B - 20, hs(i, 121)), 16, 4); }
+  ctx.fillStyle = '#8C857A'; ctx.beginPath(); ctx.roundRect(L - 40, top - 150, R - L + 80, 140, 16); ctx.fill();
+  ctx.fillStyle = 'rgba(0,0,0,0.15)'; for (let i = 0; i < 40; i++) ctx.fillRect(L + hs(i, 122) * (R - L - 60), top - 140 + hs(i, 123) * 120, 60, 3);
+  if (lt > 4.2 && lt < 9) { ctx.save(); ctx.globalAlpha = seg(lt, 4.2, 4.6) * (1 - seg(lt, 8.6, 9)); for (let k = 0; k < 5; k++) { const x = L + (k + .5) * (R - L) / 5; arrow(x, top - 240, x, top - 165, 8, 24); } ctx.restore(); }
+  if (V) {
+    fadePill(lt, .6, 4.6, 'plant fibres soaked in water', VW / 2, B + 55, 'center');
+    fadePill(lt, 5.4, 9, 'water squeezed out', VW / 2, B + 55, 'center');
+    fadePill(lt, 9.2, 13.5, 'gases driven off', VW / 2, top - 330, 'center');
+    fadePill(lt, 10.2, 13.5, 'mostly carbon left', VW / 2, B + 55, 'center', false);
+  } else {
+    fadePill(lt, .6, 4.6, 'plant fibres', 1320, 260, 'left'); fadePill(lt, .9, 4.6, 'water', 1320, 330, 'left');
+    fadePill(lt, 5.4, 9, 'water squeezed out', 40, 360, 'left'); fadePill(lt, 9.2, 13.5, 'gases driven off', 40, 200, 'left');
+    fadePill(lt, 10.2, 13.5, 'mostly carbon left', 1320, 470, 'left', false);
+  }
+}
+function scTitle(lt) {
+  darkBg('#1F2A24'); coalLump(VW / 2, VH * P(.33, .36), 70, .3 + .2 * Math.sin(A * 2));
+  ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.font = `600 ${P(110, 84)}px ${DISPLAY}`; ctx.fillText('How is coal made?', VW / 2, VH * P(.58, .5));
+  ctx.fillStyle = '#B9C9BE'; ctx.font = `500 ${P(40, 38)}px ${DISPLAY}`; ctx.fillText('A 300-million-year story', VW / 2, VH * P(.66, .55));
+}
+function scHook(lt, sc) {
+  darkBg('#1B211D'); const f = ease(seg(lt, .8, 3.2));
+  ctx.save(); ctx.globalAlpha = f * .45; ctx.translate(0, P(120, 250));
+  TREES.forEach(tr => { ctx.save(); ctx.translate(tr.x * VW, FLOOR * VH); drawTree(tr); ctx.restore(); }); ctx.restore();
+  ctx.save(); ctx.globalCompositeOperation = 'source-atop'; ctx.fillStyle = `rgba(27,33,29,${.55 * f})`; ctx.fillRect(0, 0, VW, VH); ctx.restore();
+  coalLump(VW / 2, VH * P(.44, .42), 110 + 6 * ease(seg(lt, 3.8, 5)), .25 + .75 * ease(seg(lt, P(3.8, 1.5), P(6, 3.5))));
+  if (sc.title) { ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.font = `600 ${P(84, 80)}px ${DISPLAY}`; ctx.fillText('How is coal made?', VW / 2, VH * P(.14, .15)); }
+}
+function scEnd(lt) {
+  darkBg('#1F2A24'); coalLump(VW / 2, VH * P(.33, .36), 70, .5 + .3 * Math.sin(A * 2));
+  ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.font = `600 ${P(80, 64)}px ${DISPLAY}`;
+  ctx.globalAlpha = ease(seg(lt, .3, 1.1)); ctx.fillText('Coal is ancient sunlight,', VW / 2, VH * P(.57, .5));
+  ctx.globalAlpha = ease(seg(lt, 1, 1.8)); ctx.fillText('locked away in stone.', VW / 2, VH * P(.68, .56));
+}
+
+// ================= the two cuts =================
+const world = (a, b, z, fy, extra = {}) => ({ world: { w: [a, b], z, fy }, ...extra });
+const CUTS = {
+  short: [
+    { dur: 4.5, draw: scHook, title: true, k: 1.3, chapter: '', caps: [[.2, 'This lump of coal was once a forest.']] },
+    { dur: 4.5, in: 'fade', chapter: 'The swamp forest', caps: [[.2, '300 million years ago, giant plants grew in warm, wet swamps.']], ...world(.04, .10, [1, 1.08], .45) },
+    { dur: 6, in: 'iris', iris: [.35, .26], draw: scPhoto, k: 2.25, chapter: 'Where plants get their carbon', caps: [[.2, 'They built their bodies from carbon dioxide in the air, powered by sunlight.']] },
+    { dur: 3.5, in: 'iris', iris: [.5, .5], chapter: 'The plants die', caps: [[.2, 'When they died, they fell into the swamp.']], ...world(.14, .30, [1.08, 1], .47) },
+    { dur: 9.5, in: 'iris', iris: [.5, .6], draw: scSwamp, k: 2.05, chapter: 'Why the swamp didn\u2019t rot', caps: [[.2, 'Normally, microbes eat dead plants, and they need oxygen to do it.'], [4.8, 'But still swamp water had little oxygen. Microbes used it up, and rotting stopped.']] },
+    { dur: 4.5, in: 'iris', iris: [.5, .7], chapter: 'Peat', caps: [[.2, 'The plants piled up into a thick, spongy layer called peat.']], ...world(.30, .40, [1.12, 1], .67) },
+    { dur: 4.5, chapter: 'Buried', caps: [[.2, 'Then sand and mud buried the peat deeper and deeper.']], ...world(.40, .60, [1, 1], .5) },
+    { dur: 7.5, in: 'iris', iris: [.5, .62], draw: scMicro, k: 1.8, chapter: 'Squeezed and heated', caps: [[.2, 'The weight of the rock squeezed out the water,'], [3.9, 'and the heat drove off gases, leaving mostly carbon.']] },
+    { dur: 3, in: 'iris', iris: [.5, .62], chapter: 'Squeezed and heated', caps: [[.2, 'Slowly, peat turned into coal.']], ...world(.66, .82, [1.1, 1], .62) },
+    { dur: 5, chapter: 'Coal today', caps: [[.2, 'Today we dig it up and burn it, releasing that ancient sunlight.']], ...world(.82, 1.0, [1, 1], .5) },
+    { dur: 3.5, in: 'fade', draw: scEnd, chapter: '', caps: [[.1, 'Coal is ancient sunlight, locked away in stone.', true]] },
+  ],
+  full: [
+    { dur: 4.5, draw: scTitle, chapter: '', caps: [[.3, 'How is coal made?', true]] },
+    { dur: 8, in: 'fade', draw: scHook, chapter: '', caps: [[.2, 'This lump of coal was once a forest.'], [3.8, 'It\u2019s made of plants that grew about 300 million years ago, before the first dinosaurs. So how did a forest become a rock?']] },
+    { dur: 8.5, in: 'fade', chapter: 'The swamp forest', caps: [[.3, 'About 300 million years ago, much of the land was covered in warm, wet swamps.'], [4.3, 'Giant ferns and trees taller than houses grew everywhere. But where did they get the stuff to build their bodies?']], ...world(.04, .10, [1, 1.1], .44) },
+    { dur: 13.5, in: 'iris', iris: [.35, .26], draw: scPhoto, chapter: 'Where plants get their carbon', caps: [[.3, 'From the air! Plants take in carbon dioxide, a gas made of carbon and oxygen.'], [4.8, 'Using energy from sunlight, they keep the carbon to build leaves, stems and trunks, and let the oxygen go.'], [9.4, 'So every plant is packed with carbon, with the Sun\u2019s energy locked inside.']] },
+    { dur: 8.5, in: 'iris', iris: [.5, .5], chapter: 'The plants die', caps: [[.3, 'When the plants died, they toppled into the swamp.'], [4.3, 'Usually, that would be the end of them. Dead plants normally rot away.']], ...world(.14, .30, [1.1, 1], .47) },
+    { dur: 10.5, in: 'fade', draw: scRot, chapter: 'Why things rot', caps: [[.3, 'On dry land, bacteria and fungi eat dead plants. Just like us, they need to breathe oxygen.'], [5.2, 'They turn the plant\u2019s carbon back into carbon dioxide gas. Soon, almost nothing is left.']] },
+    { dur: 19.5, in: 'iris', iris: [.5, .55], draw: scSwamp, chapter: 'Why the swamp didn\u2019t rot', caps: [[.3, 'But the swamp was different. Its water was warm and barely moved.'], [5.2, 'Oxygen from the air could only sneak in slowly at the surface. And warm water can\u2019t hold much oxygen anyway.'], [10.2, 'The microbes eating the dead plants quickly used up what little oxygen there was.'], [15.1, 'With no oxygen left, rotting almost stopped. So the dead plants didn\u2019t disappear. They piled up.']] },
+    { dur: 9, in: 'iris', iris: [.5, .67], chapter: 'Peat', caps: [[.3, 'Year after year, more dead plants piled on top.'], [4.3, 'Over thousands of years, they built up into a thick, brown, spongy layer called peat. Peat still forms in bogs today.']], ...world(.30, .40, [1.12, 1], .67) },
+    { dur: 11, chapter: 'Buried', caps: [[.3, 'Then the sea flooded in. Rivers washed sand and mud on top of the peat.'], [5.3, 'Layer after layer, the peat was buried deeper and deeper, and the layers slowly hardened into rock.']], ...world(.40, .58, [1, 1], .5) },
+    { dur: 7.5, chapter: 'Squeezed and heated', caps: [[.3, 'All that rock is incredibly heavy. And deep underground, it\u2019s hot.'], [4, 'So the peat gets squeezed and slowly cooked. Let\u2019s look closer.']], ...world(.58, .66, [1, 1.15], .62), labels: true },
+    { dur: 13.5, in: 'iris', iris: [.5, .62], draw: scMicro, chapter: 'Inside the peat', caps: [[.3, 'Peat is made of plant fibres soaked with water, like a wet sponge.'], [4.8, 'The weight of the rock squeezes it, pressing the water out and the fibres closer together.'], [8.9, 'The heat breaks the plant material apart, driving off gases and leaving mostly carbon behind.']] },
+    { dur: 9, in: 'iris', iris: [.5, .62], chapter: 'Squeezed and heated', caps: [[.3, 'Slowly, peat becomes brown coal, then hard, shiny black coal.'], [4.6, 'About ten metres of peat squashes into roughly one metre of coal.']], ...world(.66, .82, [1.15, 1], .62), labels: true },
+    { dur: 14, chapter: 'Coal today', caps: [[.3, 'Over millions of years, the land was pushed up and worn down, bringing the coal within reach.'], [4.8, 'Today people dig it up and burn it. The carbon joins with oxygen again, releasing that ancient sunlight as heat.'], [9.6, 'It also puts the carbon dioxide those plants took from the air back into it. That\u2019s why burning coal warms our planet.']],
+      ...world(.82, 1.0, [1, 1], .5), wmap: lt => lerp(.82, 1, lt < 4.8 ? seg(lt, .3, 4.8) * .45 : .45 + .55 * seg(lt, 4.8, 10.5)) },
+    { dur: 6, in: 'fade', draw: scEnd, chapter: '', caps: [[.2, 'Coal is ancient sunlight, locked away in stone.', true]] },
+  ],
+};
+let cut = 'short', SCENES = [], CAPS = [], TOTAL = 0;
+function buildCut() {
+  SCENES = CUTS[cut]; let acc = 0; CAPS = [];
+  SCENES.forEach((s, i) => { s.start = acc; s.caps.forEach(([at, text, hide]) => CAPS.push({ t: acc + at, text, hide: !!hide, scene: i })); acc += s.dur; });
+  TOTAL = acc;
+}
+
+function drawScene(s, lt) {
+  ctx.save();
+  if (s.world) {
+    const { w: [a, b], z: [z0, z1], fy } = s.world, p = ease(seg(lt, .2, s.dur - .2));
+    const w = s.wmap ? s.wmap(lt) : lerp(a, b, p), z = lerp(z0, z1, p);
+    ctx.translate(VW / 2, VH / 2); ctx.scale(z, z); ctx.translate(-VW / 2, -fy * VH);
+    const m = drawWorld(w, lt);
+    ctx.restore(); ctx.save();
+    if (m.press > .05) { ctx.globalAlpha = m.press; pill('heavy rock pushes down', VW / 2, P(60, 190), 'center', true, 28); }
+    if (m.heat > .4) { ctx.globalAlpha = 1; pill('hot deep underground', VW / 2, P(120, 270), 'center', true, 28); }
+  } else s.draw(lt * (s.k || 1), s);
+  ctx.restore();
+}
+function locate(t) { let i = SCENES.length - 1; for (let k = 0; k < SCENES.length; k++) if (t < SCENES[k].start + SCENES[k].dur) { i = k; break; } return { i, lt: clamp(t - SCENES[i].start, 0, SCENES[i].dur) }; }
+
+const grain = document.createElement('canvas'); grain.width = grain.height = 220;
+{ const g = grain.getContext('2d'), id = g.createImageData(220, 220); for (let k = 0; k < id.data.length; k += 4) { const v = Math.random() * 255; id.data[k] = id.data[k + 1] = id.data[k + 2] = v; id.data[k + 3] = 22; } g.putImageData(id, 0, 0); }
+let grainPat = null;
+function render(t) {
+  const r = canvas.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2), cw = Math.round(r.width * dpr), ch = Math.round(r.height * dpr);
+  if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
+  const s = Math.min(cw / VW, ch / VH);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cw, ch);
+  ctx.setTransform(s, 0, 0, s, (cw - VW * s) / 2, (ch - VH * s) / 2);
+  ctx.save(); ctx.beginPath(); ctx.rect(0, 0, VW, VH); ctx.clip();
+  const { i, lt } = locate(t), sc = SCENES[i], TD = cut === 'short' ? .6 : .9;
+  if (sc.in && i > 0 && lt < TD && !reduce) {
+    const prev = SCENES[i - 1], p = ease(lt / TD);
+    if (sc.in === 'fade') {
+      if (p < .5) { drawScene(prev, prev.dur); ctx.fillStyle = `rgba(10,12,11,${p * 2})`; } else { drawScene(sc, lt); ctx.fillStyle = `rgba(10,12,11,${(1 - p) * 2})`; }
+      ctx.fillRect(0, 0, VW, VH);
+    } else {
+      drawScene(prev, prev.dur); const cx = sc.iris[0] * VW, cy = sc.iris[1] * VH, rad = p * 2000;
+      ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, rad, 0, TAU); ctx.clip(); drawScene(sc, lt); ctx.restore();
+      ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 10; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, TAU); ctx.stroke();
+    }
+  } else drawScene(sc, lt);
+  if (!grainPat) grainPat = ctx.createPattern(grain, 'repeat'); ctx.fillStyle = grainPat; ctx.fillRect(0, 0, VW, VH);
+  ctx.restore();
+  return { i, lt, sc };
+}
+
+// ================= narration =================
+const synth = 'speechSynthesis' in window ? window.speechSynthesis : null;
+let narrOn = !!synth, voice = null, spokenIdx = -1;
+const voiceSel = $('#voice');
+const PREF = ['Google UK English Female', 'Samantha', 'Microsoft Sonia', 'Microsoft Libby', 'Microsoft Aria', 'Microsoft Jenny', 'Serena', 'Karen', 'Moira', 'Google US English', 'Daniel'];
+function loadVoices() {
+  if (!synth) return;
+  const vs = synth.getVoices().filter(v => /^en/i.test(v.lang)); if (!vs.length) return;
+  const cur = voiceSel.value; voiceSel.innerHTML = '';
+  vs.forEach(v => { const o = document.createElement('option'); o.value = v.name; o.textContent = `${v.name} (${v.lang})`; voiceSel.appendChild(o); });
+  let pick = cur && vs.find(v => v.name === cur);
+  if (!pick) for (const n of PREF) { pick = vs.find(v => v.name.startsWith(n)); if (pick) break; }
+  pick = pick || vs[0]; voiceSel.value = pick.name; voice = pick;
+}
+if (synth) { loadVoices(); synth.onvoiceschanged = loadVoices; voiceSel.addEventListener('change', () => { voice = synth.getVoices().find(v => v.name === voiceSel.value) || null; }); }
+else { $('#narrGroup').hidden = true; $('#note').textContent = 'This browser has no built-in voices, so the film plays with captions only.'; }
+function speak(text) { if (!synth) return; synth.cancel(); const u = new SpeechSynthesisUtterance(text); if (voice) u.voice = voice; u.lang = voice ? voice.lang : 'en-GB'; u.rate = cut === 'short' ? 1.08 : 1.0; u.pitch = 1.02; synth.speak(u); }
+function busy() { return synth && (synth.speaking || synth.pending); }
+function resyncSpeech() { if (synth) synth.cancel(); let cur = -1; CAPS.forEach((c, k) => { if (c.t <= T + 1e-6) cur = k; }); spokenIdx = cur - 1; }
+
+// ================= player UI =================
+const player = $('#player'), film = $('#film'), capEl = $('#cap'), chapEl = $('#chapter'), playBtn = $('#play'), startBtn = $('#start'), slider = $('#time'), clockEl = $('#clock'), ccBtn = $('#cc');
+let playing = false, ccOn = true, lastCap = null, lastChap = null, scrubbing = false;
+const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+const ended = () => T >= TOTAL - .05;
+function buildTicks() { const box = $('#ticks'); box.innerHTML = ''; const seen = new Set(); SCENES.forEach(s => { if (s.chapter && !seen.has(s.chapter)) { seen.add(s.chapter); const i = document.createElement('i'); i.style.left = (s.start / TOTAL * 100) + '%'; i.title = s.chapter; box.appendChild(i); } }); }
+function setPlaying(v) {
+  if (v && ended()) T = 0;
+  playing = v; resyncSpeech();
+  playBtn.textContent = playing ? 'Pause' : (ended() ? 'Replay' : 'Play');
+  startBtn.hidden = playing || (T > 0 && !ended());
+  startBtn.querySelector('span').textContent = ended() ? 'Watch again' : 'Play the story';
+}
+function seek(t) { T = clamp(t, 0, TOTAL); startBtn.hidden = true; resyncSpeech(); }
+playBtn.addEventListener('click', () => setPlaying(!playing));
+startBtn.addEventListener('click', () => { setPlaying(true); film.focus(); });
+slider.addEventListener('input', () => { scrubbing = true; seek(slider.value / 1000 * TOTAL); });
+slider.addEventListener('change', () => { scrubbing = false; });
+ccBtn.addEventListener('click', () => { ccOn = !ccOn; ccBtn.setAttribute('aria-pressed', ccOn); capEl.classList.toggle('off', !ccOn); });
+$('#fs').addEventListener('click', () => { try { document.fullscreenElement ? document.exitFullscreen() : film.requestFullscreen(); } catch (e) {} });
+film.addEventListener('keydown', e => {
+  if (e.key === ' ' || e.key === 'k') { e.preventDefault(); setPlaying(!playing); }
+  else if (e.key === 'ArrowRight') seek(T + 5); else if (e.key === 'ArrowLeft') seek(T - 5);
+});
+function segGroup(id, attr, fn) { const box = $(id); box.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; box.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); fn(b.dataset[attr]); }); }
+segGroup('#cutSegs', 'cut', v => { cut = v; buildCut(); buildTicks(); T = 0; setPlaying(false); startBtn.hidden = false; });
+segGroup('#frameSegs', 'frame', v => { V = v === 'v'; player.classList.toggle('v', V); buildLayout(); sizeCaps(); });
+segGroup('#narrSegs', 'n', v => { narrOn = v === 'on'; voiceSel.hidden = !narrOn; if (!narrOn && synth) synth.cancel(); else resyncSpeech(); });
+function sizeCaps() { const w = film.getBoundingClientRect().width; film.style.setProperty('--capsize', Math.max(14, w * (V ? .05 : .024)) + 'px'); }
+new ResizeObserver(sizeCaps).observe(film);
+
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now; A += dt;
+  if (playing) {
+    let nt = T + dt;
+    if (narrOn && synth) {
+      const n = spokenIdx + 1;
+      if (n < CAPS.length && nt >= CAPS[n].t) {
+        if (busy()) nt = Math.max(T, CAPS[n].t - .001);   // hold the film until the narrator finishes the previous line
+        else { speak(CAPS[n].text); spokenIdx = n; }
+      }
+    }
+    T = nt;
+    if (T >= TOTAL) { T = TOTAL; if (!(narrOn && busy())) { playing = false; playBtn.textContent = 'Replay'; startBtn.querySelector('span').textContent = 'Watch again'; startBtn.hidden = false; } }
+  }
+  const { i, lt, sc } = render(Math.min(T, TOTAL - .001));
+  let cap = ''; sc.caps.forEach(([at, txt, hide]) => { if (lt >= at) cap = hide ? '' : txt; });
+  if (cap !== lastCap) { lastCap = cap; capEl.textContent = cap; capEl.classList.toggle('show', !!cap); }
+  if (sc.chapter !== lastChap) { lastChap = sc.chapter; chapEl.textContent = sc.chapter; chapEl.classList.toggle('show', !!sc.chapter); }
+  if (!scrubbing) slider.value = Math.round(T / TOTAL * 1000);
+  slider.style.setProperty('--p', (T / TOTAL * 100) + '%');
+  clockEl.textContent = `${fmt(T)} / ${fmt(TOTAL)}`;
+  requestAnimationFrame(frame);
+}
+buildLayout(); buildCut(); buildTicks(); sizeCaps(); setPlaying(false);
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => requestAnimationFrame(frame));
+window.__film = { seek: t => { T = t; }, total: () => TOTAL, setFrame: v => document.querySelector(`[data-frame="${v}"]`).click(), setCut: v => document.querySelector(`[data-cut="${v}"]`).click() };
+})();
+</script>
+</body>
+</html>
