@@ -1,7 +1,8 @@
-// Site content in English (en) and Hindi (hi): dream paths, worlds and preview puzzles.
+// Site content in English (en) and Hindi (hi): dream paths, worlds and Class 4-7 puzzles.
 // To add a path or a puzzle, add it here. No other file needs to change.
 window.BTJ = {
-  // Dream paths: each step is a set of puzzles that earns a skill.
+  // Dream paths: each step earns a skill. Its puzzles are chosen by level:
+  // little = Class 1-3, young = Class 4-7, future = Class 8-10.
   // A step with no puzzles points to a world instead.
   paths: [
     {
@@ -19,10 +20,10 @@ window.BTJ = {
         future: { en: "Find out why Chandrayaan-3 landed near the Moon's south pole. Hint: scientists hope to find frozen water there.", hi: "पता करो कि चंद्रयान-3 चाँद के दक्षिणी ध्रुव के पास क्यों उतरा। इशारा: वैज्ञानिकों को वहाँ जमी हुई बर्फ़ के रूप में पानी मिलने की उम्मीद है।" }
       },
       steps: [
-        { title: { en: "Look up at the sky", hi: "आसमान को देखो" }, skill: { en: "Sky watcher", hi: "आसमान का जासूस" }, puzzles: ["sci-sky", "sci-moon"] },
-        { title: { en: "Know your planet", hi: "अपनी धरती को जानो" }, skill: { en: "Earth expert", hi: "धरती विशेषज्ञ" }, puzzles: ["geo-cold", "geo-volcano"] },
-        { title: { en: "Think in patterns", hi: "पैटर्न पहचानो" }, skill: { en: "Pattern finder", hi: "पैटर्न खोजी" }, puzzles: ["maths-pattern"] },
-        { title: { en: "Talk to computers", hi: "कंप्यूटर से बात करो" }, skill: { en: "Coder", hi: "कोडर" }, puzzles: ["code-loop"] },
+        { title: { en: "Look up at the sky", hi: "आसमान को देखो" }, skill: { en: "Sky watcher", hi: "आसमान का जासूस" }, puzzles: { little: ["lit-sun"], young: ["sci-sky", "sci-moon"], future: ["fut-gravity"] } },
+        { title: { en: "Know your planet", hi: "अपनी धरती को जानो" }, skill: { en: "Earth expert", hi: "धरती विशेषज्ञ" }, puzzles: { little: ["lit-earth-shape"], young: ["geo-cold", "geo-volcano"], future: ["fut-seasons"] } },
+        { title: { en: "Think like a scientist", hi: "वैज्ञानिक की तरह सोचो" }, skill: { en: "Pattern finder", hi: "पैटर्न खोजी" }, puzzles: { little: ["lit-pattern"], young: ["maths-pattern"], future: ["fut-lightyear"] } },
+        { title: { en: "Talk to computers", hi: "कंप्यूटर से बात करो" }, skill: { en: "Coder", hi: "कोडर" }, puzzles: { little: ["lit-robot"], young: ["code-loop"], future: ["fut-binary"] } },
         { title: { en: "Launch a rocket", hi: "रॉकेट उड़ाओ" }, skill: { en: "Rocket builder", hi: "रॉकेट निर्माता" }, puzzles: [], world: "science" }
       ]
     },
@@ -41,10 +42,10 @@ window.BTJ = {
         future: { en: "Make a chart of your heart rate at rest, after walking and after running. Explain the pattern to a grown-up.", hi: "आराम में, चलने के बाद और दौड़ने के बाद अपनी धड़कन का चार्ट बनाओ। किसी बड़े को इसका पैटर्न समझाओ।" }
       },
       steps: [
-        { title: { en: "Stop the germs", hi: "कीटाणुओं को रोको" }, skill: { en: "Germ buster", hi: "कीटाणु योद्धा" }, puzzles: ["sci-germs"] },
-        { title: { en: "How your body works", hi: "तुम्हारा शरीर कैसे चलता है" }, skill: { en: "Body explorer", hi: "शरीर खोजी" }, puzzles: ["sci-heart"] },
-        { title: { en: "How animals survive", hi: "जानवर कैसे जीते हैं" }, skill: { en: "Nature detective", hi: "प्रकृति जासूस" }, puzzles: ["sci-camel"] },
-        { title: { en: "Read the numbers", hi: "संख्याएँ पढ़ो" }, skill: { en: "Pattern finder", hi: "पैटर्न खोजी" }, puzzles: ["maths-pattern"] },
+        { title: { en: "Stop the germs", hi: "कीटाणुओं को रोको" }, skill: { en: "Germ buster", hi: "कीटाणु योद्धा" }, puzzles: { little: ["lit-wash-when"], young: ["sci-germs"], future: ["fut-vaccine"] } },
+        { title: { en: "How your body works", hi: "तुम्हारा शरीर कैसे चलता है" }, skill: { en: "Body explorer", hi: "शरीर खोजी" }, puzzles: { little: ["lit-bones"], young: ["sci-heart"], future: ["fut-blood"] } },
+        { title: { en: "How animals survive", hi: "जानवर कैसे जीते हैं" }, skill: { en: "Nature detective", hi: "प्रकृति जासूस" }, puzzles: { little: ["lit-fish"], young: ["sci-camel"], future: ["fut-polar"] } },
+        { title: { en: "Read the numbers", hi: "संख्याएँ पढ़ो" }, skill: { en: "Pattern finder", hi: "पैटर्न खोजी" }, puzzles: { little: ["lit-pattern"], young: ["maths-pattern"], future: ["fut-average"] } },
         { title: { en: "Your first check-up", hi: "तुम्हारा पहला चेक-अप" }, skill: { en: "Young doctor", hi: "नन्हा डॉक्टर" }, puzzles: [], world: "science" }
       ]
     },
@@ -63,9 +64,9 @@ window.BTJ = {
         future: { en: "Fold your paper bridge into a zig-zag and test it again. Why does the shape make it stronger?", hi: "कागज़ के पुल को ज़िग-ज़ैग में मोड़कर फिर से परखो। आकार बदलने से वह मज़बूत क्यों हो जाता है?" }
       },
       steps: [
-        { title: { en: "Why things float", hi: "चीज़ें क्यों तैरती हैं" }, skill: { en: "Problem solver", hi: "समस्या सुलझाने वाला" }, puzzles: ["sci-float"] },
-        { title: { en: "Learn from ancient builders", hi: "पुराने कारीगरों से सीखो" }, skill: { en: "Master planner", hi: "मास्टर प्लानर" }, puzzles: ["hist-indus", "hist-pyramids"] },
-        { title: { en: "Think in patterns", hi: "पैटर्न पहचानो" }, skill: { en: "Pattern finder", hi: "पैटर्न खोजी" }, puzzles: ["maths-pattern"] },
+        { title: { en: "Why things float", hi: "चीज़ें क्यों तैरती हैं" }, skill: { en: "Problem solver", hi: "समस्या सुलझाने वाला" }, puzzles: { little: ["lit-float"], young: ["sci-float"], future: ["fut-density"] } },
+        { title: { en: "Learn from ancient builders", hi: "पुराने कारीगरों से सीखो" }, skill: { en: "Master planner", hi: "मास्टर प्लानर" }, puzzles: { little: ["lit-triangle"], young: ["hist-indus", "hist-pyramids"], future: ["fut-arch"] } },
+        { title: { en: "Think like an engineer", hi: "इंजीनियर की तरह सोचो" }, skill: { en: "Pattern finder", hi: "पैटर्न खोजी" }, puzzles: { little: ["lit-pattern"], young: ["maths-pattern"], future: ["fut-lever"] } },
         { title: { en: "Build a bridge", hi: "पुल बनाओ" }, skill: { en: "Bridge builder", hi: "पुल निर्माता" }, puzzles: [], world: "science" }
       ]
     },
@@ -84,9 +85,9 @@ window.BTJ = {
         future: { en: "Design a simple game on paper: its rules, how you win, and what happens each turn. Then build it in Story Code Quest.", hi: "कागज़ पर एक आसान गेम बनाओ: उसके नियम, कैसे जीतते हैं, और हर चाल में क्या होता है। फिर उसे Story Code Quest में बनाओ।" }
       },
       steps: [
-        { title: { en: "Give clear instructions", hi: "साफ़ निर्देश दो" }, skill: { en: "Coder", hi: "कोडर" }, puzzles: ["code-loop"] },
-        { title: { en: "Find and fix bugs", hi: "गलती ढूँढो और ठीक करो" }, skill: { en: "Bug hunter", hi: "बग पकड़ने वाला" }, puzzles: ["code-bug"] },
-        { title: { en: "Think in patterns", hi: "पैटर्न पहचानो" }, skill: { en: "Pattern finder", hi: "पैटर्न खोजी" }, puzzles: ["maths-pattern"] },
+        { title: { en: "Give clear instructions", hi: "साफ़ निर्देश दो" }, skill: { en: "Coder", hi: "कोडर" }, puzzles: { little: ["lit-robot"], young: ["code-loop"], future: ["fut-algorithm"] } },
+        { title: { en: "Find and fix bugs", hi: "गलती ढूँढो और ठीक करो" }, skill: { en: "Bug hunter", hi: "बग पकड़ने वाला" }, puzzles: { little: ["lit-order"], young: ["code-bug"], future: ["fut-if"] } },
+        { title: { en: "Think in patterns", hi: "पैटर्न पहचानो" }, skill: { en: "Pattern finder", hi: "पैटर्न खोजी" }, puzzles: { little: ["lit-pattern"], young: ["maths-pattern"], future: ["fut-binary"] } },
         { title: { en: "Make your own game level", hi: "अपना गेम लेवल बनाओ" }, skill: { en: "Game maker", hi: "गेम मेकर" }, puzzles: [], world: "coding" }
       ]
     },
@@ -105,9 +106,9 @@ window.BTJ = {
         future: { en: "Paint the same tree in the morning and the evening. How does the light change its colours?", hi: "एक ही पेड़ को सुबह और शाम पेंट करो। रोशनी उसके रंग कैसे बदल देती है?" }
       },
       steps: [
-        { title: { en: "Mix colours", hi: "रंग मिलाओ" }, skill: { en: "Colour mixer", hi: "रंगों का जादूगर" }, puzzles: ["art-colours"] },
-        { title: { en: "Find balance", hi: "संतुलन ढूँढो" }, skill: { en: "Pattern artist", hi: "पैटर्न कलाकार" }, puzzles: ["art-rangoli"] },
-        { title: { en: "See the light", hi: "रोशनी को समझो" }, skill: { en: "Light catcher", hi: "रोशनी पकड़ने वाला" }, puzzles: ["sci-sky"] },
+        { title: { en: "Mix colours", hi: "रंग मिलाओ" }, skill: { en: "Colour mixer", hi: "रंगों का जादूगर" }, puzzles: { little: ["lit-colours"], young: ["art-colours"], future: ["fut-rgb"] } },
+        { title: { en: "Learn to see", hi: "देखना सीखो" }, skill: { en: "Pattern artist", hi: "पैटर्न कलाकार" }, puzzles: { little: ["lit-symmetry"], young: ["art-rangoli"], future: ["fut-perspective"] } },
+        { title: { en: "See the light", hi: "रोशनी को समझो" }, skill: { en: "Light catcher", hi: "रोशनी पकड़ने वाला" }, puzzles: { little: ["lit-shadow"], young: ["sci-sky"], future: ["fut-rainbow"] } },
         { title: { en: "Make your own art", hi: "अपनी कला बनाओ" }, skill: { en: "Young artist", hi: "नन्हा कलाकार" }, puzzles: [], world: "art" }
       ]
     },
@@ -126,9 +127,9 @@ window.BTJ = {
         future: { en: "Write a short poem in Hindi, then try writing it in English. What changed when you translated it?", hi: "हिंदी में एक छोटी कविता लिखो, फिर उसे अंग्रेज़ी में लिखकर देखो। अनुवाद करने पर क्या बदला?" }
       },
       steps: [
-        { title: { en: "Play with sounds", hi: "आवाज़ों से खेलो" }, skill: { en: "Rhyme maker", hi: "तुकबंदी उस्ताद" }, puzzles: ["eng-rhyme"] },
-        { title: { en: "Build sentences", hi: "वाक्य बनाओ" }, skill: { en: "Sentence builder", hi: "वाक्य निर्माता" }, puzzles: ["eng-verb"] },
-        { title: { en: "Shape a story", hi: "कहानी गढ़ो" }, skill: { en: "Storyteller", hi: "कहानीकार" }, puzzles: ["eng-story"] },
+        { title: { en: "Play with words", hi: "शब्दों से खेलो" }, skill: { en: "Word player", hi: "शब्दों का खिलाड़ी" }, puzzles: { little: ["lit-letter"], young: ["eng-rhyme"], future: ["fut-simile"] } },
+        { title: { en: "Build sentences", hi: "वाक्य बनाओ" }, skill: { en: "Sentence builder", hi: "वाक्य निर्माता" }, puzzles: { little: ["lit-sentence"], young: ["eng-verb"], future: ["fut-tense"] } },
+        { title: { en: "Shape a story", hi: "कहानी गढ़ो" }, skill: { en: "Storyteller", hi: "कहानीकार" }, puzzles: { little: ["lit-crow"], young: ["eng-story"], future: ["fut-pov"] } },
         { title: { en: "Write in two languages", hi: "दो भाषाओं में लिखो" }, skill: { en: "Bridge writer", hi: "भाषा सेतु लेखक" }, puzzles: [], world: "translate" }
       ]
     }
@@ -149,8 +150,9 @@ window.BTJ = {
   // Shown to grown-ups: languages planned after English and Hindi.
   languages: ["தமிழ்", "বাংলা", "తెలుగు", "मराठी", "ಕನ್ನಡ", "ગુજરાતી", "മലയാളം", "ਪੰਜਾਬੀ", "ଓଡ଼ିଆ"],
 
-  // Preview puzzles. Pip asks first ("think"), gives a hint for each wrong guess ("nudge"),
-  // then explains at the child's level: "young" for Class 1 to 4, "older" for Class 5 to 10.
+  // Class 4 to 7 puzzles (Young Builder). Class 1-3 puzzles are in puzzles-little.js and
+  // Class 8-10 puzzles in puzzles-future.js. Mitthu asks first ("think"), gives a hint for each
+  // wrong guess ("nudge"), then explains: "young" text for Class 4, "older" for Class 5 to 7.
   puzzles: [
     {
       id: "geo-cold",

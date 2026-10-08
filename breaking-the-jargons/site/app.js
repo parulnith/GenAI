@@ -2,9 +2,11 @@
   var data = window.BTJ;
   var KEYS = { lang: "btj-lang", grade: "btj-grade", solved: "btj-solved", path: "btj-path" };
   var VIEWS = ["start", "home", "path", "ask", "grown-ups"];
+  var SVG_NS = "http://www.w3.org/2000/svg";
 
-  // Age levels by class. Explanations use "young" up to Class 4 and "older" from Class 5;
-  // at-home activities and the level name use these three bands.
+  // Class levels. Each path step has its own puzzles for each level, and each path has an
+  // at-home activity per level. Class 4-7 puzzles carry two explanations: "young" for Class 4,
+  // "older" for Class 5-7.
   var LEVELS = [
     { id: "little", from: 1, to: 3, name: { en: "Little Explorer", hi: "नन्हा खोजी" } },
     { id: "young", from: 4, to: 7, name: { en: "Young Builder", hi: "युवा निर्माता" } },
@@ -23,49 +25,50 @@
     starsLabel: { en: "stars", hi: "सितारे" },
     tabHome: { en: "Home", hi: "होम" },
     tabPath: { en: "My path", hi: "मेरा रास्ता" },
-    tabAsk: { en: "Ask Pip", hi: "पिप से पूछो" },
+    tabAsk: { en: "Ask Mitthu", hi: "मिट्ठू से पूछो" },
     classChip: { en: "Class {n}", hi: "कक्षा {n}" },
-    welcome: { en: "Namaste! I'm Pip. Let's start!", hi: "नमस्ते! मैं पिप हूँ। चलो शुरू करें!" },
     classTitle: { en: "Which class are you in?", hi: "तुम किस कक्षा में हो?" },
     equaliser: { en: "Where you live doesn't decide what you become.", hi: "तुम कहाँ रहते हो, इससे तय नहीं होता कि तुम क्या बनोगे।" },
     homeBubble: { en: "Pick a dream. I'll walk the path with you, one step at a time.", hi: "एक सपना चुनो। मैं हर कदम पर तुम्हारे साथ चलूँगा।" },
     homeTitle: { en: "What do you want to become?", hi: "तुम क्या बनना चाहते हो?" },
     orAsk: { en: "Just have a question?", hi: "बस कोई सवाल है?" },
-    orAskLink: { en: "Ask Pip", hi: "पिप से पूछो" },
-    started: { en: "⭐ {d} of {n}", hi: "⭐ {n} में से {d}" },
-    backToDreams: { en: "← All dreams", hi: "← सारे सपने" },
+    orAskLink: { en: "Ask Mitthu", hi: "मिट्ठू से पूछो" },
+    started: { en: "{d} of {n} done", hi: "{n} में से {d} पूरे" },
+    toStart: { en: "{n} puzzles", hi: "{n} पहेलियाँ" },
+    backToDreams: { en: "All dreams", hi: "सारे सपने" },
     myDream: { en: "My dream", hi: "मेरा सपना" },
     levelLine: { en: "{level} · Class {n}", hi: "{level} · कक्षा {n}" },
     soCanYou: { en: "So can you!", hi: "तुम भी कर सकते हो!" },
-    solvedOf: { en: "⭐ {d} of {n} puzzles solved", hi: "⭐ {n} में से {d} पहेलियाँ हल कीं" },
+    solvedOf: { en: "{d} of {n} puzzles solved", hi: "{n} में से {d} पहेलियाँ हल कीं" },
     doNext: { en: "Do this next", hi: "अब यह करो" },
     earn: { en: "Earn: {skill}", hi: "कमाओ: {skill}" },
-    earned: { en: "🏅 You earned: {skill}", hi: "🏅 तुमने कमाया: {skill}" },
+    earned: { en: "Earned: {skill}", hi: "कमाया: {skill}" },
     soon: { en: "{name} is coming soon", hi: "{name} जल्द आ रहा है" },
     goTo: { en: "Go to {name}", hi: "{name} पर जाओ" },
-    atHomeTitle: { en: "🏡 Try this at home", hi: "🏡 घर पर करके देखो" },
-    atHomeNote: { en: "No phone needed!", hi: "फ़ोन की ज़रूरत नहीं!" },
-    indiaTitle: { en: "🇮🇳 India did it", hi: "🇮🇳 भारत ने कर दिखाया" },
-    askTitle: { en: "Ask Pip!", hi: "पिप से पूछो!" },
-    askLabel: { en: "Your question for Pip", hi: "पिप के लिए तुम्हारा सवाल" },
+    atHomeTitle: { en: "Try this at home", hi: "घर पर करके देखो" },
+    atHomeNote: { en: "No phone needed.", hi: "फ़ोन की ज़रूरत नहीं।" },
+    indiaTitle: { en: "India did it", hi: "भारत ने कर दिखाया" },
+    askTitle: { en: "Ask Mitthu!", hi: "मिट्ठू से पूछो!" },
+    askLabel: { en: "Your question for Mitthu", hi: "मिट्ठू के लिए तुम्हारा सवाल" },
     askPlaceholder: { en: "Type your question...", hi: "अपना सवाल लिखो..." },
     askButton: { en: "Ask", hi: "पूछो" },
     ideasTitle: { en: "Or try one of these:", hi: "या इनमें से कोई आज़माओ:" },
-    previewNote: { en: "Preview: Pip knows a few puzzles for now.", hi: "झलक: अभी पिप कुछ ही पहेलियाँ जानता है।" },
-    pipSays: { en: "Pip says: ", hi: "पिप कहता है: " },
+    previewNote: { en: "Preview: Mitthu knows a few puzzles for each class for now.", hi: "झलक: अभी मिट्ठू हर कक्षा के लिए कुछ ही पहेलियाँ जानता है।" },
+    pipSays: { en: "Mitthu says: ", hi: "मिट्ठू कहता है: " },
     youSaid: { en: "You said: ", hi: "तुमने कहा: " },
     yourGuess: { en: "Your guess", hi: "तुम्हारा अंदाज़ा" },
     notQuite: { en: "Hmm, not quite! {hint} Have another go!", hi: "हम्म, पूरा सही नहीं! {hint} एक बार और कोशिश करो!" },
-    winNew: { en: "You figured it out! ⭐ +1 star", hi: "तुमने पता लगा लिया! ⭐ +1 सितारा" },
-    winAgain: { en: "You figured it out again! ⭐", hi: "तुमने फिर से पता लगा लिया! ⭐" },
-    newBadge: { en: "🏅 New badge: {name}!", hi: "🏅 नया बैज: {name}!" },
-    earnedSkill: { en: "{icon} You earned \"{skill}\" on your {path} path!", hi: "{icon} तुमने अपने {path} वाले रास्ते पर \"{skill}\" कमाया!" },
+    winNew: { en: "You figured it out!", hi: "तुमने पता लगा लिया!" },
+    winStar: { en: "+1 star", hi: "+1 सितारा" },
+    winAgain: { en: "You figured it out again!", hi: "तुमने फिर से पता लगा लिया!" },
+    newBadge: { en: "New badge: {name}!", hi: "नया बैज: {name}!" },
+    earnedSkill: { en: "You earned \"{skill}\" on your {path} path!", hi: "तुमने अपने {path} वाले रास्ते पर \"{skill}\" कमाया!" },
     share: { en: "Tell a grown-up what you found out!", hi: "किसी बड़े को बताओ कि तुमने क्या सीखा!" },
     backToPath: { en: "Back to my path", hi: "मेरे रास्ते पर वापस" },
     askAnother: { en: "Ask another question", hi: "एक और सवाल पूछो" },
     explore: { en: "Explore {name}", hi: "{name} में घूमो" },
     privacy: { en: "Let's keep personal things private, even from me! Ask me about the world, science, stories or code instead.", hi: "अपनी निजी बातें निजी ही रखो, मुझसे भी! इसके बजाय दुनिया, विज्ञान, कहानियों या कोड के बारे में पूछो।" },
-    greet: { en: "Hi there! I love a good puzzle. Try one of these:", hi: "नमस्ते! मुझे पहेलियाँ बहुत पसंद हैं। इनमें से कोई आज़माओ:" },
+    greet: { en: "Hello! I love a good puzzle. Try one of these:", hi: "नमस्ते! मुझे पहेलियाँ बहुत पसंद हैं। इनमें से कोई आज़माओ:" },
     unknown: { en: "Ooh, great question! I don't know that one yet. Try one of these:", hi: "वाह, बढ़िया सवाल! यह मैं अभी नहीं जानता। इनमें से कोई आज़माओ:" },
 
     gEyebrow: { en: "For parents and teachers", hi: "माता-पिता और शिक्षकों के लिए" },
@@ -79,15 +82,15 @@
       en: "Each dream is broken into small steps. Every step builds a real skill, and every path shows an Indian who did it first.",
       hi: "हर सपने को छोटे कदमों में बाँटा गया है। हर कदम एक असली हुनर सिखाता है, और हर रास्ता किसी ऐसे भारतीय को दिखाता है जिसने यह पहले कर दिखाया।"
     },
-    g2Title: { en: "Right for their age", hi: "उम्र के हिसाब से" },
+    g2Title: { en: "Made for each class", hi: "हर कक्षा के लिए" },
     g2Text: {
-      en: "Explanations change with the child's class, and each path has an at-home activity for Class 1–3, 4–7 and 8–10 that needs no phone at all.",
-      hi: "समझाने का तरीक़ा बच्चे की कक्षा के साथ बदलता है, और हर रास्ते में कक्षा 1–3, 4–7 और 8–10 के लिए घर पर करने की एक गतिविधि है, जिसमें फ़ोन की ज़रूरत ही नहीं।"
+      en: "Every step has different puzzles for Class 1–3, 4–7 and 8–10, and an at-home activity for each level that needs no phone at all.",
+      hi: "हर कदम में कक्षा 1–3, 4–7 और 8–10 के लिए अलग पहेलियाँ हैं, और हर स्तर के लिए घर पर करने की एक गतिविधि, जिसमें फ़ोन की ज़रूरत ही नहीं।"
     },
     g3Title: { en: "Thinking first", hi: "पहले सोचना" },
     g3Text: {
-      en: "Pip asks for a guess before explaining and gives hints when a child is stuck. It never hands over homework answers.",
-      hi: "पिप समझाने से पहले अंदाज़ा पूछता है और अटकने पर इशारे देता है। वह होमवर्क के जवाब कभी नहीं देता।"
+      en: "Mitthu asks for a guess before explaining and gives hints when a child is stuck. It never hands over homework answers.",
+      hi: "मिट्ठू समझाने से पहले अंदाज़ा पूछता है और अटकने पर इशारे देता है। वह होमवर्क के जवाब कभी नहीं देता।"
     },
     g4Title: { en: "Works anywhere", hi: "हर जगह चलता है" },
     g4Text: {
@@ -96,23 +99,23 @@
     },
     g5Title: { en: "Safe by design", hi: "सुरक्षित" },
     g5Text: {
-      en: "Short answers, no personal information collected, and Pip stays on the subject. Progress is saved only on this phone.",
-      hi: "छोटे जवाब, कोई निजी जानकारी नहीं ली जाती, और पिप विषय पर ही रहता है। प्रगति सिर्फ़ इसी फ़ोन में सेव होती है।"
+      en: "Short answers, no personal information collected, and Mitthu stays on the subject. Progress is saved only on this phone.",
+      hi: "छोटे जवाब, कोई निजी जानकारी नहीं ली जाती, और मिट्ठू विषय पर ही रहता है। प्रगति सिर्फ़ इसी फ़ोन में सेव होती है।"
     },
     cEyebrow: { en: "Built with Claude", hi: "Claude से बना" },
-    cTitle: { en: "Pip runs on Claude, by Anthropic", hi: "पिप Anthropic के Claude पर चलता है" },
+    cTitle: { en: "Mitthu runs on Claude, by Anthropic", hi: "मिट्ठू Anthropic के Claude पर चलता है" },
     cLead: {
-      en: "Pip is powered by Claude, an AI model made by Anthropic. Claude understands a child's question in English, Hindi or a mix of both, teaches by asking, and acts inside each learning world with tools, like flying the plane to Antarctica or replaying the step where code went wrong.",
-      hi: "पिप को Anthropic का बनाया AI मॉडल Claude चलाता है। Claude बच्चे का सवाल अंग्रेज़ी, हिंदी या दोनों के मेल में समझता है, सवाल पूछकर सिखाता है, और हर दुनिया के अंदर टूल्स से काम करता है, जैसे प्लेन को अंटार्कटिका ले जाना या कोड की गलती वाला कदम दोबारा दिखाना।"
+      en: "Mitthu is powered by Claude, an AI model made by Anthropic. Claude understands a child's question in English, Hindi or a mix of both, teaches by asking, and acts inside each learning world with tools, like flying the plane to Antarctica or replaying the step where code went wrong.",
+      hi: "मिट्ठू को Anthropic का बनाया AI मॉडल Claude चलाता है। Claude बच्चे का सवाल अंग्रेज़ी, हिंदी या दोनों के मेल में समझता है, सवाल पूछकर सिखाता है, और हर दुनिया के अंदर टूल्स से काम करता है, जैसे प्लेन को अंटार्कटिका ले जाना या कोड की गलती वाला कदम दोबारा दिखाना।"
     },
     cNote: {
-      en: "The Claude key stays on our server, never in the browser. Pip is in preview while live Claude answers are switched on.",
-      hi: "Claude की चाबी हमारे सर्वर पर रहती है, ब्राउज़र में कभी नहीं। पिप अभी झलक में है, लाइव Claude जवाब जल्द चालू होंगे।"
+      en: "The Claude key stays on our server, never in the browser. Mitthu is in preview while live Claude answers are switched on.",
+      hi: "Claude की चाबी हमारे सर्वर पर रहती है, ब्राउज़र में कभी नहीं। मिट्ठू अभी झलक में है, लाइव Claude जवाब जल्द चालू होंगे।"
     },
     footerLink: { en: "For parents and teachers", hi: "माता-पिता और शिक्षकों के लिए" },
     footerText: {
-      en: "Pip is powered by Claude, made by Anthropic. Breaking the Jargons is an independent project by parulnith, not made by Anthropic. No personal information is collected.",
-      hi: "पिप Anthropic के बनाए Claude से चलता है। Breaking the Jargons, parulnith का एक स्वतंत्र प्रोजेक्ट है, Anthropic का बनाया नहीं। कोई निजी जानकारी नहीं ली जाती।"
+      en: "Mitthu is powered by Claude, made by Anthropic. Breaking the Jargons is an independent project by parulnith, not made by Anthropic. No personal information is collected.",
+      hi: "मिट्ठू Anthropic के बनाए Claude से चलता है। Breaking the Jargons, parulnith का एक स्वतंत्र प्रोजेक्ट है, Anthropic का बनाया नहीं। कोई निजी जानकारी नहीं ली जाती।"
     }
   };
 
@@ -137,7 +140,10 @@
   var worldById = {};
   data.worlds.forEach(function (w) { worldById[w.id] = w; });
   var puzzleById = {};
-  data.puzzles.forEach(function (p) { puzzleById[p.id] = p; });
+  data.puzzles.forEach(function (p) {
+    p.level = p.level || "young";
+    puzzleById[p.id] = p;
+  });
   var pathById = {};
   data.paths.forEach(function (p) { pathById[p.id] = p; });
 
@@ -171,7 +177,7 @@
     confetti: document.getElementById("confetti")
   };
 
-  // ---- Text helpers ----
+  // ---- Helpers ----
 
   // t() picks the current language from a { en, hi } object; plain strings pass through.
   function t(value) {
@@ -192,12 +198,23 @@
     return node;
   }
 
+  // A drawing from the sprite in index.html, e.g. icon("i-star").
+  function icon(id, className) {
+    var svg = document.createElementNS(SVG_NS, "svg");
+    svg.setAttribute("aria-hidden", "true");
+    if (className) svg.setAttribute("class", className);
+    var use = document.createElementNS(SVG_NS, "use");
+    use.setAttribute("href", "#" + id);
+    svg.appendChild(use);
+    return svg;
+  }
+
   function isSolved(id) {
     return state.solved.indexOf(id) !== -1;
   }
 
-  function levelFor(grade) {
-    return LEVELS.filter(function (l) { return grade >= l.from && grade <= l.to; })[0];
+  function level() {
+    return LEVELS.filter(function (l) { return state.grade >= l.from && state.grade <= l.to; })[0];
   }
 
   // ---- Screens: one at a time, driven by the URL hash ----
@@ -297,6 +314,8 @@
     state.gradeChosen = true;
     save(KEYS.grade, state.grade);
     renderGrade();
+    renderPathCards();
+    renderStarters();
     go(state.path ? "path" : "home");
   });
 
@@ -314,16 +333,30 @@
 
   // ---- Dream paths ----
 
+  // The puzzles of one step for the child's class level.
+  function stepPuzzles(step) {
+    if (Array.isArray(step.puzzles)) return step.puzzles;
+    return step.puzzles[level().id] || [];
+  }
+
   function pathPuzzles(path) {
     var ids = [];
     path.steps.forEach(function (step) {
-      step.puzzles.forEach(function (id) { if (ids.indexOf(id) === -1) ids.push(id); });
+      stepPuzzles(step).forEach(function (id) { if (ids.indexOf(id) === -1) ids.push(id); });
     });
     return ids;
   }
 
   function stepDone(step) {
-    return step.puzzles.length > 0 && step.puzzles.every(isSolved);
+    var ids = stepPuzzles(step);
+    return ids.length > 0 && ids.every(isSolved);
+  }
+
+  function pathTile(path) {
+    var tile = make("span", "path-tile");
+    tile.style.setProperty("--tint", path.tint);
+    tile.appendChild(icon("p-" + path.id));
+    return tile;
   }
 
   function renderPathCards() {
@@ -333,10 +366,16 @@
       var done = ids.filter(isSolved).length;
       var card = make("button", "path-card");
       card.type = "button";
-      card.style.setProperty("--tint", path.tint);
-      card.appendChild(make("span", "path-icon", path.icon)).setAttribute("aria-hidden", "true");
+      card.appendChild(pathTile(path));
       card.appendChild(make("span", "path-title", t(path.title)));
-      if (done) card.appendChild(make("span", "path-progress", ui("started", { d: done, n: ids.length })));
+      var progress = make("span", "path-progress");
+      if (done) {
+        progress.appendChild(icon("i-star"));
+        progress.appendChild(document.createTextNode(ui("started", { d: done, n: ids.length })));
+      } else {
+        progress.textContent = ui("toStart", { n: ids.length });
+      }
+      card.appendChild(progress);
       card.addEventListener("click", function () {
         state.path = path.id;
         save(KEYS.path, state.path);
@@ -351,32 +390,42 @@
     var page = el.pathPanel;
     page.innerHTML = "";
     if (!path) return;
-    page.style.setProperty("--tint", path.tint);
-    var level = levelFor(state.grade);
+    var lvl = level();
+
+    var back = make("a", "back-link");
+    back.href = "#home";
+    back.appendChild(icon("i-back"));
+    back.appendChild(document.createTextNode(ui("backToDreams")));
+    page.appendChild(back);
 
     var top = make("div", "path-top");
-    var back = make("a", "back-link", ui("backToDreams"));
-    back.href = "#home";
-    top.appendChild(back);
-
+    top.style.setProperty("--tint", path.tint);
     var head = make("div", "path-head");
-    head.appendChild(make("span", "path-icon big", path.icon)).setAttribute("aria-hidden", "true");
+    head.appendChild(pathTile(path));
     var headText = make("div");
-    headText.appendChild(make("p", "eyebrow", ui("myDream")));
+    headText.appendChild(make("p", "kicker", ui("myDream")));
     headText.appendChild(make("h1", "", t(path.title)));
-    headText.appendChild(make("p", "level-badge", ui("levelLine", { level: t(level.name), n: state.grade })));
     head.appendChild(headText);
     top.appendChild(head);
+    top.appendChild(make("span", "level-chip", ui("levelLine", { level: t(lvl.name), n: state.grade })));
     top.appendChild(make("p", "dream", t(path.dream)));
     page.appendChild(top);
 
-    var hero = make("div", "info-card hero-card");
-    hero.appendChild(make("p", "", "💡 " + t(path.hero)));
-    hero.appendChild(make("p", "so-can-you", ui("soCanYou")));
+    var hero = make("div", "role-model");
+    hero.appendChild(icon("i-bulb"));
+    var heroText = make("div");
+    heroText.appendChild(make("p", "", t(path.hero)));
+    heroText.appendChild(make("p", "so-can-you", ui("soCanYou")));
+    hero.appendChild(heroText);
     page.appendChild(hero);
 
     var ids = pathPuzzles(path);
     var done = ids.filter(isSolved).length;
+    var progressRow = make("div", "progress-row");
+    var progressText = make("p", "progress-text");
+    progressText.appendChild(icon("i-star"));
+    progressText.appendChild(document.createTextNode(ui("solvedOf", { d: done, n: ids.length })));
+    progressRow.appendChild(progressText);
     var bar = make("div", "progress");
     bar.setAttribute("role", "progressbar");
     bar.setAttribute("aria-valuemin", "0");
@@ -385,41 +434,40 @@
     var fill = make("span", "progress-fill");
     fill.style.width = (ids.length ? Math.round((done / ids.length) * 100) : 0) + "%";
     bar.appendChild(fill);
-    page.appendChild(bar);
-    page.appendChild(make("p", "progress-text", ui("solvedOf", { d: done, n: ids.length })));
+    progressRow.appendChild(bar);
+    page.appendChild(progressRow);
 
+    // The trail: numbered stops. Only the next stop shows its puzzles, so there is one clear thing to do.
     var nextMarked = false;
-    var list = make("ol", "path-steps");
-    path.steps.forEach(function (step) {
-      var li = make("li", "path-step");
+    var trail = make("ol", "trail");
+    path.steps.forEach(function (step, index) {
+      var puzzles = stepPuzzles(step);
       var status;
-      if (stepDone(step)) {
-        status = "done";
-      } else if (!nextMarked && step.puzzles.length) {
-        status = "next";
-        nextMarked = true;
-      } else {
-        status = step.puzzles.length ? "later" : "world";
-      }
-      li.classList.add("is-" + status);
-      li.appendChild(make("span", "step-marker", { done: "✅", next: "👉", later: "⬜", world: "🌟" }[status])).setAttribute("aria-hidden", "true");
+      if (stepDone(step)) status = "done";
+      else if (!nextMarked && puzzles.length) { status = "next"; nextMarked = true; }
+      else status = puzzles.length ? "later" : "world";
 
-      var body = make("div", "step-body");
-      var title = make("p", "step-title", t(step.title));
-      if (status === "next") title.appendChild(make("span", "next-tag", ui("doNext")));
-      body.appendChild(title);
-      body.appendChild(make("p", "skill" + (status === "done" ? " earned" : ""),
-        status === "done" ? ui("earned", { skill: t(step.skill) }) : ui("earn", { skill: t(step.skill) })));
+      var stop = make("li", "stop is-" + status);
+      var dot = make("span", "stop-dot");
+      dot.setAttribute("aria-hidden", "true");
+      if (status === "done") dot.appendChild(icon("i-check"));
+      else if (status === "world") dot.appendChild(icon("i-star"));
+      else dot.textContent = String(index + 1);
+      stop.appendChild(dot);
 
-      // Only the next step (and finished ones) show puzzles, so there's one clear thing to do.
-      if (status === "next" || status === "done") {
-        var actions = make("div", "step-actions");
-        step.puzzles.forEach(function (id) { actions.appendChild(starterButton(puzzleById[id])); });
+      var body = make("div", "stop-body");
+      if (status === "next") body.appendChild(make("span", "next-tag", ui("doNext")));
+      body.appendChild(make("p", "stop-title", t(step.title)));
+      body.appendChild(make("p", "stop-skill", status === "done" ? ui("earned", { skill: t(step.skill) }) : ui("earn", { skill: t(step.skill) })));
+
+      if (status === "next") {
+        var actions = make("div", "stop-actions");
+        puzzles.forEach(function (id) { actions.appendChild(starterButton(puzzleById[id])); });
         body.appendChild(actions);
       } else if (status === "world") {
         var world = worldById[step.world];
         if (world && world.status === "live") {
-          var link = make("a", "btn btn-small", ui("goTo", { name: t(world.name) }));
+          var link = make("a", "btn btn-ghost", ui("goTo", { name: t(world.name) }));
           link.href = world.url;
           link.target = "_blank";
           link.rel = "noopener";
@@ -428,19 +476,25 @@
           body.appendChild(make("p", "soon-text", ui("soon", { name: t(world.name) })));
         }
       }
-      li.appendChild(body);
-      list.appendChild(li);
+      stop.appendChild(body);
+      trail.appendChild(stop);
     });
-    page.appendChild(list);
+    page.appendChild(trail);
 
-    var home = make("div", "info-card home-card");
-    home.appendChild(make("p", "info-title", ui("atHomeTitle")));
-    home.appendChild(make("p", "", t(path.atHome[level.id])));
-    home.appendChild(make("p", "info-note", ui("atHomeNote")));
+    var home = make("div", "note-card at-home");
+    var homeTitle = make("p", "note-title");
+    homeTitle.appendChild(icon("i-house"));
+    homeTitle.appendChild(document.createTextNode(ui("atHomeTitle")));
+    home.appendChild(homeTitle);
+    home.appendChild(make("p", "", t(path.atHome[lvl.id])));
+    home.appendChild(make("p", "note-small", ui("atHomeNote")));
     page.appendChild(home);
 
-    var india = make("div", "info-card india-card");
-    india.appendChild(make("p", "info-title", ui("indiaTitle")));
+    var india = make("div", "note-card india");
+    var indiaTitle = make("p", "note-title");
+    indiaTitle.appendChild(icon("i-flag"));
+    indiaTitle.appendChild(document.createTextNode(ui("indiaTitle")));
+    india.appendChild(indiaTitle);
     india.appendChild(make("p", "", t(path.india)));
     page.appendChild(india);
   }
@@ -448,7 +502,8 @@
   // ---- Puzzle ideas ----
 
   function suggestedPuzzles(limit) {
-    var pool = data.puzzles.slice();
+    var lvl = level().id;
+    var pool = data.puzzles.filter(function (p) { return p.level === lvl; });
     var path = pathById[state.path];
     if (path) {
       // Puzzles from the child's own path come first.
@@ -462,8 +517,12 @@
 
   function starterButton(puzzle) {
     var solved = isSolved(puzzle.id);
-    var btn = make("button", "chip starter" + (solved ? " solved" : ""), (solved ? "⭐ " : "") + t(puzzle.starter));
+    var btn = make("button", "chip" + (solved ? " solved" : ""));
     btn.type = "button";
+    var mark = make("span", "chip-mark", solved ? undefined : "?");
+    if (solved) mark.appendChild(icon("i-star"));
+    btn.appendChild(mark);
+    btn.appendChild(make("span", "", t(puzzle.starter)));
     btn.addEventListener("click", function () { startPuzzle(puzzle, true); });
     return btn;
   }
@@ -473,11 +532,11 @@
     suggestedPuzzles(4).forEach(function (p) { el.starters.appendChild(starterButton(p)); });
   }
 
-  // ---- Conversation with Pip ----
+  // ---- Conversation with Mitthu ----
 
   function say(who, text) {
     var msg = make("div", "msg msg-" + who);
-    if (who === "pip") msg.appendChild(make("span", "avatar", "✈️")).setAttribute("aria-hidden", "true");
+    if (who === "pip") msg.appendChild(icon("mitthu-face", "avatar"));
     var body = make("p", "", "");
     body.appendChild(make("span", "sr-only", ui(who === "pip" ? "pipSays" : "youSaid")));
     body.appendChild(document.createTextNode(text));
@@ -508,9 +567,11 @@
     var group = make("div", "choices");
     group.setAttribute("role", "group");
     group.setAttribute("aria-label", ui("yourGuess"));
-    shuffle(puzzle.choices.slice()).forEach(function (choice) {
-      var btn = make("button", "choice", t(choice.text));
+    shuffle(puzzle.choices.slice()).forEach(function (choice, i) {
+      var btn = make("button", "choice");
       btn.type = "button";
+      btn.appendChild(make("span", "choice-letter", "ABC".charAt(i)));
+      btn.appendChild(make("span", "", t(choice.text)));
       btn.addEventListener("click", function () {
         say("kid", t(choice.text));
         if (choice.correct) {
@@ -531,8 +592,13 @@
     showLatest();
   }
 
+  function explanation(puzzle) {
+    if (puzzle.explain) return t(puzzle.explain);
+    return t(state.grade <= 4 ? puzzle.young : puzzle.older);
+  }
+
   function solve(puzzle) {
-    say("pip", t(state.grade <= 4 ? puzzle.young : puzzle.older));
+    say("pip", explanation(puzzle));
 
     var isNew = !isSolved(puzzle.id);
     var before = badgeFor(state.solved.length);
@@ -544,21 +610,23 @@
     renderStars();
 
     var win = make("div", "win");
+    win.appendChild(icon("i-star", "win-star"));
     win.appendChild(make("p", "win-title", ui(isNew ? "winNew" : "winAgain")));
+    if (isNew) win.appendChild(make("p", "win-badge", ui("winStar")));
     if (after !== before) win.appendChild(make("p", "win-badge", ui("newBadge", { name: t(after.name) })));
 
     var path = pathById[state.path];
     var onPath = path && pathPuzzles(path).indexOf(puzzle.id) !== -1;
     if (onPath && isNew) {
       path.steps.forEach(function (step) {
-        if (step.puzzles.indexOf(puzzle.id) !== -1 && stepDone(step)) {
-          win.appendChild(make("p", "win-badge", ui("earnedSkill", { icon: path.icon, skill: t(step.skill), path: t(path.title) })));
+        if (stepPuzzles(step).indexOf(puzzle.id) !== -1 && stepDone(step)) {
+          win.appendChild(make("p", "win-badge", ui("earnedSkill", { skill: t(step.skill), path: t(path.title) })));
         }
       });
     }
     win.appendChild(make("p", "win-share", ui("share")));
 
-    var actions = make("div", "card-actions");
+    var actions = make("div", "win-actions");
     if (onPath) {
       var back = make("a", "btn", ui("backToPath"));
       back.href = "#path";
@@ -598,8 +666,10 @@
     return text.toLowerCase().split(/[\s,.!?।"'()\-:;]+/).filter(Boolean);
   }
 
+  // Best keyword match, preferring puzzles made for the child's class level.
   function findPuzzle(question) {
     var ws = words(question);
+    var lvl = level().id;
     var best = null;
     var bestScore = 0;
     data.puzzles.forEach(function (p) {
@@ -607,6 +677,7 @@
       p.keywords.forEach(function (k) {
         if (ws.some(function (w) { return w.indexOf(k) === 0; })) score++;
       });
+      if (score && p.level === lvl) score += 0.5;
       if (score > bestScore) { best = p; bestScore = score; }
     });
     return best;
@@ -628,9 +699,8 @@
     el.ideas.hidden = true;
     say("kid", question);
 
-    var lower = question.toLowerCase();
     var ws = words(question);
-    if (PRIVATE.test(lower)) {
+    if (PRIVATE.test(question.toLowerCase())) {
       say("pip", ui("privacy"));
     } else {
       var puzzle = findPuzzle(question);
@@ -641,19 +711,21 @@
     showLatest();
   });
 
-  // ---- Celebration ----
+  // ---- Celebration: paper confetti in the site's colours ----
 
   function celebrate() {
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    var pieces = ["⭐", "🎉", "✨", "🌟", "🎈"];
-    for (var i = 0; i < 28; i++) {
-      var bit = make("span", "bit", pieces[i % pieces.length]);
+    var colours = ["#F4B41A", "#2F9E58", "#2D4BC4", "#D9473B", "#F28CA6"];
+    for (var i = 0; i < 36; i++) {
+      var bit = make("span", "bit");
       bit.style.left = Math.random() * 100 + "vw";
-      bit.style.animationDelay = Math.random() * 0.4 + "s";
-      bit.style.fontSize = 18 + Math.random() * 18 + "px";
+      bit.style.background = colours[i % colours.length];
+      bit.style.animationDelay = Math.random() * 0.5 + "s";
+      bit.style.animationDuration = 1.8 + Math.random() * 1.2 + "s";
+      if (i % 3 === 0) bit.style.borderRadius = "50%";
       el.confetti.appendChild(bit);
     }
-    setTimeout(function () { el.confetti.innerHTML = ""; }, 2600);
+    setTimeout(function () { el.confetti.innerHTML = ""; }, 3400);
   }
 
   function shuffle(list) {
