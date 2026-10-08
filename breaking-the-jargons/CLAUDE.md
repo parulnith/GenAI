@@ -4,13 +4,14 @@
 
 **Technology as an equaliser.** Where a child lives should not decide what they become. A child in a village should have the same chance to become a scientist, a doctor or an engineer as a child in a big city.
 
-Breaking the Jargons is a self-study platform for children in India, Class 1 to 10, including rural India and children without a good school nearby. Each child picks a dream and follows a clear path of small steps towards it, with Mitthu the parrot as their guide. Subjects are taught through interactive worlds and puzzles instead of textbook jargon.
+Breaking the Jargons is a self-study platform for children in India, Class 5 to 10, including rural India and children without a good school nearby. Each child picks a dream and follows a real path towards it: lessons with a big idea, an example from India, an interactive animation, videos and links from trusted sites, a no-phone activity, check-yourself puzzles and a final project. Mitthu the parrot is their guide. Along the way children notice which lessons they love, so they discover what they enjoy and build real skills: something a chatbot alone can't give them.
 
 It is being built first for my son, who is the first tester, and then shared with other families and schools. Design everything so new paths, subjects and languages can be added without rebuilding the site.
 
 ## Design principles
 
-- **Paths, not interests.** The dream path is the centre of the product. Kids don't browse "what they like"; they choose what they want to become, and the path carries them.
+- **Paths, not interests.** The dream path is the centre of the product. Kids choose what they want to become, and the path carries them. After each lesson they say whether they enjoyed it; loved lessons show up on the home page under "What you enjoy", so discovery happens by doing.
+- **Rigorous, not a quiz.** Every path is a proper course: three lessons, each with real explanation, examples, an animation or activity, links to learn more, and puzzles; then a project.
 - **Simple for kids.** One thing per screen, big buttons, one clear next step. Avoid long pages and too many choices.
 - **English and Hindi everywhere.** Every piece of text exists in both languages, with a toggle on every screen. More Indian languages later (Tamil, Bengali, Telugu, Marathi, Kannada, Gujarati, Malayalam, Punjabi, Odia).
 - **Indian connection to motivate.** Every path shows an Indian who did it first ("So can you!") and something India achieved ("India did it").
@@ -21,26 +22,20 @@ It is being built first for my son, who is the first tester, and then shared wit
 
 ## Dream paths
 
-Six paths today. Each path has steps; each step is a few puzzles and earns a skill. The last step opens a world.
+Twelve paths today (`site/paths.js`): Space Scientist, Doctor, Engineer, Computer Engineer, Artist, Writer, Farmer and Agri Scientist, Teacher, Pilot, Nature Scientist, Musician, Sportsperson.
 
-| Path | Indian role model | India did it |
-|---|---|---|
-| Space Scientist | Kalpana Chawla (Karnal, Haryana) | Chandrayaan-3, first landing near the Moon's south pole (2023) |
-| Doctor | Anandibai Joshi (medical degree, 1886) | India declared polio-free (2014) |
-| Engineer | A. P. J. Abdul Kalam (sold newspapers in Rameswaram) | Chenab Bridge, world's highest railway arch bridge |
-| Computer Engineer | Raj Reddy (born in a village in Andhra Pradesh, Turing Award) | UPI, phone payments from malls to village shops |
-| Artist | Raja Ravi Varma (Kerala) | Warli painting, Maharashtra |
-| Writer | Rabindranath Tagore (Nobel Prize, 1913) | Tagore wrote the anthems of India and Bangladesh |
+Each path has: what the work is like, a day in the life, "this might be you if...", an Indian role model ("So can you!"), an "India did it" fact, three lessons (each earns a skill), a final project for each level, and "Where this leads" (subjects to focus on, the stream after Class 10, and the route after that).
 
-Facts and role-model lines must be checked by a teacher before children use the site. Prefer Indian role models from small towns and villages.
+Each lesson has: the big idea, an example from India, "go deeper" (open for Class 8 to 10), an optional Claude-made animation, links to free trusted sites (NASA, ISRO, ePathshala, NCERT, DIKSHA, Khan Academy, PhET, Scratch, StoryWeaver and others), a no-phone "Try it yourself" activity, puzzles for the child's level, and "Did you enjoy this?".
+
+Facts, links and role-model lines must be checked by a teacher before children use the site. Prefer Indian role models from small towns and villages.
 
 ## Class levels
 
-Every path step has its own puzzles for each level, and each path has a no-phone "Try this at home" activity per level:
+Class 5 onwards. Every lesson has its own puzzles for each level, and every project is written per level:
 
-- **Little Explorer, Class 1 to 3:** everyday things, short words (where the Sun goes at night, the thirsty crow, which shape is strongest).
-- **Young Builder, Class 4 to 7:** the core puzzles (why the sky is blue, Mohenjo-daro, loops in code). Class 4 gets simpler explanations.
-- **Future Maker, Class 8 to 10:** real terms and reasons (why astronauts float, binary numbers, how vaccines work, refraction).
+- **Young Builder, Class 5 to 7:** the core puzzles (why the sky is blue, levers, loops in code). Class 5 gets simpler explanations.
+- **Future Maker, Class 8 to 10:** real terms and reasons (why astronauts float, binary numbers, how vaccines work, photosynthesis).
 
 ## The guide: Mitthu
 
@@ -51,7 +46,7 @@ What makes Mitthu different from a chatbot:
 - **Mitthu shows, not just tells.** Mitthu is powered by Claude with tool use. Each world exposes actions Mitthu can take (fly the plane to a place, change a simulation setting, highlight something, replay a step). When a kid asks a question, Mitthu answers *and* acts in the world.
 - **Mitthu asks before it tells.** Ask "What do you think?" first, give a hint for each wrong guess, never hand over homework answers.
 - **Class-aware and bilingual.** Answers match the child's class and language (English, Hindi, or a mix).
-- **Follows the path.** Mitthu links each new puzzle to the dream the child chose, and remembers progress (stored in the browser; no personal data collected in v1).
+- **Follows the path.** Mitthu links each new puzzle to the dream the child chose. No personal data is collected, and for now nothing is saved between visits (memory comes later).
 - **Makes them feel good about solving.** Stars, badges (New Explorer, Curious Explorer, Super Solver, Jargon Breaker), skills earned, a small celebration, and "Tell a grown-up what you found out!"
 - **A learning guide, not a friend replacement.** Warm, encouraging, always focused on learning.
 
@@ -72,17 +67,21 @@ What makes Mitthu different from a chatbot:
 
 Static HTML, CSS and JavaScript, no build step, no API key needed. Screens, one at a time, by URL hash:
 
-- `#start`: first visit. Choose English or हिंदी, then your class.
-- `#home`: "What do you want to become?" with the six dream cards.
-- `#path`: the chosen dream's own page: level badge, role model, progress, steps (only the next step shows its puzzles), "Try this at home", "India did it".
-- `#ask`: ask Mitthu (English or Hindi) or tap an idea; the puzzle conversation plays here.
-- `#grown-ups`: About, written for parents, teachers, partners and the Claude for Startups reviewers: the problem, what we built, how Mitthu uses Claude (step-by-step flow plus an example `fly_to` tool call), why Claude, where we are and what's next, safety, contact. Linked from the first screen.
-- `#privacy`: privacy page in plain words (no personal data, progress in the browser only, Google Fonts and GitHub Pages logs, what will change when Claude goes live).
-- **Show me! animations:** 5 hand-made interactive animations (`site/animations.js`: Moon phases, day and night, sky colour, float or sink, paint mixing) open after the matching puzzle is solved.
+- `#home`: opens first. "What do you want to become?" with the twelve dream cards, plus "What you enjoy" once a child has loved a lesson.
+- `#start`: after picking a path, choose your class (5 to 10).
+- `#path`: the dream's own page: the journey of three lessons and a final project, what the work is like, signs it might be you, role model, India did it, where this leads.
+- `#learn`: one lesson (see Dream paths), with Next lesson or the project at the end.
+- `#ask`: ask Mitthu (English or Hindi) or tap an idea; puzzles play here, with **Show me!** animations.
+- `#grown-ups`: About, for parents, teachers, partners and the Claude for Startups reviewers: the problem, what we built, how Mitthu uses Claude (flow plus an example `fly_to` tool call), why Claude, status and next steps, safety, contact.
+- `#privacy`: privacy in plain words.
 
-Content lives in `site/worlds.js` (paths, worlds, Class 4 to 7 puzzles), `site/puzzles-little.js` (Class 1 to 3) and `site/puzzles-future.js` (Class 8 to 10), all `{ en, hi }`; interface text is the `UI` object in `site/app.js`. Drawings (Mitthu, icons) are an SVG sprite in `site/index.html`. Adding a path or puzzle needs only the content files. See `site/README.md`.
+**No memory between visits (for now).** Language, class, path, solved puzzles and enjoyed lessons live in memory only; reloading starts fresh, and old saved keys are cleared on load. Memory will be added later.
 
-**Preview mode:** until Claude credits are available, Mitthu answers from 53 example puzzles (16 + 18 + 19 across the three levels) matched by English and Hindi keywords. The site says so ("Preview"). Do not claim live Claude answers until `/api/pip` is connected.
+**Animations:** 13 interactive animations made with Claude (`site/animations.js`): Moon phases, day and night, sky colour, float or sink, paint mixing, Newton's cannon (orbits), lever, binary bit cards, heartbeat, sound waves (with audio), plant growth, story builder, water cycle. Lessons show them with a "Made with Claude" tag.
+
+Content: `site/paths.js` (paths and lessons), `site/worlds.js` (worlds, languages, Class 5 to 7 puzzles), `site/puzzles-future.js` (Class 8 to 10 puzzles), all `{ en, hi }`; interface text is the `UI` object in `site/app.js`. Drawings (Mitthu, icons) are an SVG sprite in `site/index.html`. Adding a path, lesson or puzzle needs only the content files. See `site/README.md`.
+
+**Preview mode:** until Claude credits are available, Mitthu answers from 43 example puzzles (22 Class 5 to 7, 21 Class 8 to 10) matched by English and Hindi keywords. The site says so ("Preview"). Do not claim live Claude answers until `/api/pip` is connected.
 
 ## Architecture
 
@@ -99,14 +98,15 @@ Content lives in `site/worlds.js` (paths, worlds, Class 4 to 7 puzzles), `site/p
 
 Done:
 
-1. Hub site with dream paths, Ask Mitthu puzzles, stars and badges, class-wise puzzles and activities, English and Hindi, Indian connection, and a page for parents and teachers (preview mode, no API key).
+1. Hub site with 12 dream paths, 36 lessons, 13 animations, Ask Mitthu puzzles, class-wise content for Class 5 to 10, English and Hindi, Indian connection, and a page for parents and teachers (preview mode, no API key).
+2. Live on breakingthejargons.com via GitHub Pages.
 
 Next, once Claude credits are available:
 
-2. `/api/pip` serverless function with the safety system prompt; Mitthu answers any question in the child's language and level, and creates new puzzles for each path.
-3. Mitthu "Ask" tab in Earth Explorer with one tool: `fly_to(wonder_id)`.
-4. Story → level generator in Story Code Quest.
-5. Go live on breakingthejargons.com (GitHub Pages workflow added; needs the PR merged, Pages set to GitHub Actions with the custom domain, and DNS records at the registrar).
+3. `/api/pip` serverless function with the safety system prompt; Mitthu answers any question in the child's language and level, and creates new puzzles for each path.
+4. Mitthu "Ask" tab in Earth Explorer with one tool: `fly_to(wonder_id)`.
+5. Story → level generator in Story Code Quest.
+6. Memory between visits (saved progress and what the child enjoys), with a privacy update first.
 6. More Indian languages; English Club and Bhasha Bridge.
 7. **Animations on demand:** a child asks to see something and Claude writes a small interactive animation on the spot, run in a sandboxed iframe (scripts only, no access to the page, and a content security policy that blocks network requests). The hand-made animations show the target experience.
 

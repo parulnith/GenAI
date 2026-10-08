@@ -154,9 +154,6 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .tabs svg { width: 26px; height: 26px; }
 .tabs a[aria-current="page"] { color: var(--blue); background: var(--blue-soft); }
 
-body[data-view="start"] .tabs,
-body[data-view="start"] .topbar-right { display: none; }
-body[data-view="start"] { padding-bottom: 0; }
 
 /* ---- Screens ---- */
 
@@ -224,40 +221,11 @@ main {
 
 /* ---- First visit ---- */
 
-.h-sub { display: block; font-size: 0.7em; color: var(--ink-2); margin-top: 4px; }
-
-.lang-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  max-width: 480px;
-}
-
-.lang-buttons button {
-  display: grid;
-  gap: 2px;
-  padding: 16px 12px;
-  border: 1.5px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--card);
-  color: var(--ink);
-  box-shadow: var(--lift);
-  cursor: pointer;
-  text-align: left;
-}
-
-.lang-buttons b { font-family: var(--display); font-size: 1.6rem; line-height: 1.1; }
-.lang-buttons small { color: var(--ink-2); font-size: 0.95rem; }
-.lang-buttons button[aria-checked="true"] { border-color: var(--blue); box-shadow: 0 0 0 2px var(--blue) inset, var(--lift); }
-
-.class-step { display: grid; gap: 14px; margin-top: 8px; }
-.class-step[hidden] { display: none; }
-
 .grade-buttons {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  max-width: 480px;
+  max-width: 340px;
 }
 
 .grade-buttons button {
@@ -640,6 +608,198 @@ main {
   overflow-wrap: anywhere;
 }
 
+/* ---- Home: discovering what you love ---- */
+
+.discover {
+  display: grid;
+  gap: 8px;
+  padding: 16px 18px;
+  border-radius: 22px;
+  background: #FFF0F3;
+  border: 1.5px solid #F7C9D3;
+}
+.discover h2 { font-size: 1.25rem; }
+.discover p { margin: 0; color: var(--ink-2); }
+.discover-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.discover-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 4px;
+  border: 1.5px solid #F7C9D3;
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--ink);
+  font-weight: 700;
+  cursor: pointer;
+}
+.discover-chip .path-tile { width: 34px; height: 34px; }
+.discover-chip .path-tile svg { width: 24px; height: 24px; }
+.loved-tag { font-size: 0.85rem; font-weight: 700; color: #C2365A; }
+
+/* ---- Dream page: journey, about the work, where it leads ---- */
+
+.btn-small { padding: 8px 16px; font-size: 0.98rem; }
+
+.journey { display: grid; gap: 12px; }
+.journey > h2 { font-size: 1.4rem; }
+.stop-kicker { margin: 0; color: var(--ink-3); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.03em; }
+.stop-body .btn { justify-self: start; margin-top: 6px; }
+.stop.is-project .stop-dot { background: var(--marigold-soft); border-color: #F2D68A; }
+.stop.is-project .stop-body {
+  padding: 12px 14px 14px;
+  border-radius: var(--radius);
+  background: var(--marigold-soft);
+  scroll-margin-top: 90px;
+}
+.project-text { margin: 4px 0 0; color: var(--ink); }
+
+.path-about { display: grid; gap: 12px; grid-template-columns: 1fr; }
+.info-box {
+  display: grid;
+  gap: 8px;
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 1.5px solid var(--line);
+}
+.info-box h2 { font-size: 1.2rem; }
+.info-box h3 { font-size: 1.02rem; margin-top: 4px; }
+.info-box p { margin: 0; color: var(--ink-2); }
+.tick-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.tick-list li { position: relative; padding-left: 22px; color: var(--ink-2); }
+.tick-list li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.55em;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--green);
+}
+.note-label { margin: 0 0 2px !important; color: var(--ink-3); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.03em; }
+
+.leads-list { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 14px; }
+.leads-list dt { font-weight: 700; color: var(--ink); }
+.leads-list dd { margin: 0; color: var(--ink-2); }
+
+/* ---- Lesson page ---- */
+
+.learn-top h1 { font-size: clamp(1.7rem, 5.5vw, 2.3rem); }
+.learn-top .kicker { color: var(--ink-2); }
+
+.lesson-block {
+  display: grid;
+  gap: 8px;
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 1.5px solid var(--line);
+}
+.lesson-block h2 { font-size: 1.15rem; color: var(--blue-dark); }
+.lesson-block p { margin: 0; }
+.big-idea { border-color: #C7D3F7; box-shadow: var(--lift); }
+.big-idea p { font-size: 1.18rem; line-height: 1.6; }
+.example-block { background: #FFF8E6; border-color: #F2E2B0; }
+details.deeper summary { cursor: pointer; font-weight: 700; color: var(--blue-dark); font-family: var(--display); font-size: 1.05rem; }
+details.deeper[open] summary { margin-bottom: 6px; }
+.see { padding: 12px; }
+.see > h2 { padding: 4px 6px 0; }
+.see .anim-panel { box-shadow: none; border: 0; padding: 4px; }
+
+.claude-tag {
+  display: inline-block;
+  margin-bottom: 2px;
+  padding: 1px 10px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #FFFFFF;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.link-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.resource {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1.5px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 600;
+}
+.resource:hover { border-color: var(--blue); }
+.resource-kind {
+  flex: none;
+  padding: 1px 10px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.kind-watch { background: #FDEBEA; color: #B23A30; }
+.kind-explore { background: var(--blue-soft); color: var(--blue-dark); }
+.kind-read { background: var(--green-soft); color: #1E7A45; }
+.small-note { color: var(--ink-3); font-size: 0.92rem; }
+
+.check .convo { margin-top: 4px; }
+
+.enjoy-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.enjoy-btn {
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font-weight: 700;
+  cursor: pointer;
+}
+.enjoy-love[aria-pressed="true"] { background: #FFE3EA; border-color: #E07895; color: #A62A4E; }
+.enjoy-ok[aria-pressed="true"] { background: var(--marigold-soft); border-color: #E6C46A; }
+.enjoy-no[aria-pressed="true"] { background: #EEF1F7; border-color: #B9C3DA; }
+.enjoy-reply { margin: 0; color: var(--ink-2); min-height: 1.5em; font-family: var(--hand); font-size: 1.08rem; }
+
+.learn-nav { display: flex; justify-content: flex-end; }
+
+/* ---- Animation pieces: binary cards and story builder ---- */
+
+.anim-btn[aria-pressed="true"] { background: var(--blue); color: #FFFFFF; border-color: var(--blue); }
+
+.bit-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.bit-card {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border-radius: 14px;
+  border: 1.5px solid var(--line);
+  background: #EEF1F7;
+  color: var(--ink-3);
+  cursor: pointer;
+}
+.bit-card[aria-pressed="true"] { background: var(--card); border-color: var(--blue); color: var(--ink); box-shadow: var(--lift); }
+.bit-digit { font-family: var(--display); font-weight: 800; font-size: 1.6rem; line-height: 1; }
+.bit-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; min-height: 40px; align-content: center; }
+.bit-dots i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.8; }
+.bit-card[aria-pressed="false"] .bit-dots i { opacity: 0.25; }
+.bit-value { font-size: 0.85rem; font-weight: 700; }
+.bit-total { margin: 0; font-family: var(--display); font-weight: 800; font-size: 1.5rem; text-align: center; }
+
+.story-out {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #FFF8E6;
+  font-family: var(--hand);
+  font-size: 1.15rem;
+  line-height: 1.55;
+}
+.story-row { gap: 6px; }
+.story-label { min-width: 96px; font-weight: 700; font-size: 0.92rem; color: var(--ink-2); }
+
 /* ---- About and privacy ---- */
 
 .about-block { display: grid; gap: 10px; }
@@ -702,8 +862,6 @@ main {
 .policy p { margin: 0; color: var(--ink-2); max-width: 64ch; }
 .updated { margin: 0; color: var(--ink-3); font-size: 0.95rem; }
 
-.start-about { margin: 8px 0 0; }
-.start-about a { font-weight: 700; }
 
 /* ---- Interactive animations ---- */
 
@@ -773,6 +931,7 @@ main {
 
 @media (min-width: 640px) {
   .status { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .path-about { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* ---- Footer ---- */

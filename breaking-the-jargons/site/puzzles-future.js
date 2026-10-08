@@ -265,5 +265,33 @@ window.BTJ.puzzles.push(
       { text: { en: "Second person", hi: "मध्यम पुरुष (second person)" }, nudge: { en: "Second person uses 'you'. This one uses 'I'.", hi: "मध्यम पुरुष में 'you' होता है। इसमें 'I' है।" } }
     ],
     explain: { en: "Correct. First person uses 'I' and lets us feel what the narrator feels. Third person ('she opened the door') can show many characters. Writers choose the point of view that tells the story best.", hi: "सही। उत्तम पुरुष में 'I' (मैं) होता है, जिससे हम कथावाचक की भावनाएँ महसूस करते हैं। अन्य पुरुष ('she opened the door') में कई किरदार दिखाए जा सकते हैं। लेखक वही दृष्टिकोण चुनते हैं जो कहानी को सबसे अच्छे से कहे।" }
+  },
+  {
+    id: "fut-sound",
+    level: "future",
+    world: "science",
+    keywords: ["string", "pitch", "note", "sitar", "guitar", "frequency", "तार", "सुर", "सितार"],
+    starter: { en: "Why does a shorter string make a higher note?", hi: "छोटा तार ऊँचा सुर क्यों देता है?" },
+    think: { en: "On a sitar or guitar, pressing a string makes the vibrating part shorter. Why do you think the note goes higher?", hi: "सितार या गिटार पर तार दबाने से उसका काँपने वाला हिस्सा छोटा हो जाता है। तुम्हें क्या लगता है, सुर ऊँचा क्यों हो जाता है?" },
+    choices: [
+      { text: { en: "A shorter string is louder", hi: "छोटा तार ज़्यादा तेज़ बजता है" }, nudge: { en: "Loudness is about how big the vibrations are. Pitch is about something else: how fast does the string move?", hi: "आवाज़ का तेज़ होना कंपन के बड़े होने से जुड़ा है। सुर किसी और चीज़ से: तार कितनी तेज़ी से काँपता है?" } },
+      { text: { en: "A shorter string vibrates faster", hi: "छोटा तार तेज़ी से काँपता है" }, correct: true },
+      { text: { en: "The string gets thicker", hi: "तार मोटा हो जाता है" }, nudge: { en: "Pressing doesn't change the thickness. Think about how quickly a shorter string can swing back and forth.", hi: "दबाने से मोटाई नहीं बदलती। सोचो, छोटा तार कितनी जल्दी आगे-पीछे हिल सकता है।" } }
+    ],
+    explain: { en: "Correct. Pitch depends on frequency: how many times something vibrates each second. A shorter, tighter or thinner string vibrates faster, so the note is higher. Many musicians tune to the note A at 440 vibrations per second.", hi: "सही। सुर आवृत्ति (frequency) पर निर्भर करता है: कोई चीज़ हर सेकंड कितनी बार काँपती है। छोटा, कसा हुआ या पतला तार तेज़ी से काँपता है, इसलिए सुर ऊँचा होता है। कई संगीतकार अपने वाद्य को 440 कंपन प्रति सेकंड वाले सुर A पर मिलाते हैं।" }
+  },
+  {
+    id: "fut-photosynthesis",
+    level: "future",
+    world: "science",
+    keywords: ["tree", "mass", "wood", "photosynthesis", "carbon", "पेड़", "लकड़ी", "प्रकाश-संश्लेषण", "कार्बन"],
+    starter: { en: "Where does most of a tree's mass come from?", hi: "पेड़ का ज़्यादातर वज़न कहाँ से आता है?" },
+    think: { en: "A seed grows into a tree weighing tonnes. Where do you think most of that wood came from?", hi: "एक बीज बढ़कर टनों वज़न का पेड़ बन जाता है। तुम्हें क्या लगता है, उस लकड़ी का ज़्यादातर हिस्सा कहाँ से आया?" },
+    choices: [
+      { text: { en: "From the soil", hi: "मिट्टी से" }, nudge: { en: "That's the most common guess! But in a famous experiment, a willow grew by about 75 kg while its pot of soil lost only a few grams. Think about what leaves take in.", hi: "यही सबसे आम अंदाज़ा है! पर एक मशहूर प्रयोग में एक पेड़ लगभग 75 किलो बढ़ा, जबकि उसके गमले की मिट्टी सिर्फ़ कुछ ग्राम घटी। सोचो, पत्तियाँ क्या लेती हैं।" } },
+      { text: { en: "From carbon dioxide in the air", hi: "हवा की कार्बन डाइऑक्साइड से" }, correct: true },
+      { text: { en: "From the water it drinks", hi: "पिए गए पानी से" }, nudge: { en: "Water is part of it, but most of the water a tree takes up escapes through its leaves. The main building block is something you can't see.", hi: "पानी इसका हिस्सा है, पर पेड़ जो पानी लेता है उसका ज़्यादातर हिस्सा पत्तियों से निकल जाता है। मुख्य निर्माण-सामग्री कुछ ऐसी है जो दिखती नहीं।" } }
+    ],
+    explain: { en: "Correct. Wood is mostly carbon compounds, and that carbon comes from carbon dioxide taken from the air during photosynthesis. In the 1600s, Jan van Helmont grew a willow in a pot for five years: the tree gained about 75 kg, while the soil lost only about 60 grams.", hi: "सही। लकड़ी ज़्यादातर कार्बन के यौगिकों से बनी है, और वह कार्बन प्रकाश-संश्लेषण के दौरान हवा से ली गई कार्बन डाइऑक्साइड से आता है। 1600 के दशक में यान वैन हेलमॉन्ट ने पाँच साल तक गमले में एक पेड़ उगाया: पेड़ का वज़न लगभग 75 किलो बढ़ा, जबकि मिट्टी सिर्फ़ लगभग 60 ग्राम घटी।" }
   }
 );
