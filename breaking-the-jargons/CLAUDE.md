@@ -107,6 +107,10 @@ Next, once Claude credits are available:
 5. Go live on breakingthejargons.com (GitHub Pages workflow added; needs the PR merged, Pages set to GitHub Actions with the custom domain, and DNS records at the registrar).
 6. More Indian languages; English Club and Bhasha Bridge.
 
+## Contact
+
+Company email: info@breakingthejargons.com (shown on the parents and teachers page and in the footer).
+
 ## Why this matters
 
 This is the product for the Claude for Startups application (claude.com/programs/startups). The application needs a website on the company domain, an email on that domain, and a short description. The key point for the application: Claude runs *inside* the product (Mitthu), helping close the gap for children who don't have good schools nearby, not only in how it was built.

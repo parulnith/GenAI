@@ -112,6 +112,11 @@
       en: "The Claude key stays on our server, never in the browser. Mitthu is in preview while live Claude answers are switched on.",
       hi: "Claude की चाबी हमारे सर्वर पर रहती है, ब्राउज़र में कभी नहीं। मिट्ठू अभी झलक में है, लाइव Claude जवाब जल्द चालू होंगे।"
     },
+    contactTitle: { en: "Get in touch", hi: "हमसे संपर्क करें" },
+    contactText: {
+      en: "Questions, ideas, or want to bring this to your school or village? Write to us:",
+      hi: "कोई सवाल या सुझाव है, या इसे अपने स्कूल या गाँव तक लाना चाहते हैं? हमें लिखें:"
+    },
     footerLink: { en: "For parents and teachers", hi: "माता-पिता और शिक्षकों के लिए" },
     footerText: {
       en: "Mitthu is powered by Claude, made by Anthropic. Breaking the Jargons is an independent project by parulnith, not made by Anthropic. No personal information is collected.",

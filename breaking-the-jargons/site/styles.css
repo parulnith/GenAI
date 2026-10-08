@@ -622,6 +622,24 @@ main {
 .claude p { margin: 0; max-width: 62ch; }
 .claude-note { padding: 10px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.08); color: #C9D0E4; font-size: 0.98rem; }
 
+.contact {
+  display: grid;
+  gap: 8px;
+  padding: 20px;
+  border-radius: 22px;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+}
+
+.contact p { margin: 0; color: var(--ink-2); }
+.contact-email {
+  justify-self: start;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.25rem;
+  overflow-wrap: anywhere;
+}
+
 /* ---- Footer ---- */
 
 .footer {
