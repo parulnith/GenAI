@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Breaking the Jargons</title>
+  <meta name="description" content="Learn any school subject by exploring it, not memorising jargon. Worlds for Geography, Coding and Science, plus Shikshak AI for Hindi.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Breaking the Jargons home">Breaking the Jargons</a>
+    <label class="grade">
+      <span>Grade</span>
+      <select id="grade" aria-describedby="grade-note">
+        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+        <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+        <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+    </label>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-text">
+        <p class="eyebrow">Self-study for grades 1 to 10</p>
+        <h1>Learn it by exploring it.</h1>
+        <p class="promise">Every subject becomes a world you can fly through, poke at and test. No textbook jargon required.</p>
+      </div>
+
+      <div class="pip" aria-label="Pip, the guide">
+        <svg viewBox="0 0 200 160" role="img" aria-hidden="true" class="pip-art">
+          <path class="pip-body" d="M20 80 L180 30 L120 140 L96 98 Z"/>
+          <path class="pip-fold" d="M96 98 L180 30 L120 140 Z"/>
+          <path class="pip-fold-line" d="M96 98 L140 70"/>
+          <circle class="pip-eye" cx="128" cy="62" r="6"/>
+          <circle class="pip-eye" cx="112" cy="78" r="6"/>
+          <circle class="pip-shine" cx="130" cy="60" r="2"/>
+          <circle class="pip-shine" cx="114" cy="76" r="2"/>
+        </svg>
+        <div class="bubble">
+          <p>Hi, I'm <strong>Pip</strong>. Pick a world and ask me anything. I'll show you, and I'll ask what you think first!</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="worlds" aria-labelledby="worlds-title">
+      <div class="section-head">
+        <h2 id="worlds-title">Pick a world</h2>
+        <p id="grade-note" class="muted">Pip explains each world at <span id="grade-label">your grade</span>.</p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <p class="tag">Geography</p>
+          <h3>Earth Explorer</h3>
+          <p>Fly a plane over the world's wonders. Ask Pip where to go next.</p>
+          <a class="btn" href="https://parulnith.github.io/earth-explorer" target="_blank" rel="noopener">Explore the world</a>
+        </article>
+
+        <article class="card">
+          <p class="tag">Coding</p>
+          <h3>Story Code Quest</h3>
+          <p>Guide a character through a story using code. Name any story and Pip will build a level for it.</p>
+          <a class="btn" href="https://story-code-quest.vercel.app" target="_blank" rel="noopener">Start the quest</a>
+        </article>
+
+        <article class="card">
+          <p class="tag">Hindi</p>
+          <h3>Shikshak AI</h3>
+          <p>Photograph a Hindi poem or lesson. Get line-by-line translations, word meanings and a Study Buddy for questions.</p>
+          <span class="badge">Android app</span>
+        </article>
+
+        <article class="card card-soon">
+          <p class="tag">Science</p>
+          <h3>Simulations</h3>
+          <p>Change a setting and predict what happens next. Then see if you were right.</p>
+          <span class="badge">Coming soon</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="nudge" aria-labelledby="nudge-title">
+      <h2 id="nudge-title">Found something cool?</h2>
+      <p>Show it to a parent or teacher and ask them what they think. Talking about it is how it sticks.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Breaking the Jargons is a learning project by parulnith. Pip does not collect personal information.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
