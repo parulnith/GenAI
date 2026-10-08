@@ -1,8 +1,8 @@
-# Breaking the Jargons: hub site
+# Breaking the Jargons: site
 
-The landing page for the platform: the name, the one-line promise, Pip, the world cards (Geography, Coding, Shikshak AI, Science coming soon) and the grade picker.
+A learning site for children in India, Class 1 to 10, from big cities to villages. Children pick a dream (space scientist, doctor, engineer, computer engineer, artist, writer), follow a path of puzzles with Pip, and earn stars, badges and skills.
 
-This is plain HTML, CSS and JavaScript with no build step.
+This is plain HTML, CSS and JavaScript with no build step and no API key needed. Pip currently answers from a set of example puzzles (preview mode). Live Claude answers come later.
 
 ## Run locally
 
@@ -15,29 +15,36 @@ python3 -m http.server 8000
 
 Then visit http://localhost:8000.
 
-## Pages
+## Files
 
-- `/` the hub: world cards, grade picker and a demo "Ask Pip" box. The Pip box uses set replies, not an API, so the site works without a Claude key.
-- `/shikshak/` Shikshak AI, a web version of the Hindi tutor. It is not linked from the hub right now and needs the Claude API key and credits to run. Its files are kept for later.
+- `index.html`: the page. Sections: hero and class picker, dream paths, Ask Pip, interests, worlds, languages, how it works, for grown-ups, built with Claude.
+- `worlds.js`: all the content. Dream paths, worlds, interests, languages and puzzles live here. **To add a subject, a path or a puzzle, edit only this file.**
+- `app.js`: renders everything from `worlds.js` and runs the puzzle conversation, stars, badges and path progress.
+- `styles.css`: the look.
+- `shikshak/` and `api/shikshak.js`: a web version of Shikshak AI (Hindi tutor) built on Claude. Not linked from the site right now. It needs a Claude API key and a host that runs serverless functions.
+
+## How a puzzle works
+
+Each puzzle in `worlds.js` has:
+
+- `starter`: the question a child might ask, and `keywords` to match typed questions.
+- `think`: Pip's "what do you think?" question.
+- `choices`: one with `correct: true`; every other choice has a `nudge` (the hint Pip gives).
+- `young` and `older`: the explanation for Class 1 to 4 and Class 5 to 10.
+- `action`: what Pip will do inside the world when it's live.
+
+A dream path step lists puzzle ids. Solving all of a step's puzzles earns its skill. A step with no puzzles points to a world instead.
+
+## Saved data
+
+Class, interests, chosen path and solved puzzles are stored in the browser's localStorage only. Nothing is sent anywhere.
 
 ## Hosting
 
-The hub and the Shikshak page are static files: `index.html`, `styles.css`, `app.js`, `shikshak/`. Any static host works, and you can connect your own domain to it.
+The site is static files, so any static host works, and you can connect your own domain to it.
 
-Shikshak's photo analysis and chat also need `api/shikshak.js` running on a server, because the Claude API key must stay off the browser. A static-only host can't run that file, so Shikshak needs a host that runs serverless functions (for example Vercel, Netlify or Cloudflare). The function reads one environment variable:
+## Next, once Claude credits are available
 
-- `ANTHROPIC_API_KEY`: your Claude API key. It is read only on the server and is never sent to the browser.
-
-## Serverless API
-
-`api/shikshak.js` handles two actions, both through `POST /api/shikshak`:
-
-- `analyse`: takes page images and the grade, and returns the lesson as JSON. Uses Claude Haiku 5.5 with vision.
-- `chat`: takes the lesson and the conversation so far, and returns the Study Buddy's reply.
-
-It rate-limits each visitor to 30 requests an hour. The limit is kept in memory per server instance, so it resets on redeploy and isn't shared between instances. Move it to a shared store before wider sharing.
-
-## What is not here yet
-
-- Pip, the Claude-backed guide on the hub. Milestone 2 in the brief: a general `/api/pip` with tools for the worlds. Pip is a static illustration until then.
-- Earth Explorer and Story Code Quest are linked from the hub, not built into it.
+- Replace the preview puzzle matcher with a `/api/pip` call so Pip can answer any question, in the child's words and language, and generate new puzzles for each path.
+- Add Pip tools inside the live worlds (for example `fly_to` in Earth Explorer).
+- English Club and Bhasha Bridge (translation), using Claude's support for Indian languages.

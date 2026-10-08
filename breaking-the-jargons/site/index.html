@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Breaking the Jargons</title>
-  <meta name="description" content="Learn school subjects by exploring them. Fly around the world, code a story and more, with Pip as your guide.">
+  <meta name="description" content="For every child in India, from big cities to small villages. Pick a dream, like space scientist, doctor or writer, and follow a learning path with Pip, a guide powered by Claude.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,16 +16,34 @@
       <span class="brand-mark" aria-hidden="true">✈️</span>
       Breaking the Jargons
     </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#paths">Dream paths</a>
+      <a href="#ask">Ask Pip</a>
+      <a href="#worlds">Worlds</a>
+      <a href="#grown-ups">For grown-ups</a>
+      <a href="#claude">Built with Claude</a>
+    </nav>
+    <p class="stars" title="Stars you've earned by solving puzzles">
+      <span aria-hidden="true">⭐</span>
+      <strong id="star-count">0</strong>
+      <span class="sr-only">stars,</span>
+      <span id="badge-name" class="badge-name">New Explorer</span>
+    </p>
   </header>
 
   <main id="top">
     <section class="hero">
       <div class="hero-text">
-        <h1>Learn by <span class="wiggle">exploring!</span></h1>
-        <p class="promise">Fly around the world, build a story with code and play with science. No boring textbooks, just discovering.</p>
+        <p class="eyebrow">For every child in India · Class 1 to 10</p>
+        <h1>Dream big. <span class="wiggle">Learn your way</span> there.</h1>
+        <p class="promise">Want to be a space scientist, a doctor or a writer? Pick your dream, and Pip turns it into a path of puzzles and adventures you can follow from anywhere, even without a school nearby.</p>
+        <div class="hero-actions">
+          <a class="btn" href="#paths">Choose my dream</a>
+          <a class="btn btn-ghost" href="#ask">Ask Pip a question</a>
+        </div>
 
         <div class="grade-picker">
-          <p id="grade-title" class="grade-title">Which grade are you in?</p>
+          <p id="grade-title" class="grade-title">Which class are you in?</p>
           <div class="grade-buttons" role="radiogroup" aria-labelledby="grade-title" id="grade-buttons"></div>
         </div>
       </div>
@@ -45,51 +63,104 @@
           </g>
         </svg>
         <div class="bubble">
-          <p>Hi, I'm <strong>Pip</strong>! Pick a world and ask me anything. I'll show you the answer, but first I'll ask what <em>you</em> think!</p>
+          <p>Namaste! I'm <strong>Pip</strong>. Tell me your dream and I'll help you get there, one puzzle at a time. I always ask what <em>you</em> think first!</p>
         </div>
       </div>
     </section>
 
-    <section class="worlds" aria-labelledby="worlds-title">
-      <h2 id="worlds-title">Pick a world to explore</h2>
-      <p class="muted">Pip explains each world at <span id="grade-label">Grade 5</span>.</p>
+    <section id="paths" class="paths" aria-labelledby="paths-title">
+      <h2 id="paths-title">What do you want to become?</h2>
+      <p class="muted">Pick a dream. Each path has steps to climb, skills to earn, and someone from history who did it before you.</p>
+      <div id="path-cards" class="path-cards"></div>
+      <div id="path-panel" class="path-panel" hidden></div>
+    </section>
 
-      <div class="cards">
-        <article class="card card-geo">
-          <span class="icon" aria-hidden="true">🌍</span>
-          <p class="tag">Geography</p>
-          <h3>Earth Explorer</h3>
-          <p>Fly a plane over the world's wonders. Where will you land first?</p>
-          <a class="btn" href="https://parulnith.github.io/earth-explorer" target="_blank" rel="noopener">Let's fly!</a>
+    <section id="ask" class="ask-panel" aria-labelledby="ask-title">
+      <h2 id="ask-title">Got a question? Ask Pip!</h2>
+      <p class="muted">Type it in your own words, or tap one below.</p>
+      <form id="ask-form" class="ask-form">
+        <label class="sr-only" for="ask-input">Your question for Pip</label>
+        <input id="ask-input" type="text" maxlength="200" placeholder="Why is the sky blue?" autocomplete="off">
+        <button class="btn" type="submit">Ask Pip</button>
+      </form>
+      <div id="starters" class="starters" aria-label="Puzzle ideas"></div>
+      <div id="convo" class="convo" aria-live="polite"></div>
+      <p class="preview-note">Preview: Pip is answering from a set of example puzzles while live Claude answers are switched on.</p>
+    </section>
+
+    <section id="interests" class="interests" aria-labelledby="interests-title">
+      <h2 id="interests-title">What do you love?</h2>
+      <p class="muted">Pick as many as you like. Pip will suggest puzzles and worlds that match.</p>
+      <div id="interest-chips" class="chips"></div>
+    </section>
+
+    <section id="worlds" class="worlds" aria-labelledby="worlds-title">
+      <h2 id="worlds-title">Explore the worlds</h2>
+      <p class="muted">Pip explains every world for <span id="grade-label">Class 5</span>. More worlds are on the way!</p>
+      <div id="world-cards" class="cards"></div>
+    </section>
+
+    <section class="languages" aria-labelledby="languages-title">
+      <h2 id="languages-title">Pip will speak your language</h2>
+      <p class="muted">Learn English, and learn in your own language too. Coming soon in:</p>
+      <ul id="language-list" class="language-list"></ul>
+    </section>
+
+    <section class="how" aria-labelledby="how-title">
+      <h2 id="how-title">How Pip helps you learn</h2>
+      <ol class="steps">
+        <li><span class="step-icon" aria-hidden="true">🌟</span><strong>Dream</strong><span>Pick what you want to become.</span></li>
+        <li><span class="step-icon" aria-hidden="true">🤔</span><strong>Guess</strong><span>Pip asks what you think. Wrong guesses get a hint, never a telling-off.</span></li>
+        <li><span class="step-icon" aria-hidden="true">🔭</span><strong>Explore</strong><span>Pip shows you inside a world: flies you there, runs the experiment, replays the step.</span></li>
+        <li><span class="step-icon" aria-hidden="true">🏅</span><strong>Grow</strong><span>Earn stars and skills, and climb your path one step at a time.</span></li>
+      </ol>
+    </section>
+
+    <section id="grown-ups" class="grownups" aria-labelledby="grownups-title">
+      <p class="eyebrow">For parents and teachers</p>
+      <h2 id="grownups-title">A guide that builds thinking, not copying</h2>
+      <p class="lead">Breaking the Jargons is a self-study space for children in Class 1 to 10 across India. Every subject becomes an interactive world, and every child gets a path towards the career they dream of, whether or not there's a good school nearby.</p>
+      <div class="adult-cards">
+        <article>
+          <h3>For every child</h3>
+          <p>Made for children in villages and small towns as much as big cities. It works in a phone's web browser, with no sign-up and no app to install.</p>
         </article>
-
-        <article class="card card-code">
-          <span class="icon" aria-hidden="true">🧩</span>
-          <p class="tag">Coding</p>
-          <h3>Story Code Quest</h3>
-          <p>Help a character through a story by coding their moves. Name any story and Pip builds a level for it.</p>
-          <a class="btn" href="https://story-code-quest.vercel.app" target="_blank" rel="noopener">Start the quest</a>
+        <article>
+          <h3>Dreams become plans</h3>
+          <p>A child who wants to be a doctor or an engineer sees the steps to get there, and the skills each step builds.</p>
         </article>
-
-        <article class="card card-soon">
-          <span class="icon" aria-hidden="true">🔬</span>
-          <p class="tag">Science</p>
-          <h3>Simulations</h3>
-          <p>Change something and guess what will happen. Then see if you were right!</p>
-          <span class="badge">Coming soon</span>
+        <article>
+          <h3>Thinking first</h3>
+          <p>Pip asks for a prediction before explaining, gives hints when a child is stuck, and never hands over homework answers.</p>
+        </article>
+        <article>
+          <h3>Right for their class</h3>
+          <p>The class setting changes Pip's words and depth, so a Class 2 child and a Class 9 child each get explanations they can use.</p>
+        </article>
+        <article>
+          <h3>Their own language</h3>
+          <p>English lessons for children learning it for the first time, and explanations in Indian languages as they're added.</p>
+        </article>
+        <article>
+          <h3>Safe by design</h3>
+          <p>Short answers, no personal information collected, stays on the subject, and encourages children to share what they find with you.</p>
         </article>
       </div>
     </section>
 
-    <section class="ask" aria-labelledby="ask-title">
-      <h2 id="ask-title">Ask Pip something</h2>
-      <p class="muted">Demo mode: Pip knows a few answers for now.</p>
-      <form id="ask-form" class="ask-form">
-        <label class="sr-only" for="ask-input">Your question for Pip</label>
-        <input id="ask-input" type="text" maxlength="200" placeholder="Try: somewhere really cold!" autocomplete="off">
-        <button class="btn" type="submit">Ask Pip</button>
-      </form>
-      <p id="ask-reply" class="bubble reply" aria-live="polite"></p>
+    <section id="claude" class="claude" aria-labelledby="claude-title">
+      <p class="eyebrow">Built with Claude</p>
+      <h2 id="claude-title">Pip runs on Claude, by Anthropic</h2>
+      <p class="lead">Pip is powered by Claude, an AI model made by Anthropic. Claude doesn't only chat. Inside each world it uses tools to act, so children see the answer happen instead of just reading it.</p>
+      <ul class="claude-list">
+        <li><strong>Understands questions in a child's own words</strong>, including half-formed ones and mixed languages.</li>
+        <li><strong>Teaches by asking.</strong> Claude is instructed to ask for a guess, give hints and praise effort.</li>
+        <li><strong>Acts in the world with tools</strong>: fly the plane to Antarctica, change an experiment, replay the step where code went wrong.</li>
+        <li><strong>Adjusts to each class</strong>, from first words in Class 1 to real terms in Class 10.</li>
+        <li><strong>Builds each child's path</strong>, linking every new puzzle to the dream they picked.</li>
+        <li><strong>Explains in Indian languages</strong>, and helps children learn English through the language they already know.</li>
+      </ul>
+      <p class="claude-note">The Claude key stays on our server, never in the browser. Pip is in preview while live Claude answers are switched on, world by world.</p>
     </section>
 
     <section class="nudge" aria-labelledby="nudge-title">
@@ -99,9 +170,13 @@
   </main>
 
   <footer class="footer">
-    <p>Breaking the Jargons is a learning project by parulnith. Pip does not collect any personal information.</p>
+    <p>Pip is powered by Claude, made by Anthropic. Breaking the Jargons is an independent learning project by parulnith and is not made by Anthropic.</p>
+    <p>No personal information is collected. Stars, paths and settings are saved only in this browser.</p>
   </footer>
 
+  <div id="confetti" class="confetti" aria-hidden="true"></div>
+
+  <script src="worlds.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
