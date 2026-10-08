@@ -117,11 +117,7 @@
       en: "Questions, ideas, or want to bring this to your school or village? Write to us:",
       hi: "कोई सवाल या सुझाव है, या इसे अपने स्कूल या गाँव तक लाना चाहते हैं? हमें लिखें:"
     },
-    footerLink: { en: "For parents and teachers", hi: "माता-पिता और शिक्षकों के लिए" },
-    footerText: {
-      en: "Mitthu is powered by Claude, made by Anthropic. Breaking the Jargons is an independent project by parulnith, not made by Anthropic. No personal information is collected.",
-      hi: "मिट्ठू Anthropic के बनाए Claude से चलता है। Breaking the Jargons, parulnith का एक स्वतंत्र प्रोजेक्ट है, Anthropic का बनाया नहीं। कोई निजी जानकारी नहीं ली जाती।"
-    }
+    footerLink: { en: "For parents and teachers", hi: "माता-पिता और शिक्षकों के लिए" }
   };
 
   // Storage can be blocked (private windows, strict settings). Everything still works for the visit.
