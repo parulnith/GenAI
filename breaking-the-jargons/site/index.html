@@ -4,98 +4,102 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Breaking the Jargons</title>
-  <meta name="description" content="Learn any school subject by exploring it, not memorising jargon. Worlds for Geography, Coding and Science, plus Shikshak AI for Hindi.">
+  <meta name="description" content="Learn school subjects by exploring them. Fly around the world, code a story and more, with Pip as your guide.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#top" aria-label="Breaking the Jargons home">Breaking the Jargons</a>
-    <label class="grade">
-      <span>Grade</span>
-      <select id="grade" aria-describedby="grade-note">
-        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-        <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-        <option value="7">7</option><option value="8">8</option><option value="9">9</option>
-        <option value="10">10</option>
-      </select>
-    </label>
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true">✈️</span>
+      Breaking the Jargons
+    </a>
   </header>
 
   <main id="top">
     <section class="hero">
       <div class="hero-text">
-        <p class="eyebrow">Self-study for grades 1 to 10</p>
-        <h1>Learn it by exploring it.</h1>
-        <p class="promise">Every subject becomes a world you can fly through, poke at and test. No textbook jargon required.</p>
+        <h1>Learn by <span class="wiggle">exploring!</span></h1>
+        <p class="promise">Fly around the world, build a story with code and play with science. No boring textbooks, just discovering.</p>
+
+        <div class="grade-picker">
+          <p id="grade-title" class="grade-title">Which grade are you in?</p>
+          <div class="grade-buttons" role="radiogroup" aria-labelledby="grade-title" id="grade-buttons"></div>
+        </div>
       </div>
 
-      <div class="pip" aria-label="Pip, the guide">
-        <svg viewBox="0 0 200 160" role="img" aria-hidden="true" class="pip-art">
-          <path class="pip-body" d="M20 80 L180 30 L120 140 L96 98 Z"/>
-          <path class="pip-fold" d="M96 98 L180 30 L120 140 Z"/>
-          <path class="pip-fold-line" d="M96 98 L140 70"/>
-          <circle class="pip-eye" cx="128" cy="62" r="6"/>
-          <circle class="pip-eye" cx="112" cy="78" r="6"/>
-          <circle class="pip-shine" cx="130" cy="60" r="2"/>
-          <circle class="pip-shine" cx="114" cy="76" r="2"/>
+      <div class="pip" aria-label="Pip, your guide">
+        <svg viewBox="0 0 200 170" role="img" aria-hidden="true" class="pip-art">
+          <ellipse class="pip-shadow" cx="100" cy="162" rx="58" ry="7"/>
+          <g class="pip-float">
+            <path class="pip-body" d="M18 84 L182 26 L122 146 L98 102 Z"/>
+            <path class="pip-fold" d="M98 102 L182 26 L122 146 Z"/>
+            <path class="pip-fold-line" d="M98 102 L146 66"/>
+            <circle class="pip-eye-white" cx="126" cy="62" r="11"/>
+            <circle class="pip-eye-white" cx="108" cy="82" r="11"/>
+            <circle class="pip-eye" cx="129" cy="63" r="5.5"/>
+            <circle class="pip-eye" cx="111" cy="83" r="5.5"/>
+            <path class="pip-smile" d="M100 104 Q112 112 124 102"/>
+          </g>
         </svg>
         <div class="bubble">
-          <p>Hi, I'm <strong>Pip</strong>. Pick a world and ask me anything. I'll show you, and I'll ask what you think first!</p>
+          <p>Hi, I'm <strong>Pip</strong>! Pick a world and ask me anything. I'll show you the answer, but first I'll ask what <em>you</em> think!</p>
         </div>
       </div>
     </section>
 
     <section class="worlds" aria-labelledby="worlds-title">
-      <div class="section-head">
-        <h2 id="worlds-title">Pick a world</h2>
-        <p id="grade-note" class="muted">Pip explains each world at <span id="grade-label">your grade</span>.</p>
-      </div>
+      <h2 id="worlds-title">Pick a world to explore</h2>
+      <p class="muted">Pip explains each world at <span id="grade-label">Grade 5</span>.</p>
 
       <div class="cards">
-        <article class="card">
+        <article class="card card-geo">
+          <span class="icon" aria-hidden="true">🌍</span>
           <p class="tag">Geography</p>
           <h3>Earth Explorer</h3>
-          <p>Fly a plane over the world's wonders. Ask Pip where to go next.</p>
-          <a class="btn" href="https://parulnith.github.io/earth-explorer" target="_blank" rel="noopener">Explore the world</a>
+          <p>Fly a plane over the world's wonders. Where will you land first?</p>
+          <a class="btn" href="https://parulnith.github.io/earth-explorer" target="_blank" rel="noopener">Let's fly!</a>
         </article>
 
-        <article class="card">
+        <article class="card card-code">
+          <span class="icon" aria-hidden="true">🧩</span>
           <p class="tag">Coding</p>
           <h3>Story Code Quest</h3>
-          <p>Guide a character through a story using code. Name any story and Pip will build a level for it.</p>
+          <p>Help a character through a story by coding their moves. Name any story and Pip builds a level for it.</p>
           <a class="btn" href="https://story-code-quest.vercel.app" target="_blank" rel="noopener">Start the quest</a>
         </article>
 
         <article class="card card-soon">
+          <span class="icon" aria-hidden="true">🔬</span>
           <p class="tag">Science</p>
           <h3>Simulations</h3>
-          <p>Change a setting and predict what happens next. Then see if you were right.</p>
+          <p>Change something and guess what will happen. Then see if you were right!</p>
           <span class="badge">Coming soon</span>
         </article>
       </div>
     </section>
 
     <section class="ask" aria-labelledby="ask-title">
-      <div class="section-head">
-        <h2 id="ask-title">Ask Pip</h2>
-        <p class="muted">Demo mode: Pip gives set replies until it's connected to Claude.</p>
-      </div>
+      <h2 id="ask-title">Ask Pip something</h2>
+      <p class="muted">Demo mode: Pip knows a few answers for now.</p>
       <form id="ask-form" class="ask-form">
         <label class="sr-only" for="ask-input">Your question for Pip</label>
-        <input id="ask-input" type="text" maxlength="200" placeholder="Try: somewhere really cold" autocomplete="off">
+        <input id="ask-input" type="text" maxlength="200" placeholder="Try: somewhere really cold!" autocomplete="off">
         <button class="btn" type="submit">Ask Pip</button>
       </form>
-      <p id="ask-reply" class="bubble" aria-live="polite"></p>
+      <p id="ask-reply" class="bubble reply" aria-live="polite"></p>
     </section>
 
     <section class="nudge" aria-labelledby="nudge-title">
       <h2 id="nudge-title">Found something cool?</h2>
-      <p>Show it to a parent or teacher and ask them what they think. Talking about it is how it sticks.</p>
+      <p>Show a grown-up! Tell them what you discovered and ask what they think.</p>
     </section>
   </main>
 
   <footer class="footer">
-    <p>Breaking the Jargons is a learning project by parulnith. Pip does not collect personal information.</p>
+    <p>Breaking the Jargons is a learning project by parulnith. Pip does not collect any personal information.</p>
   </footer>
 
   <script src="app.js"></script>
