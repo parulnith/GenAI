@@ -58,6 +58,7 @@
         <h2 id="class-title" data-i18n="classTitle">Which class are you in?</h2>
         <div class="grade-buttons" role="radiogroup" aria-labelledby="class-title" id="grade-buttons"></div>
       </div>
+      <p class="start-about"><a href="#grown-ups">About Breaking the Jargons <span lang="hi">· हमारे बारे में</span></a></p>
     </section>
 
     <!-- Home: pick a dream -->
@@ -98,28 +99,86 @@
 
     <!-- For grown-ups -->
     <section class="view grownups" id="view-grown-ups" hidden>
-      <p class="kicker" data-i18n="gEyebrow">For parents and teachers</p>
+      <p class="kicker" data-i18n="gEyebrow">About Breaking the Jargons</p>
       <h1 data-i18n="gTitle">Technology as an equaliser</h1>
       <p class="lead" data-i18n="gLead"></p>
 
-      <div class="adult-cards">
-        <article><h3 data-i18n="g1Title"></h3><p data-i18n="g1Text"></p></article>
-        <article><h3 data-i18n="g2Title"></h3><p data-i18n="g2Text"></p></article>
-        <article><h3 data-i18n="g3Title"></h3><p data-i18n="g3Text"></p></article>
-        <article>
-          <h3 data-i18n="g4Title"></h3>
-          <p data-i18n="g4Text"></p>
-          <ul id="language-list" class="language-list"></ul>
-        </article>
-        <article><h3 data-i18n="g5Title"></h3><p data-i18n="g5Text"></p></article>
-      </div>
+      <section class="about-block" aria-labelledby="problem-title">
+        <h2 id="problem-title" data-i18n="problemTitle">The problem</h2>
+        <p data-i18n="problemText"></p>
+      </section>
 
-      <div class="claude">
+      <section class="about-block" aria-labelledby="built-title">
+        <h2 id="built-title" data-i18n="builtTitle">What we built</h2>
+        <div class="adult-cards">
+          <article><h3 data-i18n="g1Title"></h3><p data-i18n="g1Text"></p></article>
+          <article><h3 data-i18n="g2Title"></h3><p data-i18n="g2Text"></p></article>
+          <article><h3 data-i18n="g3Title"></h3><p data-i18n="g3Text"></p></article>
+          <article>
+            <h3 data-i18n="g4Title"></h3>
+            <p data-i18n="g4Text"></p>
+            <ul id="language-list" class="language-list"></ul>
+          </article>
+          <article><h3 data-i18n="g5Title"></h3><p data-i18n="g5Text"></p></article>
+        </div>
+      </section>
+
+      <section class="claude" aria-labelledby="claude-title">
         <p class="kicker" data-i18n="cEyebrow">Built with Claude</p>
-        <h2 data-i18n="cTitle">Mitthu runs on Claude, by Anthropic</h2>
+        <h2 id="claude-title" data-i18n="cTitle">Mitthu runs on Claude, by Anthropic</h2>
         <p data-i18n="cLead"></p>
+
+        <h3 data-i18n="flowTitle">How a question becomes a lesson</h3>
+        <ol class="flow">
+          <li><b data-i18n="flow1Title"></b><span data-i18n="flow1Text"></span></li>
+          <li><b data-i18n="flow2Title"></b><span data-i18n="flow2Text"></span></li>
+          <li><b data-i18n="flow3Title"></b><span data-i18n="flow3Text"></span></li>
+          <li><b data-i18n="flow4Title"></b><span data-i18n="flow4Text"></span></li>
+          <li><b data-i18n="flow5Title"></b><span data-i18n="flow5Text"></span></li>
+        </ol>
+
+        <div class="example">
+          <p class="example-label" data-i18n="exampleLabel">Example</p>
+          <p data-i18n="exKid"></p>
+          <p data-i18n="exMitthu"></p>
+          <pre class="ex-tool"><code>fly_to({ "place": "antarctica" })</code></pre>
+          <p data-i18n="exAfter"></p>
+        </div>
+
+        <h3 data-i18n="whyClaudeTitle">Why Claude</h3>
+        <p data-i18n="whyClaudeText"></p>
         <p class="claude-note" data-i18n="cNote"></p>
-      </div>
+      </section>
+
+      <section class="about-block" aria-labelledby="status-title">
+        <h2 id="status-title" data-i18n="statusTitle">Where we are</h2>
+        <div class="status">
+          <div>
+            <h3 data-i18n="liveTitle">Live today</h3>
+            <ul>
+              <li data-i18n="live1"></li>
+              <li data-i18n="live2"></li>
+              <li data-i18n="live3"></li>
+              <li data-i18n="live4"></li>
+            </ul>
+          </div>
+          <div>
+            <h3 data-i18n="nextTitle">Next</h3>
+            <ul>
+              <li data-i18n="next1"></li>
+              <li data-i18n="next2"></li>
+              <li data-i18n="next3"></li>
+              <li data-i18n="next4"></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="about-block" aria-labelledby="safety-title">
+        <h2 id="safety-title" data-i18n="safetyTitle">Safety and privacy</h2>
+        <p data-i18n="safetyText"></p>
+        <a class="text-link" href="#privacy" data-i18n="privacyLink">Read our privacy page</a>
+      </section>
 
       <div class="contact">
         <h2 data-i18n="contactTitle">Get in touch</h2>
@@ -127,10 +186,30 @@
         <a class="contact-email" href="mailto:info@breakingthejargons.com">info@breakingthejargons.com</a>
       </div>
     </section>
+
+    <!-- Privacy -->
+    <section class="view grownups" id="view-privacy" hidden>
+      <p class="kicker" data-i18n="privacyEyebrow">Privacy</p>
+      <h1 data-i18n="privacyTitle">Your child's privacy</h1>
+      <p class="lead" data-i18n="privacyLead"></p>
+      <div class="policy">
+        <section><h2 data-i18n="pv1T"></h2><p data-i18n="pv1"></p></section>
+        <section><h2 data-i18n="pv2T"></h2><p data-i18n="pv2"></p></section>
+        <section><h2 data-i18n="pv3T"></h2><p data-i18n="pv3"></p></section>
+        <section><h2 data-i18n="pv4T"></h2><p data-i18n="pv4"></p></section>
+        <section><h2 data-i18n="pv5T"></h2><p data-i18n="pv5"></p></section>
+        <section>
+          <h2 data-i18n="pv6T"></h2>
+          <p data-i18n="pv6"></p>
+          <a class="contact-email" href="mailto:info@breakingthejargons.com">info@breakingthejargons.com</a>
+        </section>
+      </div>
+      <p class="updated" data-i18n="privacyUpdated">Last updated: 8 October 2026</p>
+    </section>
   </main>
 
   <footer class="footer">
-    <p><a href="#grown-ups" data-i18n="footerLink">For parents and teachers</a> · <a href="mailto:info@breakingthejargons.com">info@breakingthejargons.com</a></p>
+    <p><a href="#grown-ups" data-i18n="footerLink">About us</a> · <a href="#privacy" data-i18n="footerPrivacy">Privacy</a> · <a href="mailto:info@breakingthejargons.com">info@breakingthejargons.com</a></p>
   </footer>
 
   <div id="confetti" class="confetti" aria-hidden="true"></div>
@@ -240,6 +319,7 @@
   <script src="worlds.js"></script>
   <script src="puzzles-little.js"></script>
   <script src="puzzles-future.js"></script>
+  <script src="animations.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

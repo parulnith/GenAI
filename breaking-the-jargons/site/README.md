@@ -23,7 +23,10 @@ One screen at a time, chosen by the URL hash:
 - `#home`: "What do you want to become?" with the six dream cards.
 - `#path`: the chosen dream's own page: the steps, the next puzzle to do, skills earned, an Indian role model, a "Try this at home" activity for the child's age, and an "India did it" fact.
 - `#ask`: ask Mitthu a question (English or Hindi) or pick an idea; puzzles play here.
-- `#grown-ups`: for parents and teachers, including how Mitthu uses Claude.
+- `#grown-ups`: About. The problem, what we built, how Mitthu uses Claude (step by step, with an example tool call), where we are and what's next, safety, and contact. Linked from the first screen so visitors who aren't children can find it.
+- `#privacy`: what is and isn't collected, in plain words.
+
+After a puzzle is solved, some puzzles offer **Show me!**, which opens an interactive animation: Moon phases, day and night, sky colour, float or sink, and paint mixing.
 
 ## Class levels
 
@@ -37,6 +40,7 @@ Every path step has different puzzles for each level, and every path has a no-ph
 
 - `worlds.js`: paths, worlds and the Class 4 to 7 puzzles, all in English (`en`) and Hindi (`hi`).
 - `puzzles-little.js`, `puzzles-future.js`: the Class 1 to 3 and Class 8 to 10 puzzles.
+- `animations.js`: the five hand-made interactive animations and which puzzles they belong to. Each has a title, a hint and a `mount(host, tr)` function that returns a cleanup function.
 - `app.js`: interface text in both languages (the `UI` object), screens, puzzles, stars, badges and path progress.
 - `index.html`: the page, plus the drawings (Mitthu, path icons, interface icons) as an SVG sprite.
 - `styles.css`: the look. The design is a child's copybook: ruled paper, royal-blue ink, dream cards like stickers, and each path drawn as a numbered trail.
@@ -56,7 +60,7 @@ A path step lists puzzle ids per level: `{ little: [...], young: [...], future: 
 
 ## Hosting
 
-Live at https://breakingthejargons.com, served by GitHub Pages. The workflow `.github/workflows/deploy-site.yml` copies `index.html`, `styles.css`, `app.js`, `worlds.js`, `puzzles-little.js` and `puzzles-future.js` and deploys them on every push to `main` that touches this folder. It can also be run by hand from the Actions tab. `shikshak/`, `api/` and this README are not published.
+Live at https://breakingthejargons.com, served by GitHub Pages. The workflow `.github/workflows/deploy-site.yml` copies `index.html`, `styles.css`, `app.js`, `worlds.js`, `puzzles-little.js`, `puzzles-future.js` and `animations.js` and deploys them on every push to `main` that touches this folder. It can also be run by hand from the Actions tab. `shikshak/`, `api/` and this README are not published.
 
 One-time setup:
 
@@ -72,4 +76,5 @@ Language, class, chosen path and solved puzzles are stored in the browser's loca
 
 - Replace the preview puzzle matcher with a `/api/pip` call so Mitthu can answer any question in the child's words and language, at their age level, and create new puzzles for each path.
 - Add Mitthu tools inside the live worlds (for example `fly_to` in Earth Explorer).
+- Animations on demand: when a child asks to see something, Claude writes a small interactive animation and the page runs it in a sandboxed iframe (`sandbox="allow-scripts"`, so it has no access to the page, plus a content security policy that blocks network requests).
 - More Indian languages.

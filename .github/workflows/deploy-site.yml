@@ -37,7 +37,7 @@ jobs:
         run: |
           mkdir _site
           cd breaking-the-jargons/site
-          cp index.html styles.css app.js worlds.js puzzles-little.js puzzles-future.js ../../_site/
+          cp index.html styles.css app.js worlds.js puzzles-little.js puzzles-future.js animations.js ../../_site/
           echo "breakingthejargons.com" > ../../_site/CNAME
 
       - uses: actions/configure-pages@v5

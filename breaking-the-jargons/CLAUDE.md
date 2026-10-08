@@ -76,7 +76,9 @@ Static HTML, CSS and JavaScript, no build step, no API key needed. Screens, one 
 - `#home`: "What do you want to become?" with the six dream cards.
 - `#path`: the chosen dream's own page: level badge, role model, progress, steps (only the next step shows its puzzles), "Try this at home", "India did it".
 - `#ask`: ask Mitthu (English or Hindi) or tap an idea; the puzzle conversation plays here.
-- `#grown-ups`: for parents and teachers, and how Mitthu uses Claude.
+- `#grown-ups`: About, written for parents, teachers, partners and the Claude for Startups reviewers: the problem, what we built, how Mitthu uses Claude (step-by-step flow plus an example `fly_to` tool call), why Claude, where we are and what's next, safety, contact. Linked from the first screen.
+- `#privacy`: privacy page in plain words (no personal data, progress in the browser only, Google Fonts and GitHub Pages logs, what will change when Claude goes live).
+- **Show me! animations:** 5 hand-made interactive animations (`site/animations.js`: Moon phases, day and night, sky colour, float or sink, paint mixing) open after the matching puzzle is solved.
 
 Content lives in `site/worlds.js` (paths, worlds, Class 4 to 7 puzzles), `site/puzzles-little.js` (Class 1 to 3) and `site/puzzles-future.js` (Class 8 to 10), all `{ en, hi }`; interface text is the `UI` object in `site/app.js`. Drawings (Mitthu, icons) are an SVG sprite in `site/index.html`. Adding a path or puzzle needs only the content files. See `site/README.md`.
 
@@ -106,6 +108,7 @@ Next, once Claude credits are available:
 4. Story → level generator in Story Code Quest.
 5. Go live on breakingthejargons.com (GitHub Pages workflow added; needs the PR merged, Pages set to GitHub Actions with the custom domain, and DNS records at the registrar).
 6. More Indian languages; English Club and Bhasha Bridge.
+7. **Animations on demand:** a child asks to see something and Claude writes a small interactive animation on the spot, run in a sandboxed iframe (scripts only, no access to the page, and a content security policy that blocks network requests). The hand-made animations show the target experience.
 
 ## Contact
 
