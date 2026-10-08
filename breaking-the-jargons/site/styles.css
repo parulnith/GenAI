@@ -222,6 +222,39 @@ h2 { margin: 0; font-size: 1.5rem; }
 
 .footer p { margin: 0; }
 
+.ask {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.ask-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+.ask-form input {
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  min-width: 0;
+}
+
+.ask .bubble { max-width: none; min-height: 3.5em; margin: 0; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 @media (min-width: 640px) {
   .cards { grid-template-columns: repeat(2, 1fr); }
 }

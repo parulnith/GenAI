@@ -17,8 +17,8 @@ Then visit http://localhost:8000.
 
 ## Pages
 
-- `/` the hub: world cards and grade picker.
-- `/shikshak/` Shikshak AI, a web version of the Hindi tutor. Visitors add up to 5 photos of a lesson and get line-by-line translations, a synopsis, difficult words, text-to-speech and a Study Buddy chat.
+- `/` the hub: world cards, grade picker and a demo "Ask Pip" box. The Pip box uses set replies, not an API, so the site works without a Claude key.
+- `/shikshak/` Shikshak AI, a web version of the Hindi tutor. It is not linked from the hub right now and needs the Claude API key and credits to run. Its files are kept for later.
 
 ## Hosting
 

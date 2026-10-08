@@ -66,13 +66,6 @@
           <a class="btn" href="https://story-code-quest.vercel.app" target="_blank" rel="noopener">Start the quest</a>
         </article>
 
-        <article class="card">
-          <p class="tag">Hindi</p>
-          <h3>Shikshak AI</h3>
-          <p>Photograph a Hindi poem or lesson. Get line-by-line translations, word meanings and a Study Buddy for questions.</p>
-          <a class="btn" href="shikshak/">Open Shikshak AI</a>
-        </article>
-
         <article class="card card-soon">
           <p class="tag">Science</p>
           <h3>Simulations</h3>
@@ -80,6 +73,19 @@
           <span class="badge">Coming soon</span>
         </article>
       </div>
+    </section>
+
+    <section class="ask" aria-labelledby="ask-title">
+      <div class="section-head">
+        <h2 id="ask-title">Ask Pip</h2>
+        <p class="muted">Demo mode: Pip gives set replies until it's connected to Claude.</p>
+      </div>
+      <form id="ask-form" class="ask-form">
+        <label class="sr-only" for="ask-input">Your question for Pip</label>
+        <input id="ask-input" type="text" maxlength="200" placeholder="Try: somewhere really cold" autocomplete="off">
+        <button class="btn" type="submit">Ask Pip</button>
+      </form>
+      <p id="ask-reply" class="bubble" aria-live="polite"></p>
     </section>
 
     <section class="nudge" aria-labelledby="nudge-title">
