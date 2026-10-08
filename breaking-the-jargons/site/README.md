@@ -54,6 +54,16 @@ Each puzzle has:
 
 A path step lists puzzle ids per level: `{ little: [...], young: [...], future: [...] }`. Solving the child's level's puzzles earns the step's skill. A step with no puzzles points to a world.
 
+## Hosting
+
+Live at https://breakingthejargons.com, served by GitHub Pages. The workflow `.github/workflows/deploy-site.yml` copies `index.html`, `styles.css`, `app.js`, `worlds.js`, `puzzles-little.js` and `puzzles-future.js` and deploys them on every push to `main` that touches this folder. It can also be run by hand from the Actions tab. `shikshak/`, `api/` and this README are not published.
+
+One-time setup:
+
+1. Repo **Settings → Pages**: Source **GitHub Actions**, Custom domain `breakingthejargons.com`.
+2. DNS at the domain registrar: four `A` records for `@` (`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`) and a `CNAME` record for `www` pointing to `parulnith.github.io`.
+3. When the domain shows as verified, tick **Enforce HTTPS**.
+
 ## Saved data
 
 Language, class, chosen path and solved puzzles are stored in the browser's localStorage only. Nothing is sent anywhere.

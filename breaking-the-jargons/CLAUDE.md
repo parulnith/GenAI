@@ -84,7 +84,7 @@ Content lives in `site/worlds.js` (paths, worlds, Class 4 to 7 puzzles), `site/p
 
 ## Architecture
 
-- **Hosting:** the site is static, so any static host works; connect the custom domain there. Not tied to Vercel. When Mitthu goes live, the API function needs a host that runs serverless functions (for example Vercel, Netlify or Cloudflare).
+- **Hosting:** GitHub Pages at **https://breakingthejargons.com**. The workflow `.github/workflows/deploy-site.yml` publishes the site's public files from `breaking-the-jargons/site` on every push to `main` that touches the site (the parked Shikshak page and API are left out). When Mitthu goes live, the `/api/pip` function needs a host that runs serverless functions (for example Vercel, Netlify or Cloudflare); GitHub Pages can't run it.
 - **Claude API:** never put the API key in browser code. A small serverless function `/api/pip` that:
   - holds `ANTHROPIC_API_KEY` as an environment variable,
   - adds Mitthu's system prompt (language, class, chosen path, current world and context, kid-safety rules),
@@ -104,7 +104,7 @@ Next, once Claude credits are available:
 2. `/api/pip` serverless function with the safety system prompt; Mitthu answers any question in the child's language and level, and creates new puzzles for each path.
 3. Mitthu "Ask" tab in Earth Explorer with one tool: `fly_to(wonder_id)`.
 4. Story → level generator in Story Code Quest.
-5. Choose a host, deploy, connect the custom domain.
+5. Go live on breakingthejargons.com (GitHub Pages workflow added; needs the PR merged, Pages set to GitHub Actions with the custom domain, and DNS records at the registrar).
 6. More Indian languages; English Club and Bhasha Bridge.
 
 ## Why this matters
