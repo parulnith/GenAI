@@ -1,7 +1,8 @@
 (function () {
   var data = window.BTJ;
   var KEYS = { lang: "btj-lang", grade: "btj-grade", solved: "btj-solved", path: "btj-path" };
-  var VIEWS = ["start", "home", "path", "ask", "grown-ups"];
+  var VIEWS = ["start", "home", "path", "ask", "grown-ups", "privacy"];
+  var OPEN_VIEWS = ["grown-ups", "privacy"]; // Readable before choosing a language and class.
   var SVG_NS = "http://www.w3.org/2000/svg";
 
   // Class levels. Each path step has its own puzzles for each level, and each path has an
@@ -71,7 +72,7 @@
     greet: { en: "Hello! I love a good puzzle. Try one of these:", hi: "नमस्ते! मुझे पहेलियाँ बहुत पसंद हैं। इनमें से कोई आज़माओ:" },
     unknown: { en: "Ooh, great question! I don't know that one yet. Try one of these:", hi: "वाह, बढ़िया सवाल! यह मैं अभी नहीं जानता। इनमें से कोई आज़माओ:" },
 
-    gEyebrow: { en: "For parents and teachers", hi: "माता-पिता और शिक्षकों के लिए" },
+    gEyebrow: { en: "About Breaking the Jargons", hi: "Breaking the Jargons के बारे में" },
     gTitle: { en: "Technology as an equaliser", hi: "तकनीक, सबके लिए बराबरी" },
     gLead: {
       en: "A child in a village should have the same chance to become a scientist, a doctor or an engineer as a child in a big city. Breaking the Jargons gives every child in Class 1 to 10 a clear path towards their dream, in English and Hindi, on any phone.",
@@ -105,19 +106,79 @@
     cEyebrow: { en: "Built with Claude", hi: "Claude से बना" },
     cTitle: { en: "Mitthu runs on Claude, by Anthropic", hi: "मिट्ठू Anthropic के Claude पर चलता है" },
     cLead: {
-      en: "Mitthu is powered by Claude, an AI model made by Anthropic. Claude understands a child's question in English, Hindi or a mix of both, teaches by asking, and acts inside each learning world with tools, like flying the plane to Antarctica or replaying the step where code went wrong.",
-      hi: "मिट्ठू को Anthropic का बनाया AI मॉडल Claude चलाता है। Claude बच्चे का सवाल अंग्रेज़ी, हिंदी या दोनों के मेल में समझता है, सवाल पूछकर सिखाता है, और हर दुनिया के अंदर टूल्स से काम करता है, जैसे प्लेन को अंटार्कटिका ले जाना या कोड की गलती वाला कदम दोबारा दिखाना।"
+      en: "Mitthu, the guide on every path, is built on Claude, an AI model made by Anthropic. Claude is what lets Mitthu understand a child's own words, teach by asking, and act inside our learning worlds.",
+      hi: "हर रास्ते का साथी मिट्ठू, Anthropic के बनाए AI मॉडल Claude पर बना है। Claude की वजह से ही मिट्ठू बच्चे के अपने शब्द समझता है, सवाल पूछकर सिखाता है, और हमारी सीखने की दुनियाओं के अंदर काम करता है।"
     },
     cNote: {
-      en: "The Claude key stays on our server, never in the browser. Mitthu is in preview while live Claude answers are switched on.",
-      hi: "Claude की चाबी हमारे सर्वर पर रहती है, ब्राउज़र में कभी नहीं। मिट्ठू अभी झलक में है, लाइव Claude जवाब जल्द चालू होंगे।"
+      en: "Today Mitthu runs in preview, with 53 puzzles and 5 animations we made by hand. Live Claude answers are the next step. The Claude API key will stay on our server, never in the browser.",
+      hi: "आज मिट्ठू झलक के रूप में चलता है, हमारी हाथ से बनाई 53 पहेलियों और 5 एनिमेशन के साथ। लाइव Claude जवाब अगला कदम हैं। Claude की API चाबी हमारे सर्वर पर रहेगी, ब्राउज़र में कभी नहीं।"
     },
     contactTitle: { en: "Get in touch", hi: "हमसे संपर्क करें" },
     contactText: {
       en: "Questions, ideas, or want to bring this to your school or village? Write to us:",
       hi: "कोई सवाल या सुझाव है, या इसे अपने स्कूल या गाँव तक लाना चाहते हैं? हमें लिखें:"
     },
-    footerLink: { en: "For parents and teachers", hi: "माता-पिता और शिक्षकों के लिए" }
+    footerPrivacy: { en: "Privacy", hi: "गोपनीयता" },
+    showMe: { en: "Show me!", hi: "मुझे दिखाओ!" },
+    closeAnim: { en: "Close", hi: "बंद करो" },
+    animNote: { en: "Made by hand for this preview. Soon Mitthu will build a new animation for any question you ask.", hi: "यह झलक के लिए हाथ से बनाया गया है। जल्द ही मिट्ठू तुम्हारे किसी भी सवाल के लिए नया एनिमेशन बनाएगा।" },
+    problemTitle: { en: "The problem", hi: "समस्या" },
+    problemText: {
+      en: "Many children in India, especially in villages and small towns, don't have a teacher nearby who can answer their questions. Textbooks are full of jargon, often in a language they are still learning. And many children never hear what a scientist, a doctor or an engineer actually does, so they never imagine becoming one.",
+      hi: "भारत में कई बच्चों के पास, ख़ासकर गाँवों और छोटे शहरों में, ऐसा शिक्षक नहीं होता जो उनके सवालों के जवाब दे सके। किताबें कठिन शब्दों से भरी होती हैं, अक्सर ऐसी भाषा में जो वे अभी सीख ही रहे हैं। और कई बच्चों ने कभी सुना ही नहीं कि वैज्ञानिक, डॉक्टर या इंजीनियर असल में क्या करते हैं, इसलिए वे ऐसा बनने का सपना भी नहीं देखते।"
+    },
+    builtTitle: { en: "What we built", hi: "हमने क्या बनाया" },
+    flowTitle: { en: "How a question becomes a lesson", hi: "एक सवाल पाठ कैसे बनता है" },
+    flow1Title: { en: "A child asks", hi: "बच्चा पूछता है" },
+    flow1Text: { en: "In Hindi, English or a mix of both, in their own words.", hi: "हिंदी, अंग्रेज़ी या दोनों के मेल में, अपने शब्दों में।" },
+    flow2Title: { en: "Claude reads the context", hi: "Claude संदर्भ समझता है" },
+    flow2Text: { en: "Our server sends Claude the question with Mitthu's instructions: the child's class, language, chosen dream and the safety rules.", hi: "हमारा सर्वर सवाल को मिट्ठू के निर्देशों के साथ Claude को भेजता है: बच्चे की कक्षा, भाषा, चुना हुआ सपना और सुरक्षा के नियम।" },
+    flow3Title: { en: "Mitthu asks back", hi: "मिट्ठू पलटकर पूछता है" },
+    flow3Text: { en: "Claude replies with a question first, and hints when the child is stuck, never a ready-made answer.", hi: "Claude पहले एक सवाल पूछता है, और बच्चा अटके तो इशारे देता है, कभी बना-बनाया जवाब नहीं।" },
+    flow4Title: { en: "The world responds", hi: "दुनिया जवाब देती है" },
+    flow4Text: { en: "Claude calls tools that act inside a learning world, like flying the plane to Antarctica, or writes a small interactive animation the child can play with.", hi: "Claude ऐसे टूल चलाता है जो सीखने की दुनिया के अंदर काम करते हैं, जैसे प्लेन को अंटार्कटिका ले जाना, या एक छोटा इंटरैक्टिव एनिमेशन बनाता है जिससे बच्चा खेल सके।" },
+    flow5Title: { en: "Progress on the path", hi: "रास्ते पर आगे बढ़ना" },
+    flow5Text: { en: "The child earns a star and a skill on their dream path. Progress stays on their own phone.", hi: "बच्चा अपने सपने के रास्ते पर सितारा और हुनर कमाता है। प्रगति उसके अपने फ़ोन में रहती है।" },
+    exampleLabel: { en: "Example", hi: "उदाहरण" },
+    exKid: { en: "Child, Class 3: \"Take me somewhere really cold!\"", hi: "बच्चा, कक्षा 3: \"मुझे किसी बहुत ठंडी जगह ले चलो!\"" },
+    exMitthu: { en: "Mitthu: \"Brrr! Where do you think it's coldest: the Sahara, Antarctica or the top of Mount Everest?\"", hi: "मिट्ठू: \"ब्र्र्र! तुम्हें क्या लगता है, सबसे ठंडा कहाँ है: सहारा, अंटार्कटिका या एवरेस्ट की चोटी?\"" },
+    exAfter: { en: "The plane in Earth Explorer flies to Antarctica while Mitthu explains why it is so cold.", hi: "Earth Explorer में प्लेन अंटार्कटिका की ओर उड़ता है, और मिट्ठू समझाता है कि वहाँ इतनी ठंड क्यों है।" },
+    whyClaudeTitle: { en: "Why Claude", hi: "Claude ही क्यों" },
+    whyClaudeText: {
+      en: "Claude follows detailed teaching and safety instructions reliably, writes clearly in both Hindi and English, uses tools, and can write working code for an animation on the spot. So Mitthu can show children the answer instead of only telling them.",
+      hi: "Claude पढ़ाने और सुरक्षा के विस्तृत निर्देशों का भरोसे से पालन करता है, हिंदी और अंग्रेज़ी दोनों में साफ़ लिखता है, टूल्स चलाता है, और तुरंत किसी एनिमेशन का चलता हुआ कोड लिख सकता है। इसलिए मिट्ठू बच्चों को जवाब सिर्फ़ बताता नहीं, दिखाता भी है।"
+    },
+    statusTitle: { en: "Where we are", hi: "हम कहाँ हैं" },
+    liveTitle: { en: "Live today", hi: "आज उपलब्ध" },
+    live1: { en: "6 dream paths for Class 1 to 10", hi: "कक्षा 1 से 10 के लिए 6 सपनों के रास्ते" },
+    live2: { en: "53 puzzles in English and Hindi, different for each class level", hi: "अंग्रेज़ी और हिंदी में 53 पहेलियाँ, हर कक्षा-स्तर के लिए अलग" },
+    live3: { en: "5 interactive animations, and two learning worlds: Earth Explorer and Story Code Quest", hi: "5 इंटरैक्टिव एनिमेशन, और दो सीखने की दुनियाएँ: Earth Explorer और Story Code Quest" },
+    live4: { en: "Built first for the founder's son, our first tester", hi: "सबसे पहले संस्थापक के बेटे के लिए बनाया, जो हमारा पहला टेस्टर है" },
+    nextTitle: { en: "Next", hi: "आगे" },
+    next1: { en: "Live Claude answers for Mitthu, for any question", hi: "मिट्ठू के लिए लाइव Claude जवाब, किसी भी सवाल पर" },
+    next2: { en: "Animations on demand: a child asks to see something, and Claude builds an interactive animation for it on the spot, run safely in a sandbox", hi: "माँगने पर एनिमेशन: बच्चा कुछ देखना चाहे, और Claude उसी पल उसके लिए एक इंटरैक्टिव एनिमेशन बनाए, जो सुरक्षित सैंडबॉक्स में चले" },
+    next3: { en: "Mitthu's tools inside Earth Explorer, and coding levels built from any story", hi: "Earth Explorer के अंदर मिट्ठू के टूल, और किसी भी कहानी से बने कोडिंग लेवल" },
+    next4: { en: "Science Lab, English Club and more Indian languages", hi: "विज्ञान प्रयोगशाला, इंग्लिश क्लब और अधिक भारतीय भाषाएँ" },
+    safetyTitle: { en: "Safety and privacy", hi: "सुरक्षा और गोपनीयता" },
+    safetyText: { en: "No sign-up and no personal information. Mitthu gives short answers, stays on the lesson, and asks children not to share personal details.", hi: "न साइन-अप, न कोई निजी जानकारी। मिट्ठू छोटे जवाब देता है, पाठ पर ही रहता है, और बच्चों से निजी बातें न बताने को कहता है।" },
+    privacyLink: { en: "Read our privacy page", hi: "हमारा गोपनीयता पेज पढ़ें" },
+    privacyEyebrow: { en: "Privacy", hi: "गोपनीयता" },
+    privacyTitle: { en: "Your child's privacy", hi: "आपके बच्चे की गोपनीयता" },
+    privacyLead: { en: "Breaking the Jargons is made for children, so we collect as little as possible. Here is exactly what happens.", hi: "Breaking the Jargons बच्चों के लिए बना है, इसलिए हम कम से कम जानकारी लेते हैं। यहाँ ठीक-ठीक बताया गया है कि क्या होता है।" },
+    pv1T: { en: "We don't collect personal information", hi: "हम निजी जानकारी नहीं लेते" },
+    pv1: { en: "There is no sign-up. We never ask for a name, email, phone number, school or location.", hi: "कोई साइन-अप नहीं है। हम कभी नाम, ईमेल, फ़ोन नंबर, स्कूल या जगह नहीं पूछते।" },
+    pv2T: { en: "Progress stays on your device", hi: "प्रगति आपके डिवाइस पर रहती है" },
+    pv2: { en: "The chosen language, class, dream path and solved puzzles are saved in this browser's storage on this device only. They are not sent to us. Clearing the browser's data removes them.", hi: "चुनी हुई भाषा, कक्षा, सपने का रास्ता और हल की गई पहेलियाँ सिर्फ़ इसी डिवाइस के ब्राउज़र में सेव होती हैं। ये हमें नहीं भेजी जातीं। ब्राउज़र का डेटा मिटाने पर ये भी मिट जाती हैं।" },
+    pv3T: { en: "No ads, no tracking", hi: "न विज्ञापन, न ट्रैकिंग" },
+    pv3: { en: "We don't use advertising, analytics or tracking cookies. The site loads its fonts from Google Fonts, which, like any website, receives your device's internet address when the fonts load. Our host, GitHub Pages, also keeps standard server logs.", hi: "हम विज्ञापन, एनालिटिक्स या ट्रैकिंग कुकी का इस्तेमाल नहीं करते। साइट अपने फ़ॉन्ट Google Fonts से लोड करती है, जिसे किसी भी वेबसाइट की तरह फ़ॉन्ट लोड होते समय आपके डिवाइस का इंटरनेट पता मिलता है। हमारा होस्ट, GitHub Pages, भी सामान्य सर्वर लॉग रखता है।" },
+    pv4T: { en: "Questions typed today", hi: "आज लिखे गए सवाल" },
+    pv4: { en: "In the current preview, questions typed to Mitthu are matched to puzzles inside the browser and are not sent anywhere.", hi: "अभी की झलक में, मिट्ठू से पूछे गए सवाल ब्राउज़र के अंदर ही पहेलियों से मिलाए जाते हैं और कहीं नहीं भेजे जाते।" },
+    pv5T: { en: "When Mitthu goes live with Claude", hi: "जब मिट्ठू Claude के साथ लाइव होगा" },
+    pv5: { en: "Questions will be sent through our server to Claude, made by Anthropic, to get Mitthu's answer. We will not send names or personal details, and Mitthu is told never to ask for them. We will update this page before this starts.", hi: "मिट्ठू का जवाब पाने के लिए सवाल हमारे सर्वर से होकर Anthropic के बनाए Claude को भेजे जाएँगे। हम नाम या निजी जानकारी नहीं भेजेंगे, और मिट्ठू को उन्हें कभी न पूछने का निर्देश है। यह शुरू होने से पहले हम यह पेज अपडेट करेंगे।" },
+    pv6T: { en: "Questions about privacy", hi: "गोपनीयता के बारे में सवाल" },
+    pv6: { en: "Write to us any time:", hi: "हमें कभी भी लिखें:" },
+    privacyUpdated: { en: "Last updated: 8 October 2026", hi: "आख़िरी बदलाव: 8 अक्टूबर 2026" },
+    footerLink: { en: "About us", hi: "हमारे बारे में" }
   };
 
   // Storage can be blocked (private windows, strict settings). Everything still works for the visit.
@@ -222,7 +283,7 @@
 
   function currentView() {
     var name = window.location.hash.replace("#", "");
-    if ((!state.langChosen || !state.gradeChosen) && name !== "grown-ups") return "start";
+    if ((!state.langChosen || !state.gradeChosen) && OPEN_VIEWS.indexOf(name) === -1) return "start";
     if (name === "path" && !state.path) return "home";
     return VIEWS.indexOf(name) !== -1 ? name : "home";
   }
@@ -546,7 +607,35 @@
     return msg;
   }
 
+  var stopAnimation = null;
+
+  function closeAnimation() {
+    if (stopAnimation) stopAnimation();
+    stopAnimation = null;
+  }
+
+  // Opens a puzzle's interactive animation inside the conversation.
+  function openAnimation(anim, after) {
+    closeAnimation();
+    var panel = make("div", "anim-panel");
+    var head = make("div", "anim-head");
+    head.appendChild(make("h3", "", t(anim.title)));
+    var close = make("button", "anim-close", ui("closeAnim"));
+    close.type = "button";
+    close.addEventListener("click", function () { closeAnimation(); panel.remove(); });
+    head.appendChild(close);
+    panel.appendChild(head);
+    panel.appendChild(make("p", "anim-hint", t(anim.hint)));
+    var stage = make("div", "anim-stage");
+    panel.appendChild(stage);
+    panel.appendChild(make("p", "anim-note", ui("animNote")));
+    after.insertAdjacentElement("afterend", panel);
+    stopAnimation = anim.mount(stage, t);
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   function resetConvo() {
+    closeAnimation();
     el.convo.innerHTML = "";
     el.ideas.hidden = false;
   }
@@ -628,6 +717,16 @@
     win.appendChild(make("p", "win-share", ui("share")));
 
     var actions = make("div", "win-actions");
+    var anim = data.animations && data.animations.forPuzzle[puzzle.id];
+    if (anim) {
+      var show = make("button", "btn btn-show", ui("showMe"));
+      show.type = "button";
+      show.addEventListener("click", function () {
+        var open = win.nextElementSibling && win.nextElementSibling.classList.contains("anim-panel");
+        if (!open) openAnimation(anim, win);
+      });
+      actions.appendChild(show);
+    }
     if (onPath) {
       var back = make("a", "btn", ui("backToPath"));
       back.href = "#path";
