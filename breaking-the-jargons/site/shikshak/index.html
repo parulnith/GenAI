@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shikshak AI</title>
+  <meta name="description" content="Photograph a Hindi poem or lesson and get line-by-line translations, word meanings and a Study Buddy.">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="shikshak.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../">Breaking the Jargons</a>
+    <span class="crumb">Shikshak AI</span>
+  </header>
+
+  <main class="sk">
+    <section class="sk-intro">
+      <p class="eyebrow">Hindi lessons</p>
+      <h1>Shikshak AI</h1>
+      <p class="promise">Take a photo of a Hindi poem or lesson. Shikshak will explain it line by line, then answer your questions.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="upload-title">
+      <h2 id="upload-title">1. Add your lesson</h2>
+      <p class="muted">You can add up to 5 pages from the same lesson, in order.</p>
+
+      <label class="drop" for="photos">
+        <span class="drop-text">Choose photos or take a picture</span>
+        <input id="photos" type="file" accept="image/*" multiple>
+      </label>
+
+      <ul id="thumbs" class="thumbs" aria-label="Selected pages"></ul>
+
+      <button id="analyse" class="btn" type="button" disabled>Explain this lesson</button>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="result" class="panel" hidden aria-labelledby="result-title">
+      <h2 id="result-title">2. Your lesson</h2>
+
+      <div class="block">
+        <h3>Synopsis</h3>
+        <p id="synopsis"></p>
+      </div>
+
+      <div class="block">
+        <div class="block-head">
+          <h3>Line by line</h3>
+          <button id="listen-all" class="btn btn-small" type="button">Listen to all</button>
+        </div>
+        <ol id="lines" class="lines"></ol>
+      </div>
+
+      <div class="block">
+        <h3>Difficult words</h3>
+        <ul id="words" class="words"></ul>
+      </div>
+    </section>
+
+    <section id="buddy" class="panel" hidden aria-labelledby="buddy-title">
+      <h2 id="buddy-title">3. Ask your Study Buddy</h2>
+      <p class="muted">Ask about a word, a line or the grammar. Ask a parent or teacher if you want to dig deeper.</p>
+
+      <div id="chat" class="chat" aria-live="polite"></div>
+
+      <form id="chat-form" class="chat-form">
+        <label class="sr-only" for="question">Your question</label>
+        <input id="question" type="text" maxlength="300" placeholder="What does this word mean?" autocomplete="off" required>
+        <button class="btn" type="submit">Ask</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Shikshak does not collect personal information. Photos are sent only to explain the lesson.</p>
+  </footer>
+
+  <script src="shikshak.js"></script>
+</body>
+</html>

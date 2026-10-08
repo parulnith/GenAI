@@ -15,11 +15,29 @@ python3 -m http.server 8000
 
 Then visit http://localhost:8000.
 
+## Pages
+
+- `/` the hub: world cards and grade picker.
+- `/shikshak/` Shikshak AI, a web version of the Hindi tutor. Visitors add up to 5 photos of a lesson and get line-by-line translations, a synopsis, difficult words, text-to-speech and a Study Buddy chat.
+
 ## Deploy on Vercel
 
 Import the repo in Vercel and set **Root Directory** to `breaking-the-jargons/site`. There is no build command and no output directory.
 
+Add an environment variable in the Vercel project:
+
+- `ANTHROPIC_API_KEY`: your Claude API key. It is read only by `api/shikshak.js` on the server and is never sent to the browser.
+
+## Serverless API
+
+`api/shikshak.js` handles two actions, both through `POST /api/shikshak`:
+
+- `analyse`: takes page images and the grade, and returns the lesson as JSON. Uses Claude Haiku 5.5 with vision.
+- `chat`: takes the lesson and the conversation so far, and returns the Study Buddy's reply.
+
+It rate-limits each visitor to 30 requests an hour. The limit is kept in memory per server instance, so it resets on redeploy and isn't shared between instances. Move it to a shared store before wider sharing.
+
 ## What is not here yet
 
-- `/api/pip` (the Claude-backed guide). Milestone 2 in the brief. Pip is a static illustration until then.
-- Shikshak AI has no public link yet. Its repo is private, so the card shows a badge instead of a button.
+- Pip, the Claude-backed guide on the hub. Milestone 2 in the brief: a general `/api/pip` with tools for the worlds. Pip is a static illustration until then.
+- Earth Explorer and Story Code Quest are linked from the hub, not built into it.
