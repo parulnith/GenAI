@@ -20,13 +20,13 @@ Then visit http://localhost:8000.
 - `/` the hub: world cards and grade picker.
 - `/shikshak/` Shikshak AI, a web version of the Hindi tutor. Visitors add up to 5 photos of a lesson and get line-by-line translations, a synopsis, difficult words, text-to-speech and a Study Buddy chat.
 
-## Deploy on Vercel
+## Hosting
 
-Import the repo in Vercel and set **Root Directory** to `breaking-the-jargons/site`. There is no build command and no output directory.
+The hub and the Shikshak page are static files: `index.html`, `styles.css`, `app.js`, `shikshak/`. Any static host works, and you can connect your own domain to it.
 
-Add an environment variable in the Vercel project:
+Shikshak's photo analysis and chat also need `api/shikshak.js` running on a server, because the Claude API key must stay off the browser. A static-only host can't run that file, so Shikshak needs a host that runs serverless functions (for example Vercel, Netlify or Cloudflare). The function reads one environment variable:
 
-- `ANTHROPIC_API_KEY`: your Claude API key. It is read only by `api/shikshak.js` on the server and is never sent to the browser.
+- `ANTHROPIC_API_KEY`: your Claude API key. It is read only on the server and is never sent to the browser.
 
 ## Serverless API
 
