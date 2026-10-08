@@ -1,0 +1,50 @@
+# Publishes the Breaking the Jargons site (breaking-the-jargons/site) to GitHub Pages,
+# served at https://breakingthejargons.com.
+#
+# One-time setup in the repo: Settings > Pages > Source: GitHub Actions,
+# and Custom domain: breakingthejargons.com.
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "breaking-the-jargons/site/**"
+      - ".github/workflows/deploy-site.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish; queue the newest one after it.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Only the public files. The parked Shikshak page and its API need a server, so they stay out.
+      - name: Collect site files
+        run: |
+          mkdir _site
+          cd breaking-the-jargons/site
+          cp index.html styles.css app.js worlds.js puzzles-little.js puzzles-future.js ../../_site/
+          echo "breakingthejargons.com" > ../../_site/CNAME
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
