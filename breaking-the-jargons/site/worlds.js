@@ -1,140 +1,6 @@
-// Site content in English (en) and Hindi (hi): dream paths, worlds and Class 4-7 puzzles.
-// To add a path or a puzzle, add it here. No other file needs to change.
+// Site content in English (en) and Hindi (hi): worlds and the Class 5-7 puzzles.
+// Dream paths are in paths.js and Class 8-10 puzzles in puzzles-future.js.
 window.BTJ = {
-  // Dream paths: each step earns a skill. Its puzzles are chosen by level:
-  // little = Class 1-3, young = Class 4-7, future = Class 8-10.
-  // A step with no puzzles points to a world instead.
-  paths: [
-    {
-      id: "space",
-      icon: "🚀",
-      tint: "#d6e4ff",
-      title: { en: "Space Scientist", hi: "अंतरिक्ष वैज्ञानिक" },
-      dream: { en: "Explore stars and planets, and build rockets like the scientists at ISRO.", hi: "तारों और ग्रहों को समझो, और ISRO के वैज्ञानिकों की तरह रॉकेट बनाओ।" },
-      hero: { en: "Kalpana Chawla grew up in Karnal, Haryana, and became the first woman of Indian origin to fly to space.", hi: "कल्पना चावला हरियाणा के करनाल में पली-बढ़ीं और अंतरिक्ष में जाने वाली भारतीय मूल की पहली महिला बनीं।" },
-      india: { en: "In 2023, India's Chandrayaan-3 became the first mission to land near the Moon's south pole.", hi: "2023 में भारत का चंद्रयान-3 चाँद के दक्षिणी ध्रुव के पास उतरने वाला पहला मिशन बना।" },
-      // Try this at home, by level: Class 1-3, Class 4-7, Class 8-10. No phone needed.
-      atHome: {
-        little: { en: "Tonight, look at the Moon and draw its shape. Look again in three days. Did it change?", hi: "आज रात चाँद को देखो और उसका आकार बनाओ। तीन दिन बाद फिर देखो। क्या वह बदला?" },
-        young: { en: "Draw the Moon every night for two weeks. Can you guess tomorrow's shape before you look?", hi: "दो हफ़्ते तक हर रात चाँद का चित्र बनाओ। क्या देखने से पहले अगले दिन का आकार बता सकते हो?" },
-        future: { en: "Find out why Chandrayaan-3 landed near the Moon's south pole. Hint: scientists hope to find frozen water there.", hi: "पता करो कि चंद्रयान-3 चाँद के दक्षिणी ध्रुव के पास क्यों उतरा। इशारा: वैज्ञानिकों को वहाँ जमी हुई बर्फ़ के रूप में पानी मिलने की उम्मीद है।" }
-      },
-      steps: [
-        { title: { en: "Look up at the sky", hi: "आसमान को देखो" }, skill: { en: "Sky watcher", hi: "आसमान का जासूस" }, puzzles: { little: ["lit-sun"], young: ["sci-sky", "sci-moon"], future: ["fut-gravity"] } },
-        { title: { en: "Know your planet", hi: "अपनी धरती को जानो" }, skill: { en: "Earth expert", hi: "धरती विशेषज्ञ" }, puzzles: { little: ["lit-earth-shape"], young: ["geo-cold", "geo-volcano"], future: ["fut-seasons"] } },
-        { title: { en: "Think like a scientist", hi: "वैज्ञानिक की तरह सोचो" }, skill: { en: "Pattern finder", hi: "पैटर्न खोजी" }, puzzles: { little: ["lit-pattern"], young: ["maths-pattern"], future: ["fut-lightyear"] } },
-        { title: { en: "Talk to computers", hi: "कंप्यूटर से बात करो" }, skill: { en: "Coder", hi: "कोडर" }, puzzles: { little: ["lit-robot"], young: ["code-loop"], future: ["fut-binary"] } },
-        { title: { en: "Launch a rocket", hi: "रॉकेट उड़ाओ" }, skill: { en: "Rocket builder", hi: "रॉकेट निर्माता" }, puzzles: [], world: "science" }
-      ]
-    },
-    {
-      id: "doctor",
-      icon: "🩺",
-      tint: "#ffd9de",
-      title: { en: "Doctor", hi: "डॉक्टर" },
-      dream: { en: "Find out how bodies work, and help people get well.", hi: "जानो कि शरीर कैसे काम करता है, और लोगों को ठीक होने में मदद करो।" },
-      hero: { en: "Anandibai Joshi earned her medical degree in 1886 and became one of India's first women doctors.", hi: "आनंदीबाई जोशी ने 1886 में डॉक्टरी की डिग्री ली और भारत की पहली महिला डॉक्टरों में से एक बनीं।" },
-      india: { en: "India was declared free of polio in 2014, after crores of children got two drops of vaccine.", hi: "करोड़ों बच्चों को टीके की दो बूँदें पिलाने के बाद, 2014 में भारत को पोलियो-मुक्त घोषित किया गया।" },
-      // Try this at home, by level: Class 1-3, Class 4-7, Class 8-10. No phone needed.
-      atHome: {
-        little: { en: "Wash your hands with soap while you sing a song for 20 seconds. Teach someone at home to do it too.", hi: "20 सेकंड तक एक गाना गाते हुए साबुन से हाथ धोओ। घर में किसी और को भी सिखाओ।" },
-        young: { en: "Count your heartbeats for one minute while sitting. Then jump 20 times and count again. What changed?", hi: "बैठे-बैठे एक मिनट तक अपनी धड़कन गिनो। फिर 20 बार कूदो और दोबारा गिनो। क्या बदला?" },
-        future: { en: "Make a chart of your heart rate at rest, after walking and after running. Explain the pattern to a grown-up.", hi: "आराम में, चलने के बाद और दौड़ने के बाद अपनी धड़कन का चार्ट बनाओ। किसी बड़े को इसका पैटर्न समझाओ।" }
-      },
-      steps: [
-        { title: { en: "Stop the germs", hi: "कीटाणुओं को रोको" }, skill: { en: "Germ buster", hi: "कीटाणु योद्धा" }, puzzles: { little: ["lit-wash-when"], young: ["sci-germs"], future: ["fut-vaccine"] } },
-        { title: { en: "How your body works", hi: "तुम्हारा शरीर कैसे चलता है" }, skill: { en: "Body explorer", hi: "शरीर खोजी" }, puzzles: { little: ["lit-bones"], young: ["sci-heart"], future: ["fut-blood"] } },
-        { title: { en: "How animals survive", hi: "जानवर कैसे जीते हैं" }, skill: { en: "Nature detective", hi: "प्रकृति जासूस" }, puzzles: { little: ["lit-fish"], young: ["sci-camel"], future: ["fut-polar"] } },
-        { title: { en: "Read the numbers", hi: "संख्याएँ पढ़ो" }, skill: { en: "Pattern finder", hi: "पैटर्न खोजी" }, puzzles: { little: ["lit-pattern"], young: ["maths-pattern"], future: ["fut-average"] } },
-        { title: { en: "Your first check-up", hi: "तुम्हारा पहला चेक-अप" }, skill: { en: "Young doctor", hi: "नन्हा डॉक्टर" }, puzzles: [], world: "science" }
-      ]
-    },
-    {
-      id: "engineer",
-      icon: "🏗️",
-      tint: "#ffe9c2",
-      title: { en: "Engineer", hi: "इंजीनियर" },
-      dream: { en: "Design bridges, dams, machines and buildings that make life better.", hi: "पुल, बाँध, मशीनें और इमारतें बनाओ जो ज़िंदगी आसान करें।" },
-      hero: { en: "A. P. J. Abdul Kalam sold newspapers as a boy in Rameswaram, became a rocket engineer, and later President of India.", hi: "ए. पी. जे. अब्दुल कलाम बचपन में रामेश्वरम में अख़बार बेचते थे। वे रॉकेट इंजीनियर बने और फिर भारत के राष्ट्रपति।" },
-      india: { en: "The Chenab Bridge in Jammu and Kashmir is the highest railway arch bridge in the world.", hi: "जम्मू-कश्मीर का चिनाब पुल दुनिया का सबसे ऊँचा रेलवे आर्च पुल है।" },
-      // Try this at home, by level: Class 1-3, Class 4-7, Class 8-10. No phone needed.
-      atHome: {
-        little: { en: "Fold a paper boat. Does it float? Put small stones in it, one by one. When does it sink?", hi: "कागज़ की नाव बनाओ। क्या वह तैरती है? उसमें एक-एक करके छोटे पत्थर रखो। वह कब डूबती है?" },
-        young: { en: "Build a bridge between two books using only paper. How many coins can it hold before it falls?", hi: "सिर्फ़ कागज़ से दो किताबों के बीच पुल बनाओ। गिरने से पहले वह कितने सिक्के उठा सकता है?" },
-        future: { en: "Fold your paper bridge into a zig-zag and test it again. Why does the shape make it stronger?", hi: "कागज़ के पुल को ज़िग-ज़ैग में मोड़कर फिर से परखो। आकार बदलने से वह मज़बूत क्यों हो जाता है?" }
-      },
-      steps: [
-        { title: { en: "Why things float", hi: "चीज़ें क्यों तैरती हैं" }, skill: { en: "Problem solver", hi: "समस्या सुलझाने वाला" }, puzzles: { little: ["lit-float"], young: ["sci-float"], future: ["fut-density"] } },
-        { title: { en: "Learn from ancient builders", hi: "पुराने कारीगरों से सीखो" }, skill: { en: "Master planner", hi: "मास्टर प्लानर" }, puzzles: { little: ["lit-triangle"], young: ["hist-indus", "hist-pyramids"], future: ["fut-arch"] } },
-        { title: { en: "Think like an engineer", hi: "इंजीनियर की तरह सोचो" }, skill: { en: "Pattern finder", hi: "पैटर्न खोजी" }, puzzles: { little: ["lit-pattern"], young: ["maths-pattern"], future: ["fut-lever"] } },
-        { title: { en: "Build a bridge", hi: "पुल बनाओ" }, skill: { en: "Bridge builder", hi: "पुल निर्माता" }, puzzles: [], world: "science" }
-      ]
-    },
-    {
-      id: "computer",
-      icon: "💻",
-      tint: "#d9ccff",
-      title: { en: "Computer Engineer", hi: "कंप्यूटर इंजीनियर" },
-      dream: { en: "Create apps, games and AI that crores of people use.", hi: "ऐसे ऐप, गेम और AI बनाओ जिन्हें करोड़ों लोग इस्तेमाल करें।" },
-      hero: { en: "Raj Reddy was born in a small village in Andhra Pradesh and became the first person of Asian origin to win the Turing Award, the top prize in computing.", hi: "राज रेड्डी आंध्र प्रदेश के एक छोटे से गाँव में पैदा हुए और कंप्यूटर का सबसे बड़ा पुरस्कार, ट्यूरिंग अवॉर्ड, जीतने वाले एशियाई मूल के पहले व्यक्ति बने।" },
-      india: { en: "UPI, built in India, lets people pay with a phone, from big malls to small village shops.", hi: "भारत में बना UPI लोगों को फ़ोन से पैसे भेजने देता है, बड़े मॉल से लेकर गाँव की छोटी दुकान तक।" },
-      // Try this at home, by level: Class 1-3, Class 4-7, Class 8-10. No phone needed.
-      atHome: {
-        little: { en: "Give a friend step-by-step instructions to walk from the door to a chair. Did they get there?", hi: "किसी दोस्त को दरवाज़े से कुर्सी तक जाने के लिए एक-एक कदम के निर्देश दो। क्या वह पहुँच पाया?" },
-        young: { en: "Write the steps to make a cup of tea, like a program. Ask someone to follow them exactly. Find the bugs!", hi: "चाय बनाने के कदम एक प्रोग्राम की तरह लिखो। किसी से कहो कि बिल्कुल वैसा ही करे। गलतियाँ (बग) ढूँढो!" },
-        future: { en: "Design a simple game on paper: its rules, how you win, and what happens each turn. Then build it in Story Code Quest.", hi: "कागज़ पर एक आसान गेम बनाओ: उसके नियम, कैसे जीतते हैं, और हर चाल में क्या होता है। फिर उसे Story Code Quest में बनाओ।" }
-      },
-      steps: [
-        { title: { en: "Give clear instructions", hi: "साफ़ निर्देश दो" }, skill: { en: "Coder", hi: "कोडर" }, puzzles: { little: ["lit-robot"], young: ["code-loop"], future: ["fut-algorithm"] } },
-        { title: { en: "Find and fix bugs", hi: "गलती ढूँढो और ठीक करो" }, skill: { en: "Bug hunter", hi: "बग पकड़ने वाला" }, puzzles: { little: ["lit-order"], young: ["code-bug"], future: ["fut-if"] } },
-        { title: { en: "Think in patterns", hi: "पैटर्न पहचानो" }, skill: { en: "Pattern finder", hi: "पैटर्न खोजी" }, puzzles: { little: ["lit-pattern"], young: ["maths-pattern"], future: ["fut-binary"] } },
-        { title: { en: "Make your own game level", hi: "अपना गेम लेवल बनाओ" }, skill: { en: "Game maker", hi: "गेम मेकर" }, puzzles: [], world: "coding" }
-      ]
-    },
-    {
-      id: "artist",
-      icon: "🎨",
-      tint: "#ffe3f1",
-      title: { en: "Artist", hi: "कलाकार" },
-      dream: { en: "Paint, design and draw the world in your own colours.", hi: "अपने रंगों से दुनिया को रंगो, डिज़ाइन करो और चित्र बनाओ।" },
-      hero: { en: "Raja Ravi Varma, from Kerala, became one of India's most loved painters, and printed his paintings so every family could own one.", hi: "केरल के राजा रवि वर्मा भारत के सबसे प्यारे चित्रकारों में से एक बने, और अपनी पेंटिंग छापकर हर घर तक पहुँचाईं।" },
-      india: { en: "Warli painting from Maharashtra tells whole stories using just circles, triangles and lines.", hi: "महाराष्ट्र की वारली चित्रकला सिर्फ़ गोले, त्रिकोण और रेखाओं से पूरी कहानी कह देती है।" },
-      // Try this at home, by level: Class 1-3, Class 4-7, Class 8-10. No phone needed.
-      atHome: {
-        little: { en: "Draw a rangoli with chalk. Make both sides match, like a mirror.", hi: "चॉक से एक रंगोली बनाओ। दोनों तरफ़ शीशे की तरह एक जैसी बनाओ।" },
-        young: { en: "Draw a Warli picture of your village or street using only circles, triangles and lines.", hi: "सिर्फ़ गोले, त्रिकोण और रेखाओं से अपने गाँव या गली का वारली चित्र बनाओ।" },
-        future: { en: "Paint the same tree in the morning and the evening. How does the light change its colours?", hi: "एक ही पेड़ को सुबह और शाम पेंट करो। रोशनी उसके रंग कैसे बदल देती है?" }
-      },
-      steps: [
-        { title: { en: "Mix colours", hi: "रंग मिलाओ" }, skill: { en: "Colour mixer", hi: "रंगों का जादूगर" }, puzzles: { little: ["lit-colours"], young: ["art-colours"], future: ["fut-rgb"] } },
-        { title: { en: "Learn to see", hi: "देखना सीखो" }, skill: { en: "Pattern artist", hi: "पैटर्न कलाकार" }, puzzles: { little: ["lit-symmetry"], young: ["art-rangoli"], future: ["fut-perspective"] } },
-        { title: { en: "See the light", hi: "रोशनी को समझो" }, skill: { en: "Light catcher", hi: "रोशनी पकड़ने वाला" }, puzzles: { little: ["lit-shadow"], young: ["sci-sky"], future: ["fut-rainbow"] } },
-        { title: { en: "Make your own art", hi: "अपनी कला बनाओ" }, skill: { en: "Young artist", hi: "नन्हा कलाकार" }, puzzles: [], world: "art" }
-      ]
-    },
-    {
-      id: "writer",
-      icon: "✍️",
-      tint: "#c8f5df",
-      title: { en: "Writer", hi: "लेखक" },
-      dream: { en: "Tell stories, write poems and share ideas that move people.", hi: "कहानियाँ सुनाओ, कविताएँ लिखो और ऐसे विचार बाँटो जो दिल छू लें।" },
-      hero: { en: "Rabindranath Tagore wrote poems, songs and stories, and in 1913 became the first Asian to win the Nobel Prize.", hi: "रवींद्रनाथ टैगोर ने कविताएँ, गीत और कहानियाँ लिखीं, और 1913 में नोबेल पुरस्कार जीतने वाले पहले एशियाई बने।" },
-      india: { en: "Tagore wrote the national anthems of two countries: India and Bangladesh.", hi: "टैगोर ने दो देशों के राष्ट्रगान लिखे: भारत और बांग्लादेश।" },
-      // Try this at home, by level: Class 1-3, Class 4-7, Class 8-10. No phone needed.
-      atHome: {
-        little: { en: "Make up a rhyme about your favourite animal. Say it out loud to someone at home.", hi: "अपने पसंदीदा जानवर पर एक तुकबंदी बनाओ। घर में किसी को सुनाओ।" },
-        young: { en: "Write a short story about a child with a problem to solve. How do they solve it?", hi: "एक ऐसे बच्चे की छोटी कहानी लिखो जिसके सामने कोई मुश्किल है। वह उसे कैसे सुलझाता है?" },
-        future: { en: "Write a short poem in Hindi, then try writing it in English. What changed when you translated it?", hi: "हिंदी में एक छोटी कविता लिखो, फिर उसे अंग्रेज़ी में लिखकर देखो। अनुवाद करने पर क्या बदला?" }
-      },
-      steps: [
-        { title: { en: "Play with words", hi: "शब्दों से खेलो" }, skill: { en: "Word player", hi: "शब्दों का खिलाड़ी" }, puzzles: { little: ["lit-letter"], young: ["eng-rhyme"], future: ["fut-simile"] } },
-        { title: { en: "Build sentences", hi: "वाक्य बनाओ" }, skill: { en: "Sentence builder", hi: "वाक्य निर्माता" }, puzzles: { little: ["lit-sentence"], young: ["eng-verb"], future: ["fut-tense"] } },
-        { title: { en: "Shape a story", hi: "कहानी गढ़ो" }, skill: { en: "Storyteller", hi: "कहानीकार" }, puzzles: { little: ["lit-crow"], young: ["eng-story"], future: ["fut-pov"] } },
-        { title: { en: "Write in two languages", hi: "दो भाषाओं में लिखो" }, skill: { en: "Bridge writer", hi: "भाषा सेतु लेखक" }, puzzles: [], world: "translate" }
-      ]
-    }
-  ],
-
   // Worlds: live ones link out; the others are coming soon.
   worlds: [
     { id: "geography", name: { en: "Earth Explorer", hi: "Earth Explorer" }, status: "live", url: "https://parulnith.github.io/earth-explorer" },
@@ -150,9 +16,8 @@ window.BTJ = {
   // Shown to grown-ups: languages planned after English and Hindi.
   languages: ["தமிழ்", "বাংলা", "తెలుగు", "मराठी", "ಕನ್ನಡ", "ગુજરાતી", "മലയാളം", "ਪੰਜਾਬੀ", "ଓଡ଼ିଆ"],
 
-  // Class 4 to 7 puzzles (Young Builder). Class 1-3 puzzles are in puzzles-little.js and
-  // Class 8-10 puzzles in puzzles-future.js. Mitthu asks first ("think"), gives a hint for each
-  // wrong guess ("nudge"), then explains: "young" text for Class 4, "older" for Class 5 to 7.
+  // Class 5 to 7 puzzles (Young Builder). Mitthu asks first ("think"), gives a hint for each
+  // wrong guess ("nudge"), then explains: "young" text for Class 5, "older" for Class 6 and 7.
   puzzles: [
     {
       id: "geo-cold",
@@ -405,6 +270,62 @@ window.BTJ = {
       ],
       young: { en: "Yes! Both halves match like a mirror. That's called symmetry, and it makes patterns feel balanced and beautiful.", hi: "हाँ! दोनों हिस्से शीशे की तरह मिलते हैं। इसे समरूपता (symmetry) कहते हैं, और इसी से पैटर्न संतुलित और सुंदर लगते हैं।" },
       older: { en: "Correct. Rangoli and kolam use symmetry: mirror symmetry, where both halves match, and rotational symmetry, where the design looks the same when you turn it. Artists, architects and nature itself, in flowers and snowflakes, all use symmetry.", hi: "सही। रंगोली और कोलम में समरूपता होती है: दर्पण समरूपता, जहाँ दोनों हिस्से मिलते हैं, और घूर्णन समरूपता, जहाँ घुमाने पर भी डिज़ाइन वैसा ही दिखता है। कलाकार, वास्तुकार और ख़ुद प्रकृति, फूलों और बर्फ़ के कणों में, समरूपता का इस्तेमाल करते हैं।" }
+    },
+    {
+      id: "sci-thunder",
+      world: "science",
+      keywords: ["thunder", "lightning", "storm", "गड़गड़ाहट", "बिजली", "तूफ़ान"],
+      starter: { en: "Why do we see lightning before we hear thunder?", hi: "बिजली पहले दिखती है और गड़गड़ाहट बाद में क्यों सुनाई देती है?" },
+      think: { en: "Lightning and thunder happen at the same moment. So why do you think we see the flash first?", hi: "बिजली और गड़गड़ाहट एक ही पल में होती हैं। तो तुम्हें क्या लगता है, चमक पहले क्यों दिखती है?" },
+      choices: [
+        { text: { en: "Thunder happens later", hi: "गड़गड़ाहट बाद में होती है" }, nudge: { en: "They happen together! Something about how they travel to us is different.", hi: "दोनों साथ होती हैं! हम तक पहुँचने के उनके तरीक़े में कुछ अलग है।" } },
+        { text: { en: "Light travels much faster than sound", hi: "रोशनी आवाज़ से बहुत तेज़ चलती है" }, correct: true },
+        { text: { en: "Our ears are slower than our eyes", hi: "हमारे कान आँखों से धीमे हैं" }, nudge: { en: "Our ears work quickly. The difference is in how fast light and sound travel through the air.", hi: "हमारे कान तेज़ी से काम करते हैं। फ़र्क़ इसमें है कि रोशनी और आवाज़ हवा में कितनी तेज़ चलती हैं।" } }
+      ],
+      young: { en: "Yes! Light is super fast, so the flash reaches you almost at once. Sound is much slower, so the thunder arrives later.", hi: "हाँ! रोशनी बहुत तेज़ होती है, इसलिए चमक लगभग तुरंत दिख जाती है। आवाज़ बहुत धीमी होती है, इसलिए गड़गड़ाहट बाद में पहुँचती है।" },
+      older: { en: "Correct. Light travels about 3 lakh km every second, but sound travels only about 343 metres per second in air. Count the seconds between the flash and the thunder and divide by 3: that is roughly how many kilometres away the storm is.", hi: "सही। रोशनी हर सेकंड लगभग 3 लाख किमी चलती है, पर हवा में आवाज़ हर सेकंड सिर्फ़ लगभग 343 मीटर। चमक और गड़गड़ाहट के बीच के सेकंड गिनो और 3 से भाग दो: तूफ़ान लगभग उतने किलोमीटर दूर है।" }
+    },
+    {
+      id: "sci-fall",
+      world: "science",
+      keywords: ["fall", "falls", "drop", "heavy", "light", "gravity", "गिर", "भारी", "हल्का", "गुरुत्वाकर्षण"],
+      starter: { en: "Which falls faster: a heavy stone or a light stone?", hi: "कौन तेज़ गिरता है: भारी पत्थर या हल्का पत्थर?" },
+      think: { en: "Drop a big stone and a small stone from the same height at the same moment. Which do you think lands first?", hi: "एक बड़ा और एक छोटा पत्थर एक ही ऊँचाई से एक ही पल में गिराओ। तुम्हें क्या लगता है, कौन पहले ज़मीन पर पहुँचेगा?" },
+      choices: [
+        { text: { en: "The heavy stone", hi: "भारी पत्थर" }, nudge: { en: "That's what most people guess! Try it with two stones. Gravity pulls harder on the heavy one, but it is also harder to get moving.", hi: "ज़्यादातर लोग यही सोचते हैं! दो पत्थरों से आज़माओ। गुरुत्वाकर्षण भारी पत्थर को ज़्यादा खींचता है, पर उसे चलाना भी उतना ही मुश्किल है।" } },
+        { text: { en: "The light stone", hi: "हल्का पत्थर" }, nudge: { en: "Being light doesn't make it faster. Think about a feather and a stone in a place with no air at all.", hi: "हल्का होने से वह तेज़ नहीं हो जाता। सोचो, बिल्कुल बिना हवा वाली जगह में पंख और पत्थर का क्या होगा।" } },
+        { text: { en: "They land at the same time", hi: "दोनों एक साथ पहुँचते हैं" }, correct: true }
+      ],
+      young: { en: "Yes! Gravity makes all things fall at the same rate. Only air slows down light, spread-out things like feathers and paper.", hi: "हाँ! गुरुत्वाकर्षण सब चीज़ों को एक ही रफ़्तार से गिराता है। सिर्फ़ हवा पंख और काग़ज़ जैसी हल्की, फैली चीज़ों को धीमा करती है।" },
+      older: { en: "Correct. Gravity pulls harder on a heavier object, but a heavier object is also harder to speed up, and the two effects cancel out. Galileo is famous for testing this. On the Moon, with no air, an astronaut dropped a hammer and a feather, and they landed together.", hi: "सही। गुरुत्वाकर्षण भारी चीज़ को ज़्यादा खींचता है, पर भारी चीज़ की रफ़्तार बढ़ाना भी उतना ही मुश्किल होता है, और दोनों असर बराबर हो जाते हैं। गैलीलियो इसे परखने के लिए मशहूर हैं। चाँद पर, जहाँ हवा नहीं है, एक अंतरिक्ष यात्री ने हथौड़ा और पंख गिराया, और दोनों साथ पहुँचे।" }
+    },
+    {
+      id: "sci-lever",
+      world: "science",
+      keywords: ["lever", "pivot", "open", "lid", "easier", "उत्तोलक", "धुरी", "ढक्कन"],
+      starter: { en: "What's the easiest way to open a tight paint tin lid?", hi: "कसा हुआ पेंट के डिब्बे का ढक्कन खोलने का सबसे आसान तरीक़ा क्या है?" },
+      think: { en: "You can use a short spoon handle or a long screwdriver as a lever under the lid. Which makes it easier, and why?", hi: "ढक्कन के नीचे उत्तोलक की तरह छोटे चम्मच का हत्था या लंबा पेचकस लगा सकते हो। किससे आसान होगा, और क्यों?" },
+      choices: [
+        { text: { en: "The short spoon", hi: "छोटा चम्मच" }, nudge: { en: "With a short lever, your hand is close to the pivot, the edge of the tin. Where would you get more turning power?", hi: "छोटे उत्तोलक में तुम्हारा हाथ धुरी, यानी डिब्बे के किनारे, के पास रहता है। घुमाने की ज़्यादा ताक़त कहाँ मिलेगी?" } },
+        { text: { en: "The long screwdriver", hi: "लंबा पेचकस" }, correct: true },
+        { text: { en: "Both are the same", hi: "दोनों बराबर हैं" }, nudge: { en: "Try pushing a door near its hinge, then near the handle. Length makes a big difference!", hi: "दरवाज़े को कब्ज़े के पास से धक्का दो, फिर हत्थे के पास से। लंबाई से बहुत फ़र्क़ पड़ता है!" } }
+      ],
+      young: { en: "Yes! A longer lever lets you push further from the pivot, so a small push becomes a big force on the lid.", hi: "हाँ! लंबा उत्तोलक तुम्हें धुरी से दूर धक्का देने देता है, इसलिए छोटा धक्का ढक्कन पर बड़ा बल बन जाता है।" },
+      older: { en: "Correct. Turning effect = force × distance from the pivot. A screwdriver several times longer than the spoon lets the same push create several times more force on the lid. Door handles are placed far from the hinges for the same reason.", hi: "सही। घुमाने का असर = बल × धुरी से दूरी। चम्मच से कई गुना लंबा पेचकस उसी धक्के से ढक्कन पर कई गुना ज़्यादा बल पैदा करता है। इसी वजह से दरवाज़े के हत्थे कब्ज़ों से दूर लगाए जाते हैं।" }
+    },
+    {
+      id: "sci-plant",
+      world: "science",
+      keywords: ["plant", "plants", "food", "grow", "leaf", "leaves", "photosynthesis", "पौधा", "पौधे", "भोजन", "पत्ती"],
+      starter: { en: "How does a plant get its food?", hi: "पौधे को भोजन कैसे मिलता है?" },
+      think: { en: "Plants don't eat like animals. How do you think a plant gets its food?", hi: "पौधे जानवरों की तरह खाते नहीं। तुम्हें क्या लगता है, पौधे को भोजन कैसे मिलता है?" },
+      choices: [
+        { text: { en: "It eats soil through its roots", hi: "वह जड़ों से मिट्टी खाता है" }, nudge: { en: "Roots take water and a few minerals, but a pot of soil hardly gets lighter as a plant grows. Think about what leaves are doing in the sunlight.", hi: "जड़ें पानी और कुछ खनिज लेती हैं, पर पौधा बढ़ने पर गमले की मिट्टी मुश्किल से कम होती है। सोचो, धूप में पत्तियाँ क्या कर रही हैं।" } },
+        { text: { en: "It makes food in its leaves using sunlight", hi: "वह धूप से पत्तियों में भोजन बनाता है" }, correct: true },
+        { text: { en: "It catches insects", hi: "वह कीड़े पकड़ता है" }, nudge: { en: "A few unusual plants do catch insects, but most plants don't. Think about why plants grow towards the light.", hi: "कुछ अनोखे पौधे कीड़े पकड़ते हैं, पर ज़्यादातर नहीं। सोचो, पौधे रोशनी की ओर क्यों बढ़ते हैं।" } }
+      ],
+      young: { en: "Yes! Leaves use sunlight to turn water and air into food. This is called photosynthesis, and it's why plants need sunlight.", hi: "हाँ! पत्तियाँ धूप से पानी और हवा को भोजन में बदलती हैं। इसे प्रकाश-संश्लेषण कहते हैं, और इसीलिए पौधों को धूप चाहिए।" },
+      older: { en: "Correct. In photosynthesis, the green pigment chlorophyll in leaves uses sunlight to turn water and carbon dioxide into sugar, giving out oxygen. Roots add water and minerals like nitrogen, which is why farmers add manure.", hi: "सही। प्रकाश-संश्लेषण में पत्तियों का हरा रंजक क्लोरोफ़िल धूप से पानी और कार्बन डाइऑक्साइड को शर्करा में बदलता है, और ऑक्सीजन छोड़ता है। जड़ें पानी और नाइट्रोजन जैसे खनिज जोड़ती हैं, इसीलिए किसान खाद डालते हैं।" }
     }
   ]
 };

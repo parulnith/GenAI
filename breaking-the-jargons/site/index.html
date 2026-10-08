@@ -43,22 +43,14 @@
   </nav>
 
   <main>
-    <!-- First visit: language, then class -->
+    <!-- Class picker: shown when a child opens a dream for the first time -->
     <section class="view start" id="view-start" hidden>
       <div class="mitthu-row">
         <svg class="mitthu" viewBox="0 0 170 190" aria-hidden="true"><use href="#mitthu"/></svg>
-        <p class="bubble">Namaste! I'm Mitthu.<br><span lang="hi">नमस्ते! मैं मिट्ठू हूँ।</span></p>
+        <p class="bubble" data-i18n="classBubble">Which class are you in? Then I'll open your path.</p>
       </div>
-      <h1 id="lang-title">Choose your language <span class="h-sub" lang="hi">अपनी भाषा चुनो</span></h1>
-      <div class="lang-buttons" role="radiogroup" aria-labelledby="lang-title">
-        <button type="button" role="radio" data-lang="en" lang="en"><b>English</b><small>Learn in English</small></button>
-        <button type="button" role="radio" data-lang="hi" lang="hi"><b>हिंदी</b><small>हिंदी में सीखो</small></button>
-      </div>
-      <div id="class-step" class="class-step" hidden>
-        <h2 id="class-title" data-i18n="classTitle">Which class are you in?</h2>
-        <div class="grade-buttons" role="radiogroup" aria-labelledby="class-title" id="grade-buttons"></div>
-      </div>
-      <p class="start-about"><a href="#grown-ups">About Breaking the Jargons <span lang="hi">· हमारे बारे में</span></a></p>
+      <h1 id="class-title" data-i18n="classTitle">Which class are you in?</h1>
+      <div class="grade-buttons" role="radiogroup" aria-labelledby="class-title" id="grade-buttons"></div>
     </section>
 
     <!-- Home: pick a dream -->
@@ -69,6 +61,8 @@
       </div>
       <p class="kicker" data-i18n="equaliser">Where you live doesn't decide what you become.</p>
       <h1 data-i18n="homeTitle">What do you want to become?</h1>
+      <p class="lead home-intro" data-i18n="homeIntro"></p>
+      <section id="discover" class="discover" aria-live="polite" hidden></section>
       <div id="path-cards" class="path-cards"></div>
       <p class="or-ask"><span data-i18n="orAsk">Just have a question?</span> <a href="#ask" data-i18n="orAskLink">Ask Mitthu</a></p>
     </section>
@@ -76,6 +70,11 @@
     <!-- A dream path: its own page -->
     <section class="view" id="view-path" hidden>
       <div id="path-panel" class="path-page"></div>
+    </section>
+
+    <!-- A lesson inside a dream path -->
+    <section class="view" id="view-learn" hidden>
+      <div id="learn-page" class="path-page learn-page"></div>
     </section>
 
     <!-- Ask Mitthu -->
@@ -303,6 +302,46 @@
         </g>
       </symbol>
 
+      <symbol id="p-farmer" viewBox="0 0 48 48">
+        <path d="M24 44 V12" fill="none" stroke="#1F2A44" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M24 36 C16 35 11 29 11 23 C18 24 22 29 24 36 Z" fill="#2FA35B" stroke="#1F2A44" stroke-width="2.2" stroke-linejoin="round"/>
+        <g fill="#F4B41A" stroke="#1F2A44" stroke-width="2">
+          <ellipse cx="19.5" cy="13" rx="3.2" ry="5" transform="rotate(-25 19.5 13)"/>
+          <ellipse cx="28.5" cy="16" rx="3.2" ry="5" transform="rotate(25 28.5 16)"/>
+          <ellipse cx="19.5" cy="22" rx="3.2" ry="5" transform="rotate(-25 19.5 22)"/>
+          <ellipse cx="28.5" cy="25" rx="3.2" ry="5" transform="rotate(25 28.5 25)"/>
+          <ellipse cx="24" cy="7" rx="3" ry="4.6"/>
+        </g>
+      </symbol>
+      <symbol id="p-teacher" viewBox="0 0 48 48">
+        <rect x="6" y="7" width="36" height="25" rx="2.5" fill="#2F5E4E" stroke="#1F2A44" stroke-width="2.5"/>
+        <path d="M12 15 H24 M12 21 H30 M12 27 H20" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M15 32 L11 43 M33 32 L37 43" stroke="#1F2A44" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="35" cy="16" r="2.5" fill="#F4B41A"/>
+      </symbol>
+      <symbol id="p-pilot" viewBox="0 0 48 48">
+        <path d="M24 4 C26.5 4 27.5 8 27.5 12 V19 L43 27 V31 L27.5 27.5 V37 L32 41 V44 L24 42 L16 44 V41 L20.5 37 V27.5 L5 31 V27 L20.5 19 V12 C20.5 8 21.5 4 24 4 Z" fill="#DCE6FF" stroke="#1F2A44" stroke-width="2.3" stroke-linejoin="round"/>
+        <path d="M22 10 H26" stroke="#2D4BC4" stroke-width="2.2" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="p-nature" viewBox="0 0 48 48">
+        <rect x="21" y="27" width="6" height="16" rx="1.5" fill="#B07A45" stroke="#1F2A44" stroke-width="2.2"/>
+        <circle cx="24" cy="19" r="13" fill="#2FA35B" stroke="#1F2A44" stroke-width="2.5"/>
+        <circle cx="18" cy="15" r="2.5" fill="#9BE39A"/>
+        <circle cx="28" cy="22" r="2" fill="#9BE39A"/>
+        <path d="M8 43 H40" stroke="#1F2A44" stroke-width="2.5" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="p-musician" viewBox="0 0 48 48">
+        <path d="M18 35 V10 L37 6 V31" fill="none" stroke="#1F2A44" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M18 14 L37 10" stroke="#1F2A44" stroke-width="2.5"/>
+        <ellipse cx="13.5" cy="35.5" rx="5.5" ry="4.2" fill="#7B3FA0" stroke="#1F2A44" stroke-width="2.2" transform="rotate(-15 13.5 35.5)"/>
+        <ellipse cx="32.5" cy="31.5" rx="5.5" ry="4.2" fill="#7B3FA0" stroke="#1F2A44" stroke-width="2.2" transform="rotate(-15 32.5 31.5)"/>
+      </symbol>
+      <symbol id="p-sports" viewBox="0 0 48 48">
+        <path d="M15 4 L24 20 L33 4" fill="none" stroke="#D9473B" stroke-width="5" stroke-linejoin="round"/>
+        <circle cx="24" cy="30" r="12" fill="#F4B41A" stroke="#1F2A44" stroke-width="2.5"/>
+        <circle cx="24" cy="30" r="7" fill="none" stroke="#B37D00" stroke-width="2"/>
+      </symbol>
+
       <!-- Interface icons -->
       <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11 L12 4 L20 11 V20 H14.5 V14.5 H9.5 V20 H4 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
       <symbol id="i-path" viewBox="0 0 24 24"><path d="M5 20 C5 14 16 16 16 10.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="2.5 3"/><circle cx="5" cy="20" r="2" fill="currentColor"/><path d="M16 11 V2.5 H21.5 L20 4.75 L21.5 7 H16" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
@@ -317,7 +356,7 @@
   </svg>
 
   <script src="worlds.js"></script>
-  <script src="puzzles-little.js"></script>
+  <script src="paths.js"></script>
   <script src="puzzles-future.js"></script>
   <script src="animations.js"></script>
   <script src="app.js"></script>

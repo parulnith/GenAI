@@ -1,6 +1,6 @@
-// Interactive animations that open from "Show me!" after a puzzle is solved.
-// These are made by hand for the preview. Later, Mitthu (Claude) will write a new one on demand
-// for any question, run in a sandboxed frame. Each animation: { title, hint, puzzles, mount(host, tr) },
+// Interactive animations, made with Claude. They appear inside path modules and open from
+// "Show me!" after a matching puzzle is solved. Later, Mitthu (Claude) will write new ones on
+// demand for any question, run in a sandboxed frame. Each animation: { title, hint, puzzles, mount(host, tr) },
 // where tr() picks English or Hindi and mount() returns a cleanup function.
 (function () {
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -212,7 +212,7 @@
   var dayNight = {
     title: { en: "Turn the Earth", hi: "धरती को घुमाओ" },
     hint: { en: "The Sun stays still. Turn the Earth and watch your home move from day into night.", hi: "सूरज अपनी जगह पर रहता है। धरती घुमाओ और देखो तुम्हारा घर दिन से रात में कैसे जाता है।" },
-    puzzles: ["lit-sun"],
+    puzzles: [],
     mount: function (host, tr) {
       var spin = 30;
       var cv = makeCanvas(host, 230, draw);
@@ -374,7 +374,7 @@
   var floatSink = {
     title: { en: "Float or sink?", hi: "तैरेगा या डूबेगा?" },
     hint: { en: "Guess first, then drop each thing into the water. Compare the coin and the boat: both are steel!", hi: "पहले अंदाज़ा लगाओ, फिर हर चीज़ पानी में डालो। सिक्के और नाव की तुलना करो: दोनों स्टील के हैं!" },
-    puzzles: ["sci-float", "lit-float"],
+    puzzles: ["sci-float", "fut-density"],
     mount: function (host, tr) {
       var dropped = [];
       var raf = 0;
@@ -505,7 +505,7 @@
   var paint = {
     title: { en: "Mix your own colours", hi: "अपने रंग ख़ुद मिलाओ" },
     hint: { en: "Pick two paints and see what they make. Can you make orange, green and purple?", hi: "दो रंग चुनो और देखो वे क्या बनाते हैं। क्या तुम नारंगी, हरा और बैंगनी बना सकते हो?" },
-    puzzles: ["art-colours", "lit-colours"],
+    puzzles: ["art-colours"],
     mount: function (host, tr) {
       var pick = ["red", "yellow"];
       var stage = el("div", "paint-stage");
@@ -555,7 +555,645 @@
     }
   };
 
-  var list = { moon: moon, daynight: dayNight, sky: sky, float: floatSink, paint: paint };
+  // ---- 6. Newton's cannon: from falling to orbiting ----
+
+  var orbit = {
+    title: { en: "Fire a cannonball into orbit", hi: "तोप के गोले को कक्षा में भेजो" },
+    hint: { en: "A cannon on a very tall mountain fires sideways. Speed it up. Slow balls fall back. Fast enough, and it falls all the way around the Earth: an orbit.", hi: "एक बहुत ऊँचे पहाड़ पर रखी तोप बगल की ओर गोला दागती है। रफ़्तार बढ़ाओ। धीमे गोले वापस गिरते हैं। काफ़ी तेज़ हो, तो वह पूरी धरती के चारों ओर गिरता रहता है: यही कक्षा है।" },
+    puzzles: ["sci-fall", "fut-gravity"],
+    mount: function (host, tr) {
+      var speed = 6;
+      var raf = 0;
+      var trail = [];
+      var cv = makeCanvas(host, 260, draw);
+      var readout = el("p", "anim-readout");
+      host.appendChild(readout);
+      var controls = el("div", "anim-controls");
+      host.appendChild(controls);
+      slider(controls, tr({ en: "Launch speed (km per second)", hi: "दागने की रफ़्तार (किमी प्रति सेकंड)" }), 2, 12, 0.1, speed, function (v) { speed = v; cancelAnimationFrame(raf); trail = path(); draw(); });
+      button(controls, tr({ en: "Fire!", hi: "दागो!" }), fire);
+
+      function geometry() {
+        var w = cv.size.w, h = cv.size.h;
+        var R = Math.min(w, h) * 0.26;
+        return { cx: w / 2, cy: h / 2 + 6, R: R, r0: R + 14 };
+      }
+
+      // Step-by-step fall towards the Earth's centre. 7.9 km/s gives a circular orbit; 11.2 km/s escapes.
+      function path() {
+        var g = geometry();
+        var vc = 1.6;
+        var GM = vc * vc * g.r0;
+        var x = 0, y = -g.r0, vx = (speed / 7.9) * vc, vy = 0;
+        var pts = [[x, y]];
+        for (var i = 0; i < 2400; i++) {
+          var r = Math.sqrt(x * x + y * y);
+          var a = GM / (r * r);
+          vx += -a * x / r;
+          vy += -a * y / r;
+          x += vx;
+          y += vy;
+          pts.push([x, y]);
+          r = Math.sqrt(x * x + y * y);
+          if (r < g.R) break;
+          if (r > g.r0 * 6) break;
+          if (i > 40 && Math.abs(x) < 2 && y < 0) break; // back at the mountain: a full orbit
+        }
+        return pts;
+      }
+
+      function fire() {
+        cancelAnimationFrame(raf);
+        var all = path();
+        if (reduceMotion) { trail = all; draw(); return; }
+        var n = 0;
+        (function step() {
+          n = Math.min(all.length, n + 6);
+          trail = all.slice(0, n);
+          draw();
+          if (n < all.length) raf = requestAnimationFrame(step);
+        })();
+      }
+
+      function draw() {
+        var c = cv.c, w = cv.size.w, h = cv.size.h, g = geometry();
+        c.fillStyle = "#16213F";
+        c.fillRect(0, 0, w, h);
+        c.fillStyle = "#2E6FD8";
+        c.beginPath();
+        c.arc(g.cx, g.cy, g.R, 0, Math.PI * 2);
+        c.fill();
+        c.fillStyle = "#4FB06A";
+        c.beginPath();
+        c.ellipse(g.cx - g.R * 0.3, g.cy + g.R * 0.1, g.R * 0.35, g.R * 0.22, 0.4, 0, Math.PI * 2);
+        c.fill();
+        // The mountain and cannon
+        c.fillStyle = "#8A6A4B";
+        c.beginPath();
+        c.moveTo(g.cx - 16, g.cy - g.R + 4);
+        c.lineTo(g.cx, g.cy - g.r0);
+        c.lineTo(g.cx + 16, g.cy - g.R + 4);
+        c.closePath();
+        c.fill();
+        c.fillStyle = "#1F2A44";
+        c.fillRect(g.cx - 3, g.cy - g.r0 - 4, 12, 5);
+        if (trail.length > 1) {
+          c.strokeStyle = "#FFD15C";
+          c.lineWidth = 2.5;
+          c.beginPath();
+          c.moveTo(g.cx + trail[0][0], g.cy + trail[0][1]);
+          trail.forEach(function (p) { c.lineTo(g.cx + p[0], g.cy + p[1]); });
+          c.stroke();
+          var last = trail[trail.length - 1];
+          c.fillStyle = "#FFFFFF";
+          c.beginPath();
+          c.arc(g.cx + last[0], g.cy + last[1], 4, 0, Math.PI * 2);
+          c.fill();
+        }
+        text(c, tr({ en: "Earth", hi: "धरती" }), g.cx, g.cy + 4, 13, "#FFFFFF", "center", 700);
+        var label;
+        if (speed < 7.6) label = { en: "Falls back to Earth. Try faster!", hi: "वापस धरती पर गिरता है। और तेज़ करो!" };
+        else if (speed < 8.4) label = { en: "In orbit! It keeps falling, but keeps missing the Earth.", hi: "कक्षा में! वह गिरता रहता है, पर धरती से चूकता रहता है।" };
+        else if (speed < 11.2) label = { en: "A stretched orbit: it swings far out and comes back.", hi: "खिंची हुई कक्षा: वह दूर तक जाकर वापस आता है।" };
+        else label = { en: "Escape speed! It leaves Earth's gravity behind.", hi: "पलायन वेग! वह धरती के गुरुत्वाकर्षण से बाहर निकल जाता है।" };
+        readout.textContent = speed.toFixed(1) + " " + tr({ en: "km/s", hi: "किमी/से" }) + " · " + tr(label);
+      }
+
+      trail = path();
+      cv.fit();
+      return function () { cancelAnimationFrame(raf); cv.stop(); };
+    }
+  };
+
+  // ---- 7. Lever and see-saw ----
+
+  var lever = {
+    title: { en: "Lift the rock with a lever", hi: "उत्तोलक से पत्थर उठाओ" },
+    hint: { en: "A 6 kg rock sits 1 step from the pivot. Choose how hard you push and how far from the pivot you push. Can you lift it with a small push?", hi: "6 किलो का पत्थर धुरी से 1 कदम दूर है। चुनो कि तुम कितना ज़ोर लगाओगे और धुरी से कितनी दूर धक्का दोगे। क्या तुम छोटे धक्के से उसे उठा सकते हो?" },
+    puzzles: ["sci-lever", "fut-lever"],
+    mount: function (host, tr) {
+      var push = 2, dist = 2, rock = 6, rockDist = 1;
+      var cv = makeCanvas(host, 220, draw);
+      var readout = el("p", "anim-readout");
+      host.appendChild(readout);
+      var controls = el("div", "anim-controls");
+      host.appendChild(controls);
+      slider(controls, tr({ en: "Your push (kg)", hi: "तुम्हारा धक्का (किलो)" }), 1, 6, 1, push, function (v) { push = v; draw(); });
+      slider(controls, tr({ en: "Distance from the pivot (steps)", hi: "धुरी से दूरी (कदम)" }), 1, 5, 1, dist, function (v) { dist = v; draw(); });
+
+      function draw() {
+        var c = cv.c, w = cv.size.w, h = cv.size.h;
+        var left = rock * rockDist, right = push * dist;
+        var tilt = Math.max(-1, Math.min(1, (right - left) / 6)) * 0.22;
+        var px = w / 2, py = h - 60, unit = Math.min(w * 0.085, 46);
+        c.fillStyle = "#F6F8FD";
+        c.fillRect(0, 0, w, h);
+        c.fillStyle = "#D7DEEE";
+        c.fillRect(0, py + 30, w, h - py - 30);
+        c.fillStyle = "#4C5875";
+        c.beginPath();
+        c.moveTo(px, py);
+        c.lineTo(px - 18, py + 30);
+        c.lineTo(px + 18, py + 30);
+        c.closePath();
+        c.fill();
+        c.save();
+        c.translate(px, py);
+        c.rotate(tilt);
+        c.fillStyle = "#B07A45";
+        c.fillRect(-unit * 5.4, -8, unit * 10.8, 10);
+        for (var i = -5; i <= 5; i++) {
+          if (i === 0) continue;
+          text(c, String(Math.abs(i)), i * unit, 12, 10, "#7A849E", "center");
+        }
+        // The rock, left of the pivot
+        c.fillStyle = "#8A8F99";
+        c.strokeStyle = "#1F2A44";
+        c.lineWidth = 2;
+        c.beginPath();
+        c.ellipse(-rockDist * unit, -26, 22, 18, 0, 0, Math.PI * 2);
+        c.fill();
+        c.stroke();
+        text(c, rock + " kg", -rockDist * unit, -26, 12, "#FFFFFF", "center", 700);
+        // The push, right of the pivot
+        var hx = dist * unit;
+        c.fillStyle = "#2D4BC4";
+        c.beginPath();
+        c.moveTo(hx - 10, -50);
+        c.lineTo(hx + 10, -50);
+        c.lineTo(hx, -12);
+        c.closePath();
+        c.fill();
+        text(c, push + " kg", hx, -62, 12, "#2D4BC4", "center", 700);
+        c.restore();
+        var state;
+        if (right > left) state = { en: "You lift the rock!", hi: "तुमने पत्थर उठा लिया!" };
+        else if (right === left) state = { en: "Perfectly balanced.", hi: "बिल्कुल संतुलित।" };
+        else state = { en: "The rock wins. Push harder or further out.", hi: "पत्थर भारी पड़ा। ज़्यादा ज़ोर लगाओ या और दूर से धक्का दो।" };
+        readout.textContent = tr({ en: "Rock: ", hi: "पत्थर: " }) + rock + " × " + rockDist + " = " + left + " · " + tr({ en: "You: ", hi: "तुम: " }) + push + " × " + dist + " = " + right + " · " + tr(state);
+      }
+
+      cv.fit();
+      return function () { cv.stop(); };
+    }
+  };
+
+  // ---- 8. Binary cards ----
+
+  var binary = {
+    title: { en: "Make numbers with bits", hi: "बिट्स से संख्याएँ बनाओ" },
+    hint: { en: "Each card is a bit: on (1) or off (0). Each card is worth double the one on its right. Turn cards on and off to make any number from 0 to 31.", hi: "हर कार्ड एक बिट है: चालू (1) या बंद (0)। हर कार्ड की क़ीमत अपने दाएँ वाले से दोगुनी है। कार्ड चालू-बंद करके 0 से 31 तक कोई भी संख्या बनाओ।" },
+    puzzles: ["fut-binary"],
+    mount: function (host, tr) {
+      var values = [16, 8, 4, 2, 1];
+      var on = [false, true, false, true, true];
+      var row = el("div", "bit-row");
+      host.appendChild(row);
+      var big = el("p", "bit-total");
+      host.appendChild(big);
+      var readout = el("p", "anim-readout");
+      host.appendChild(readout);
+      var controls = el("div", "anim-controls");
+      host.appendChild(controls);
+      var cards = values.map(function (v, i) {
+        var b = el("button", "bit-card");
+        b.type = "button";
+        b.addEventListener("click", function () { on[i] = !on[i]; render(); });
+        row.appendChild(b);
+        return b;
+      });
+      button(controls, tr({ en: "Count up by 1", hi: "1 बढ़ाओ" }), function () {
+        var n = (total() + 1) % 32;
+        values.forEach(function (v, i) { on[i] = (n & v) !== 0; });
+        render();
+      });
+
+      function total() {
+        return values.reduce(function (sum, v, i) { return sum + (on[i] ? v : 0); }, 0);
+      }
+
+      function render() {
+        cards.forEach(function (b, i) {
+          b.setAttribute("aria-pressed", String(on[i]));
+          b.innerHTML = "";
+          b.appendChild(el("span", "bit-digit", on[i] ? "1" : "0"));
+          var dots = el("span", "bit-dots");
+          for (var d = 0; d < values[i]; d++) dots.appendChild(el("i"));
+          b.appendChild(dots);
+          b.appendChild(el("span", "bit-value", String(values[i])));
+        });
+        var parts = values.filter(function (v, i) { return on[i]; });
+        big.textContent = on.map(function (x) { return x ? "1" : "0"; }).join("") + " = " + total();
+        readout.textContent = parts.length ? parts.join(" + ") + " = " + total() : tr({ en: "All cards off: 0", hi: "सारे कार्ड बंद: 0" });
+      }
+
+      render();
+      return function () {};
+    }
+  };
+
+  // ---- 9. The heart at rest and at work ----
+
+  var ACTIVITY = [
+    { name: { en: "Resting", hi: "आराम" }, bpm: 80 },
+    { name: { en: "Walking", hi: "चलना" }, bpm: 105 },
+    { name: { en: "Running", hi: "दौड़ना" }, bpm: 150 }
+  ];
+
+  var heart = {
+    title: { en: "Watch your heart work", hi: "अपने दिल को काम करते देखो" },
+    hint: { en: "Choose what you're doing. Working muscles need more oxygen, so the heart beats faster and blood moves faster.", hi: "चुनो कि तुम क्या कर रहे हो। काम करती मांसपेशियों को ज़्यादा ऑक्सीजन चाहिए, इसलिए दिल तेज़ धड़कता है और ख़ून तेज़ बहता है।" },
+    puzzles: ["sci-heart", "fut-blood"],
+    mount: function (host, tr) {
+      var mode = 0;
+      var raf = 0;
+      var t0 = performance.now();
+      var cv = makeCanvas(host, 220, function () { draw(performance.now()); });
+      var readout = el("p", "anim-readout");
+      host.appendChild(readout);
+      var controls = el("div", "anim-controls anim-choices");
+      host.appendChild(controls);
+      var buttons = ACTIVITY.map(function (a, i) {
+        return button(controls, tr(a.name), function () { mode = i; update(); });
+      });
+
+      function update() {
+        buttons.forEach(function (b, i) { b.setAttribute("aria-pressed", String(i === mode)); });
+        var a = ACTIVITY[mode];
+        readout.textContent = tr(a.name) + ": " + tr({ en: "about ", hi: "लगभग " }) + a.bpm + " " + tr({ en: "beats a minute", hi: "धड़कन प्रति मिनट" });
+        if (reduceMotion) draw(t0);
+      }
+
+      function heartPath(c, x, y, s) {
+        c.beginPath();
+        c.moveTo(x, y + s * 0.35);
+        c.bezierCurveTo(x - s * 0.9, y - s * 0.25, x - s * 0.45, y - s * 0.95, x, y - s * 0.45);
+        c.bezierCurveTo(x + s * 0.45, y - s * 0.95, x + s * 0.9, y - s * 0.25, x, y + s * 0.35);
+        c.closePath();
+      }
+
+      function draw(now) {
+        var c = cv.c, w = cv.size.w, h = cv.size.h;
+        var bpm = ACTIVITY[mode].bpm;
+        var beat = ((now - t0) / 1000) * (bpm / 60);
+        var pulse = reduceMotion ? 0 : Math.pow(Math.max(0, Math.sin(beat * Math.PI * 2)), 6);
+        c.fillStyle = "#FFF4F4";
+        c.fillRect(0, 0, w, h);
+        // The loop of blood vessels around the body
+        var lx = w / 2, ly = h / 2, rx = Math.min(w * 0.38, 190), ry = h * 0.36;
+        c.strokeStyle = "#F3B7B7";
+        c.lineWidth = 10;
+        c.beginPath();
+        c.ellipse(lx, ly, rx, ry, 0, 0, Math.PI * 2);
+        c.stroke();
+        var count = 18;
+        var flow = reduceMotion ? 0 : ((now - t0) / 1000) * (bpm / 60) * 0.25;
+        for (var i = 0; i < count; i++) {
+          var a = (i / count + flow) * Math.PI * 2;
+          c.fillStyle = Math.cos(a) > 0 ? "#D9473B" : "#7A3A8C";
+          c.beginPath();
+          c.arc(lx + Math.cos(a) * rx, ly + Math.sin(a) * ry, 4, 0, Math.PI * 2);
+          c.fill();
+        }
+        text(c, tr({ en: "Lungs: blood picks up oxygen", hi: "फेफड़े: ख़ून ऑक्सीजन लेता है" }), lx, ly - ry - 2 < 12 ? 12 : ly - ry - 14, 12, "#4C5875", "center");
+        text(c, tr({ en: "Muscles: oxygen is used", hi: "मांसपेशियाँ: ऑक्सीजन ख़र्च होती है" }), lx, Math.min(h - 10, ly + ry + 14), 12, "#4C5875", "center");
+        var s = 46 * (1 + pulse * 0.18);
+        c.fillStyle = "#D9473B";
+        c.strokeStyle = "#1F2A44";
+        c.lineWidth = 2.5;
+        heartPath(c, lx, ly + 6, s);
+        c.fill();
+        c.stroke();
+        text(c, String(bpm), lx, ly - 2, 18, "#FFFFFF", "center", 800);
+        if (!reduceMotion) raf = requestAnimationFrame(draw);
+      }
+
+      update();
+      cv.fit();
+      if (!reduceMotion) raf = requestAnimationFrame(draw);
+      return function () { cancelAnimationFrame(raf); cv.stop(); };
+    }
+  };
+
+  // ---- 10. Sound: pitch and loudness ----
+
+  var sound = {
+    title: { en: "See and hear a sound wave", hi: "ध्वनि तरंग देखो और सुनो" },
+    hint: { en: "Faster vibrations make a higher note. Bigger vibrations make a louder sound. Change them, then press Play to hear it.", hi: "तेज़ कंपन ऊँचा सुर बनाता है। बड़ा कंपन तेज़ आवाज़ बनाता है। इन्हें बदलो, फिर सुनने के लिए 'बजाओ' दबाओ।" },
+    puzzles: ["sci-thunder", "fut-sound"],
+    mount: function (host, tr) {
+      var freq = 330, amp = 0.5;
+      var audio = null;
+      var cv = makeCanvas(host, 200, draw);
+      var readout = el("p", "anim-readout");
+      host.appendChild(readout);
+      var controls = el("div", "anim-controls");
+      host.appendChild(controls);
+      slider(controls, tr({ en: "Pitch: vibrations per second (Hz)", hi: "सुर: हर सेकंड कंपन (Hz)" }), 130, 880, 1, freq, function (v) { freq = v; draw(); });
+      slider(controls, tr({ en: "Loudness", hi: "आवाज़ की तेज़ी" }), 0.1, 1, 0.05, amp, function (v) { amp = v; draw(); });
+      button(controls, tr({ en: "Play", hi: "बजाओ" }), play);
+
+      function play() {
+        try {
+          var Ctx = window.AudioContext || window.webkitAudioContext;
+          if (!Ctx) return;
+          audio = audio || new Ctx();
+          var osc = audio.createOscillator();
+          var gain = audio.createGain();
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0, audio.currentTime);
+          gain.gain.linearRampToValueAtTime(0.15 * amp, audio.currentTime + 0.05);
+          gain.gain.linearRampToValueAtTime(0, audio.currentTime + 1);
+          osc.connect(gain);
+          gain.connect(audio.destination);
+          osc.start();
+          osc.stop(audio.currentTime + 1.05);
+        } catch (e) {
+          // Sound isn't available here; the picture still shows the wave.
+        }
+      }
+
+      function draw() {
+        var c = cv.c, w = cv.size.w, h = cv.size.h;
+        c.fillStyle = "#F4EEFF";
+        c.fillRect(0, 0, w, h);
+        c.strokeStyle = "#D9CCFF";
+        c.lineWidth = 1;
+        c.beginPath();
+        c.moveTo(0, h / 2);
+        c.lineTo(w, h / 2);
+        c.stroke();
+        var waves = freq / 110; // how many waves fit across the picture
+        c.strokeStyle = "#6A3FD1";
+        c.lineWidth = 3;
+        c.beginPath();
+        for (var x = 0; x <= w; x += 2) {
+          var y = h / 2 - Math.sin((x / w) * waves * Math.PI * 2) * amp * (h * 0.4);
+          if (x === 0) c.moveTo(x, y); else c.lineTo(x, y);
+        }
+        c.stroke();
+        var pitch = freq < 260 ? { en: "Low note", hi: "नीचा सुर" } : freq < 520 ? { en: "Middle note", hi: "बीच का सुर" } : { en: "High note", hi: "ऊँचा सुर" };
+        var loud = amp < 0.35 ? { en: "soft", hi: "धीमा" } : amp < 0.7 ? { en: "medium", hi: "मध्यम" } : { en: "loud", hi: "तेज़" };
+        readout.textContent = Math.round(freq) + " Hz · " + tr(pitch) + ", " + tr(loud);
+      }
+
+      cv.fit();
+      return function () { cv.stop(); try { if (audio) audio.close(); } catch (e) { /* already closed */ } };
+    }
+  };
+
+  // ---- 11. Plant growth: sunlight and water ----
+
+  var plant = {
+    title: { en: "Grow a healthy plant", hi: "एक स्वस्थ पौधा उगाओ" },
+    hint: { en: "Plants need sunlight to make food, and water, but not too much: soggy soil leaves roots without air. Find the best mix.", hi: "पौधों को भोजन बनाने के लिए धूप और पानी चाहिए, पर बहुत ज़्यादा पानी नहीं: गीली मिट्टी में जड़ों को हवा नहीं मिलती। सबसे अच्छा मेल ढूँढो।" },
+    puzzles: ["sci-plant", "fut-photosynthesis"],
+    mount: function (host, tr) {
+      var sun = 70, water = 50;
+      var cv = makeCanvas(host, 230, draw);
+      var readout = el("p", "anim-readout");
+      host.appendChild(readout);
+      var controls = el("div", "anim-controls");
+      host.appendChild(controls);
+      slider(controls, tr({ en: "Sunlight", hi: "धूप" }), 0, 100, 1, sun, function (v) { sun = v; draw(); });
+      slider(controls, tr({ en: "Water", hi: "पानी" }), 0, 100, 1, water, function (v) { water = v; draw(); });
+
+      function draw() {
+        var c = cv.c, w = cv.size.w, h = cv.size.h;
+        var sunF = sun / 100;
+        var waterF = water <= 60 ? water / 60 : Math.max(0, 1 - (water - 60) / 40);
+        var health = Math.min(sunF, waterF);
+        var sky = c.createLinearGradient(0, 0, 0, h);
+        sky.addColorStop(0, mix("#6B7486", "#BFE3FF", sunF));
+        sky.addColorStop(1, mix("#A9B0BC", "#F2FAFF", sunF));
+        c.fillStyle = sky;
+        c.fillRect(0, 0, w, h);
+        c.fillStyle = mix("#C9CED8", "#FFD23F", sunF);
+        c.beginPath();
+        c.arc(w - 46, 40, 14 + sunF * 12, 0, Math.PI * 2);
+        c.fill();
+        // Pot and soil
+        var px = w / 2, base = h - 20;
+        c.fillStyle = "#C2683E";
+        c.strokeStyle = "#1F2A44";
+        c.lineWidth = 2;
+        c.beginPath();
+        c.moveTo(px - 46, base - 50);
+        c.lineTo(px + 46, base - 50);
+        c.lineTo(px + 34, base);
+        c.lineTo(px - 34, base);
+        c.closePath();
+        c.fill();
+        c.stroke();
+        c.fillStyle = mix("#C8A57A", "#4A3424", Math.min(1, water / 70));
+        c.fillRect(px - 44, base - 50, 88, 8);
+        // Stem and leaves
+        var height = 20 + health * 110;
+        var leafColour = mix("#D8C35A", "#2F9E58", Math.min(1, sunF * 1.3));
+        if (water > 85) leafColour = mix(leafColour, "#8C7A3A", 0.5);
+        c.strokeStyle = mix("#B8A65A", "#2F7A43", sunF);
+        c.lineWidth = 5;
+        c.beginPath();
+        c.moveTo(px, base - 50);
+        c.quadraticCurveTo(px + (1 - health) * 18, base - 50 - height / 2, px, base - 50 - height);
+        c.stroke();
+        var leaves = 1 + Math.round(health * 5);
+        for (var i = 0; i < leaves; i++) {
+          var ly = base - 58 - (i + 1) * (height / (leaves + 1));
+          var side = i % 2 ? 1 : -1;
+          var droop = (1 - health) * 0.9;
+          c.fillStyle = leafColour;
+          c.beginPath();
+          c.ellipse(px + side * 16, ly + droop * 8, 16, 7, side * (0.5 + droop), 0, Math.PI * 2);
+          c.fill();
+        }
+        var label;
+        if (sun < 30) label = { en: "Too little sunlight: pale and weak, it can't make enough food.", hi: "बहुत कम धूप: पीला और कमज़ोर, वह पूरा भोजन नहीं बना पाता।" };
+        else if (water < 25) label = { en: "Too dry: the leaves droop without water.", hi: "बहुत सूखा: पानी के बिना पत्तियाँ मुरझा जाती हैं।" };
+        else if (water > 85) label = { en: "Too much water: soggy soil leaves the roots without air.", hi: "बहुत ज़्यादा पानी: गीली मिट्टी में जड़ों को हवा नहीं मिलती।" };
+        else if (health > 0.75) label = { en: "Healthy and growing well!", hi: "स्वस्थ और अच्छी तरह बढ़ रहा है!" };
+        else label = { en: "Growing, but it could do better.", hi: "बढ़ रहा है, पर और बेहतर हो सकता है।" };
+        readout.textContent = tr(label);
+      }
+
+      cv.fit();
+      return function () { cv.stop(); };
+    }
+  };
+
+  // ---- 12. Story builder ----
+
+  var STORY = {
+    who: [
+      { en: "Meera, a girl from a fishing village", hi: "मछुआरों के गाँव की एक लड़की, मीरा", name: { en: "Meera", hi: "मीरा" }, verb: "चाहती थी" },
+      { en: "Arjun, a boy who loves cricket", hi: "क्रिकेट का दीवाना एक लड़का, अर्जुन", name: { en: "Arjun", hi: "अर्जुन" }, verb: "चाहता था" },
+      { en: "Chotu, a clever goat", hi: "छोटू नाम का एक चतुर बकरा", name: { en: "Chotu", hi: "छोटू" }, verb: "चाहता था" }
+    ],
+    want: [
+      { en: "to win the school science fair", hi: "स्कूल का विज्ञान मेला जीतना" },
+      { en: "to cross the river to see Grandma", hi: "नदी पार करके नानी से मिलना" },
+      { en: "to find a lost kite", hi: "खोई हुई पतंग ढूँढना" }
+    ],
+    problem: [
+      { en: "the monsoon rain flooded the road", hi: "मानसून की बारिश ने रास्ता डुबो दिया" },
+      { en: "there was no money for materials", hi: "सामान ख़रीदने के पैसे नहीं थे" },
+      { en: "a big dog guarded the path", hi: "रास्ते में एक बड़ा कुत्ता पहरा दे रहा था" }
+    ],
+    fix: [
+      { en: "built a raft from plastic bottles", hi: "प्लास्टिक की बोतलों से एक बेड़ा बनाया" },
+      { en: "asked friends for help", hi: "दोस्तों से मदद माँगी" },
+      { en: "came up with a clever trick", hi: "एक चतुर तरकीब लगाई" }
+    ]
+  };
+
+  var story = {
+    title: { en: "Build a story", hi: "एक कहानी बनाओ" },
+    hint: { en: "Every story has a shape: a character who wants something, a problem in the way, and a way through. Pick one of each and read your story.", hi: "हर कहानी का एक ढाँचा होता है: एक किरदार जो कुछ चाहता है, रास्ते में एक मुश्किल, और उससे निकलने का रास्ता। हर एक में से एक चुनो और अपनी कहानी पढ़ो।" },
+    puzzles: ["eng-story", "fut-pov"],
+    mount: function (host, tr) {
+      var pick = { who: 0, want: 1, problem: 0, fix: 0 };
+      var rows = {};
+      var labels = {
+        who: { en: "Character", hi: "किरदार" },
+        want: { en: "Wants", hi: "चाहत" },
+        problem: { en: "Problem", hi: "मुश्किल" },
+        fix: { en: "Way through", hi: "रास्ता" }
+      };
+      var out = el("p", "story-out");
+      host.appendChild(out);
+      Object.keys(labels).forEach(function (part) {
+        var row = el("div", "anim-controls story-row");
+        row.appendChild(el("span", "story-label story-" + part, tr(labels[part])));
+        STORY[part].forEach(function (option, i) {
+          var b = button(row, part === "who" ? tr(option.name) : tr(option), function () { pick[part] = i; render(); });
+          b.dataset.index = String(i);
+        });
+        host.appendChild(row);
+        rows[part] = row;
+      });
+
+      function render() {
+        var who = STORY.who[pick.who], want = STORY.want[pick.want], problem = STORY.problem[pick.problem], fix = STORY.fix[pick.fix];
+        var name = tr(who.name);
+        out.textContent = tr({
+          en: "Once upon a time there was " + who.en + ". " + name + " wanted " + want.en + ". But " + problem.en + ". So " + name + " " + fix.en + ", and everything changed.",
+          hi: "एक बार की बात है, " + who.hi + "। " + name + " " + want.hi + " " + who.verb + "। लेकिन " + problem.hi + "। तब " + name + " ने " + fix.hi + ", और सब बदल गया।"
+        });
+        Object.keys(rows).forEach(function (part) {
+          rows[part].querySelectorAll(".anim-btn").forEach(function (b) {
+            b.setAttribute("aria-pressed", String(Number(b.dataset.index) === pick[part]));
+          });
+        });
+      }
+
+      render();
+      return function () {};
+    }
+  };
+
+  // ---- 13. The water cycle ----
+
+  var water = {
+    title: { en: "Watch the water cycle", hi: "जल-चक्र देखो" },
+    hint: { en: "The Sun heats the sea, water rises as invisible vapour, cools into clouds, and falls as rain. Turn up the Sun's heat.", hi: "सूरज समुद्र को गरम करता है, पानी अदृश्य भाप बनकर उठता है, ठंडा होकर बादल बनता है, और बारिश बनकर गिरता है। सूरज की गर्मी बढ़ाओ।" },
+    puzzles: [],
+    mount: function (host, tr) {
+      var heat = 60;
+      var raf = 0;
+      var cloud = 0.3;
+      var bits = [];
+      var drops = [];
+      var cv = makeCanvas(host, 240, function () { frame(); });
+      var readout = el("p", "anim-readout");
+      host.appendChild(readout);
+      var controls = el("div", "anim-controls");
+      host.appendChild(controls);
+      slider(controls, tr({ en: "Sun's heat", hi: "सूरज की गर्मी" }), 0, 100, 1, heat, function (v) { heat = v; if (reduceMotion) frame(); });
+
+      function scene(c, w, h) {
+        c.fillStyle = "#DDEFFF";
+        c.fillRect(0, 0, w, h);
+        c.fillStyle = mix("#FFE9A0", "#FFB020", heat / 100);
+        c.beginPath();
+        c.arc(40, 40, 18 + heat / 10, 0, Math.PI * 2);
+        c.fill();
+        // Sea on the left, land and a hill on the right
+        c.fillStyle = "#3E8EDB";
+        c.fillRect(0, h - 60, w * 0.45, 60);
+        c.fillStyle = "#6FB35A";
+        c.beginPath();
+        c.moveTo(w * 0.45, h);
+        c.lineTo(w * 0.45, h - 50);
+        c.quadraticCurveTo(w * 0.72, h - 150, w, h - 90);
+        c.lineTo(w, h);
+        c.closePath();
+        c.fill();
+        // A river back to the sea
+        c.strokeStyle = "#3E8EDB";
+        c.lineWidth = 5;
+        c.beginPath();
+        c.moveTo(w * 0.8, h - 98);
+        c.quadraticCurveTo(w * 0.62, h - 60, w * 0.45, h - 52);
+        c.stroke();
+        text(c, tr({ en: "Sea", hi: "समुद्र" }), w * 0.18, h - 24, 12, "#FFFFFF", "center", 700);
+        text(c, tr({ en: "River flows back", hi: "नदी वापस बहती है" }), w * 0.66, h - 34, 11, "#1F4A2A", "center", 700);
+      }
+
+      function drawCloud(c, x, y, s) {
+        c.fillStyle = mix("#FFFFFF", "#8C96A8", Math.min(1, cloud));
+        [[0, 0, 1], [-0.9, 0.2, 0.7], [0.9, 0.2, 0.75], [0.4, -0.4, 0.7]].forEach(function (p) {
+          c.beginPath();
+          c.arc(x + p[0] * s, y + p[1] * s, p[2] * s, 0, Math.PI * 2);
+          c.fill();
+        });
+      }
+
+      function frame() {
+        var c = cv.c, w = cv.size.w, h = cv.size.h;
+        scene(c, w, h);
+        var cx = w * 0.62, cy = 56;
+        if (!reduceMotion) {
+          if (Math.random() < heat / 260) bits.push({ x: Math.random() * w * 0.42, y: h - 62 });
+          bits.forEach(function (b) { b.y -= 1.2; b.x += (cx - b.x) * 0.006; });
+          bits = bits.filter(function (b) {
+            if (b.y < cy + 10) { cloud = Math.min(1.4, cloud + 0.01); return false; }
+            return true;
+          });
+          if (cloud > 0.9 && Math.random() < 0.5) {
+            drops.push({ x: cx - 40 + Math.random() * 80, y: cy + 24 });
+            cloud -= 0.004;
+          }
+          drops.forEach(function (d) { d.y += 4; });
+          drops = drops.filter(function (d) { return d.y < h - 90; });
+        } else {
+          cloud = 0.3 + heat / 100;
+        }
+        c.fillStyle = "rgba(62,142,219,0.55)";
+        bits.forEach(function (b) { c.fillRect(b.x, b.y, 2, 6); });
+        drawCloud(c, cx, cy, 16 + cloud * 14);
+        c.strokeStyle = "#2D6FC4";
+        c.lineWidth = 2;
+        drops.forEach(function (d) { c.beginPath(); c.moveTo(d.x, d.y); c.lineTo(d.x - 2, d.y + 8); c.stroke(); });
+        text(c, tr({ en: "Evaporation", hi: "वाष्पीकरण" }), w * 0.22, h * 0.45, 12, "#1F2A44", "center", 700);
+        text(c, tr({ en: "Clouds form", hi: "बादल बनते हैं" }), cx, 16, 12, "#1F2A44", "center", 700);
+        if (drops.length || reduceMotion && heat > 50) text(c, tr({ en: "Rain", hi: "बारिश" }), cx + 64, cy + 50, 12, "#1F2A44", "center", 700);
+        var label;
+        if (heat < 20) label = { en: "Cool Sun: very little water evaporates, so few clouds form.", hi: "हल्की धूप: बहुत कम पानी भाप बनता है, इसलिए कम बादल बनते हैं।" };
+        else if (cloud > 0.9) label = { en: "The cloud is heavy with water: it's raining on the hills!", hi: "बादल पानी से भारी है: पहाड़ियों पर बारिश हो रही है!" };
+        else label = { en: "Water vapour rises and cools into a cloud.", hi: "भाप ऊपर उठकर ठंडी होती है और बादल बनती है।" };
+        readout.textContent = tr(label);
+        if (!reduceMotion) raf = requestAnimationFrame(frame);
+      }
+
+      cv.fit();
+      return function () { cancelAnimationFrame(raf); cv.stop(); };
+    }
+  };
+
+  var list = {
+    moon: moon, daynight: dayNight, sky: sky, float: floatSink, paint: paint,
+    orbit: orbit, lever: lever, binary: binary, heart: heart, sound: sound, plant: plant, story: story, water: water
+  };
   var forPuzzle = {};
   Object.keys(list).forEach(function (id) {
     list[id].puzzles.forEach(function (pid) { forPuzzle[pid] = list[id]; });
